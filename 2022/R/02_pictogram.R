@@ -36,23 +36,21 @@ d1 <- episodes %>%
   group_by(season_name) %>% 
   mutate(id = row_number()) %>% 
   select(season_name, id, type) %>% 
-  mutate("2022/data/tardis.png")
-  
-  mutate(group = rle(d1)$season_number %>% {rep(seq(length(.)), )})
-  count(season_number) %>% 
-  filter(season_number %in% 1:4) %>% 
-  mutate(xmin = 1,
-         xmax = n,
-         ymin = 4:1,
-         ymax = 4:1,
-         img = rep("2022/data/tardis.png", 4))
+  mutate(img = "2022/data/tardis.png")
 
-ggplot(data = d1,
-       mapping = aes(x = xmin,
-                     y = ymax)) +
-  geom_point() +
-  geom_image(aes(x = xmin, y = ymin, image = img),
-             size = 0.05)
+ggplot(data = d1) +
+  geom_image(aes(x = id,
+                 y = season_name,
+                 image = img),
+             by = "width", size = 0.025) +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#a6b8c7", colour = "#a6b8c7"),
+        plot.background = element_rect(fill = "#a6b8c7", colour = "#a6b8c7"),
+        panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.text.x = element_blank())
+
+ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
 
 # d1 <- munros %>% 
 #   mutate(unique_name = paste(1:nrow(.), name, sep = " - ")) %>% 
