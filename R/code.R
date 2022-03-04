@@ -5,10 +5,20 @@
 # Load packages ----
 
 library(tidyverse)
+library(munro)
 
 # Comparisons ----
 
 # 1 - Part-to-whole
+
+munros <- munro::munros %>% 
+  mutate(unique_name = paste(1:nrow(.), name, sep = " - ")) %>% 
+  select(unique_name, county) %>% 
+  separate()
+
+munros
+
+
 # 2 - Pictogram
 # 3 - Historical
 # 4 - Flora
