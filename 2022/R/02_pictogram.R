@@ -38,7 +38,7 @@ d1 <- episodes %>%
   select(season_name, id, type) %>% 
   mutate(img = "2022/data/tardis.png")
 
-ggplot(data = d1) +
+p <- ggplot(data = d1) +
   geom_image(aes(x = id,
                  y = season_name,
                  image = img),
