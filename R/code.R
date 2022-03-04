@@ -11,12 +11,18 @@ library(munro)
 
 # 1 - Part-to-whole
 
-munros <- munro::munros %>% 
+munros <- munro::munros
+
+d1 <- munros %>% 
   mutate(unique_name = paste(1:nrow(.), name, sep = " - ")) %>% 
   select(unique_name, county) %>% 
-  separate()
+  separate_rows(county, sep = ",") %>% 
+  mutate(county = str_trim(county)) %>% 
+  count(county) %>% 
+  filter(county ==  "Highland") %>% 
+  mutate(total = nrow(munros))
 
-munros
+d1
 
 
 # 2 - Pictogram
