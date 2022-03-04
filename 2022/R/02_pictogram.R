@@ -1,7 +1,7 @@
 # 30DayChartChallenge
 # 2022
 # Category : Comparisons
-# Day 1 : Part-to-whole
+# Day 2 : Pictogram
 # Last updated 2022-03-04
 
 # Load packages ----
