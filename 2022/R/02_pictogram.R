@@ -27,7 +27,12 @@ d1 <- episodes %>%
   mutate(season_number = case_when(story_number %in% c("199", "200", "201", "202a", "202b") ~ 4.5,
                                    story_number %in% c("240", "241") ~ 7.5,
                                    TRUE ~ season_number)) %>% 
-  mutate(group = cumsum(!duplicated(season_number)))
+  mutate(group = cumsum(!duplicated(season_number))) %>% 
+  select(group, season_number, episode_title, type) %>% 
+  mutate(season_name = case_when(group == "5" ~ "2008-2010 specials",
+                                 group == "9" ~ "2013 specials",
+                                 group == "15" ~ "Season 13 (Flux)",
+                                 TRUE ~ paste("Season", as.integer(season_number), sep = " ")))
   
   mutate(group = rle(d1)$season_number %>% {rep(seq(length(.)), )})
   count(season_number) %>% 
