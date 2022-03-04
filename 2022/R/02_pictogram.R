@@ -32,7 +32,11 @@ d1 <- episodes %>%
   mutate(season_name = case_when(group == "5" ~ "2008-2010 specials",
                                  group == "9" ~ "2013 specials",
                                  group == "15" ~ "Season 13 (Flux)",
-                                 TRUE ~ paste("Season", as.integer(season_number), sep = " ")))
+                                 TRUE ~ paste("Season", as.integer(season_number), sep = " "))) %>% 
+  group_by(season_name) %>% 
+  mutate(id = row_number()) %>% 
+  select(season_name, id, type) %>% 
+  mutate("2022/data/tardis.png")
   
   mutate(group = rle(d1)$season_number %>% {rep(seq(length(.)), )})
   count(season_number) %>% 
