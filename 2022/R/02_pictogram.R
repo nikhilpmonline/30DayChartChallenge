@@ -7,35 +7,58 @@
 # Load packages ----
 
 library(tidyverse)
-library(munro)
-library(showtext)
-library(patchwork)
+library(datardis)
+library(ggimage)
+# library(showtext)
+# library(patchwork)
 
 # Load fonts ----
 
-font_add_google("Lobster", "Lobster")
-showtext_auto()
+# font_add_google("Lobster", "Lobster")
+# showtext_auto()
 
 # Import data ----
 
-munros <- munro::munros
+episodes <- datardis::episodes
 
 # Data wrangling ---- 
 
-d1 <- munros %>% 
-  mutate(unique_name = paste(1:nrow(.), name, sep = " - ")) %>% 
-  select(unique_name, county) %>% 
-  separate_rows(county, sep = ",") %>% 
-  mutate(county = factor(str_trim(county))) %>% 
-  count(county)
+d1 <- episodes %>% 
+  mutate(season_number = case_when(story_number %in% c("199", "200", "201", "202a", "202b") ~ 4.5,
+                                   story_number %in% c("240", "241") ~ 7.5,
+                                   TRUE ~ season_number)) %>% 
+  mutate(group = cumsum(!duplicated(season_number)))
+  
+  mutate(group = rle(d1)$season_number %>% {rep(seq(length(.)), )})
+  count(season_number) %>% 
+  filter(season_number %in% 1:4) %>% 
+  mutate(xmin = 1,
+         xmax = n,
+         ymin = 4:1,
+         ymax = 4:1,
+         img = rep("2022/data/tardis.png", 4))
 
-highland_munros <- tibble(
-  county = c("Highland", "Other"),
-  n = c(d1$n[d1$county == "Highland"],
-        nrow(munros) - d1$n[d1$county == "Highland"])) %>% 
-  mutate(ratio = n / sum(n)) %>% 
-  mutate(ymin = c(0, max(ratio)),
-         ymax = c(max(ratio), 1))
+ggplot(data = d1,
+       mapping = aes(x = xmin,
+                     y = ymax)) +
+  geom_point() +
+  geom_image(aes(x = xmin, y = ymin, image = img),
+             size = 0.05)
+
+# d1 <- munros %>% 
+#   mutate(unique_name = paste(1:nrow(.), name, sep = " - ")) %>% 
+#   select(unique_name, county) %>% 
+#   separate_rows(county, sep = ",") %>% 
+#   mutate(county = factor(str_trim(county))) %>% 
+#   count(county)
+# 
+# highland_munros <- tibble(
+#   county = c("Highland", "Other"),
+#   n = c(d1$n[d1$county == "Highland"],
+#         nrow(munros) - d1$n[d1$county == "Highland"])) %>% 
+#   mutate(ratio = n / sum(n)) %>% 
+#   mutate(ymin = c(0, max(ratio)),
+#          ymax = c(max(ratio), 1))
 
 # Create plot ----
 
