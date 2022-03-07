@@ -2,7 +2,7 @@
 # 2022
 # Category : Comparisons
 # Day 2 : Pictogram
-# Last updated 2022-03-04
+# Last updated 2022-03-07
 
 # Load packages ----
 
@@ -26,6 +26,12 @@ showtext_auto()
 episodes <- datardis::episodes
 
 # Data wrangling ---- 
+
+d1 <- tibble(
+  x.pos = 0.25,
+  y.pos = c(0.75, 0.65, 0.55, 0.45))
+
+d1
 
 d1 <- episodes %>% 
   mutate(season_number = case_when(story_number %in% c("199", "200", "201", "202a", "202b") ~ 4.5,
@@ -87,10 +93,12 @@ g <- rasterGrob(iceblue, width = unit(1, "npc"), height = unit(1, "npc"))
 purple <- c("#1f1ffc", "#311ea8", "#321753", "#431c53", "#8e1f3a", "#d92121")
 g <- rasterGrob(purple, width = unit(1, "npc"), height = unit(1, "npc"))
 
-ggplot() +
+ggplot(data = d1) +
   xlim(0, 1) +
   ylim(0, 1) +
   annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  geom_point(aes(x = x.pos, y = y.pos),
+             size = 8)  +
   annotate("text", x = 0.5, y = 0.95, label = "Test", family = "Rajdhani", size = 25, colour = "white") +
   theme_void()
 
