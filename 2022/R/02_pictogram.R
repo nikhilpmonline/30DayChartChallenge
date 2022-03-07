@@ -84,11 +84,15 @@ g <- rasterGrob(greens, width = unit(1, "npc"), height = unit(1, "npc"))
 iceblue <- c("#71a6d1", "#85b5d9", "#99c4e1", "#acd3e8", "#c0e2f0", "#d4f1f8")
 g <- rasterGrob(iceblue, width = unit(1, "npc"), height = unit(1, "npc"))
 
+purple <- c("#1f1ffc", "#311ea8", "#321753", "#431c53", "#8e1f3a", "#d92121")
+g <- rasterGrob(purple, width = unit(1, "npc"), height = unit(1, "npc"))
+
 ggplot() +
   xlim(0, 1) +
   ylim(0, 1) +
   annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  annotate("text", x = 0.5, y = 0.95, label = "Test", family = "Rajdhani", size = 25, colour = "white")
+  annotate("text", x = 0.5, y = 0.95, label = "Test", family = "Rajdhani", size = 25, colour = "white") +
+  theme_void()
 
 p1 <- ggplot() +
   annotate("text", x = -0.5, y = 1, label = "Munros are mountains in Scotland above 3,000 feet",
