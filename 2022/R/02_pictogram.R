@@ -10,7 +10,7 @@ library(tidyverse)
 library(grid)
 library(ggthemes)
 #library(datardis)
-#library(ggimage)
+library(ggimage)
 library(showtext)
 # library(patchwork)
 
@@ -29,7 +29,11 @@ episodes <- datardis::episodes
 
 d1 <- tibble(
   x.pos = 0.25,
-  y.pos = c(0.75, 0.65, 0.55, 0.45))
+  y.pos = c(0.75, 0.65, 0.55, 0.45),
+  img = c("2022/data/findable.png",
+          "2022/data/accessible.png",
+          "2022/data/interoperable.png",
+          "2022/data/reusable.png"))
 
 d1
 
@@ -97,8 +101,7 @@ ggplot(data = d1) +
   xlim(0, 1) +
   ylim(0, 1) +
   annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  geom_point(aes(x = x.pos, y = y.pos),
-             size = 8)  +
+  geom_image(aes(x = x.pos, y = y.pos, image = img)) +
   annotate("text", x = 0.5, y = 0.95, label = "Test", family = "Rajdhani", size = 25, colour = "white") +
   theme_void()
 
