@@ -4,12 +4,48 @@
 # Day 2 : Pictogram
 # Last updated 2022-03-07
 
+# https://liamgilbey.github.io/ggwaffle/
+
+# Testing ggwaffle ----
+
+devtools::install_github("liamgilbey/ggwaffle")
+
+library(ggwaffle)
+
+waffle_data <- waffle_iron(mpg, aes_d(group = class))
+
+ggplot(waffle_data, aes(x, y, fill = group)) +
+  geom_waffle()
+
+iris$Species <- as.character(iris$Species)
+waffle_data <- waffle_iron(iris, aes_d(group = Species))
+
+ggplot(waffle_data, aes(x, y, fill = group)) + 
+  geom_waffle() + 
+  coord_equal() + 
+  scale_fill_waffle() + 
+  theme_waffle()
+
+library(emojifont)
+library(dplyr)
+#library(fontawesome)
+
+iris$Species <- as.character(iris$Species)
+waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-twitter'))
+
+ggplot(waffle_data, aes(x, y, colour = group)) + 
+  geom_text(aes(label=label), family='fontawesome-webfont', size=4) +
+  coord_equal() + 
+  scale_colour_waffle() + 
+  theme_waffle() 
+
 # Load packages ----
 
 library(tidyverse)
 library(grid)
 library(ggimage)
 library(showtext)
+library(waffle)
 
 # Load fonts ----
 
