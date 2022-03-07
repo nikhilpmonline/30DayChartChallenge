@@ -9,15 +9,13 @@
 # Load packages ----
 
 library(tidyverse)
-#library(grid)
-#library(ggimage)
 library(showtext)
-library(waffle)
+library(ggwaffle)
+library(emojifont)
+library(patchwork)
 
 # Load fonts ----
 
-# font_add_google("Lobster", "Lobster")
-# showtext_auto()
 font_add_google("Rajdhani", "Rajdhani")
 showtext_auto()
 
@@ -31,117 +29,32 @@ waffle_d1 <- waffle_iron(d1, aes_d(group = os), rows = 10) %>%
 
 # Create plot ----
 
-#iceblue <- c("#71a6d1", "#85b5d9", "#99c4e1", "#acd3e8", "#c0e2f0", "#d4f1f8")
-dark <- c("#332859", "#253c59", "#20788c", "#17a6a6", "#0fbfae")
-g <- rasterGrob(dark, width = unit(1, "npc"), height = unit(1, "npc"))
+p1 <- ggplot() +
+  annotate("text", label = "Mobile OS market",
+           x = 0, y = 0.25, family = "Rajdhani", size = 50, colour = "white") +
+  annotate("text", label = "share worldwide",
+           x = 0, y = -0.25, family = "Rajdhani", size = 50, colour = "white") +
+  ylim(c(-1, 1)) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#332859", colour = "#332859"),
+        plot.background = element_rect(fill = "#332859", colour = "#332859"))
 
-p <- ggplot(waffle_d1, aes(x, -y)) + 
-  #annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+p2 <- ggplot(waffle_d1, aes(x, -y)) + 
   geom_text(aes(label = label, colour = group),
             family='fontawesome-webfont', size = 35,
             show.legend = FALSE) +
-  ggtitle(label = "Mobile OS market share worldwide") +
   coord_equal() + 
   scale_colour_manual(values = c("#a4c739", "#dadada", "#0fbfae")) + 
   theme_waffle() +
   theme_void() +
-  theme(panel.background = element_rect(fill = "#332859", colour = NA),
-        plot.background = element_rect(fill = "#332859", colour = NA),
-        plot.margin = margin(b = 30),
-        plot.title = element_text(family = "Rajdhani", size = 75, colour = "white", hjust = 0.5,
-                                  margin = margin(t = 20, b = 20)))
+  theme(panel.background = element_rect(fill = "#332859", colour = "#332859"),
+        plot.background = element_rect(fill = "#332859", colour = "#332859"),
+        plot.margin = margin(t = 40, r = 40, b = 40, l = 40))
 
-p
+p3 <- p1 + p2 +
+  plot_annotation(
+    caption = "Visualisation: Jonathan Kitt | Data source: https://gs.statcounter.com/os-market-share/mobile/worldwide | #30DayChartChallenge 2022 | Day 2: pictogram",
+    theme = theme(plot.background = element_rect(fill = "#332859"),
+                  plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
 
-ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
-
-# Testing ggwaffle ----
-
-devtools::install_github("liamgilbey/ggwaffle")
-
-library(ggwaffle)
-
-waffle_data <- waffle_iron(mpg, aes_d(group = class))
-
-ggplot(waffle_data, aes(x, y, fill = group)) +
-  geom_waffle()
-
-iris$Species <- as.character(iris$Species)
-waffle_data <- waffle_iron(iris, aes_d(group = Species))
-
-ggplot(waffle_d1, aes(x, -y, fill = group)) + 
-  geom_waffle() + 
-  coord_equal() + 
-  scale_fill_waffle() + 
-  theme_waffle()
-
-ggplot(waffle_d1, aes(x, -y)) + 
-  geom_text(aes(label = label, colour = group),
-            family='fontawesome-webfont', size = 10,
-            show.legend = FALSE) +
-  coord_equal() + 
-  scale_colour_manual(values = c("#a4c739", "#dadada", "grey20")) + 
-  theme_waffle() +
-  theme_void()
-
-library(emojifont)
-library(dplyr)
-#library(fontawesome)
-
-iris$Species <- as.character(iris$Species)
-# waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-twitter'))
-waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-500px'))
-waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-coffee'))
-
-ggplot(waffle_d1, aes(x, y, colour = group)) + 
-  annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  geom_text(aes(label=label), family='fontawesome-webfont', size=4) +
-  coord_equal() + 
-  scale_colour_waffle() + 
-  theme_waffle() +
-  theme_void()
-
-ggplot() +
-  geom_fontawesome("fa-apple") +
-  theme_void()
-
-
-
-# Data wrangling ---- 
-
-d1 <- tibble(
-  x.pos = 0.25,
-  y.pos = c(0.7, 0.5, 0.3, 0.1),
-  img = c("2022/data/findable.png",
-          "2022/data/accessible.png",
-          "2022/data/interoperable.png",
-          "2022/data/reusable.png"))
-
-# Create plot ----
-
-#iceblue <- c("#71a6d1", "#85b5d9", "#99c4e1", "#acd3e8", "#c0e2f0", "#d4f1f8")
-#g <- rasterGrob(iceblue, width = unit(1, "npc"), height = unit(1, "npc"))
-
-# dark <- c("#390640", "#332859", "#253c59", "#1b818c", "#17a6a6")
-# dark <- c("#350c3e", "#341042", "#321947", "#30214e", "#2e2a53", "#2d2e57", "#2a3b5f", "#284366", "#0eaeb1")
-dark <- c("#332859", "#253c59", "#20788c", "#17a6a6", "#0fbfae")
-g <- rasterGrob(dark, width = unit(1, "npc"), height = unit(1, "npc"))
-
-# g <- rasterGrob(blues9, width = unit(1, "npc"), height = unit(1, "npc"))
-
-
-p <- ggplot(data = d1) +
-  xlim(0, 1) +
-  ylim(0, 1) +
-  annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  geom_image(aes(x = x.pos, y = y.pos, image = img),
-             colour = "white") +
-  annotate("text", x = 0.5, y = 0.95, label = "The FAIR principles", family = "Rajdhani", size = 25, colour = "white") +
-  annotate("text", x = 0.4, y = 0.7, label = "Findable", family = "Rajdhani", size = 25, colour = "white") +
-  annotate("text", x = 0.4, y = 0.5, label = "Accessible", family = "Rajdhani", size = 25, colour = "white") +
-  annotate("text", x = 0.4, y = 0.3, label = "Interoperable", family = "Rajdhani", size = 25, colour = "white") +
-  annotate("text", x = 0.4, y = 0.1, label = "Reusable", family = "Rajdhani", size = 25, colour = "white") +
-  annotate("text", x = 0.5, y = 0.01, label = "Visualisation: Jonathan Kitt | Data source: ... | #30DayChartChallenge 2022 | Day 2: pictogram") +
-  theme_void()
-
-ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/02_pictogram.png", p3, dpi = 320, width = 12, height = 6)
