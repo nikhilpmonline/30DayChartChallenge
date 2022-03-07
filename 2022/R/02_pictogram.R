@@ -22,55 +22,40 @@ showtext_auto()
 
 d1 <- tibble(
   x.pos = 0.25,
-  y.pos = c(0.6, 0.5, 0.4, 0.3),
+  y.pos = c(0.7, 0.5, 0.3, 0.1),
   img = c("2022/data/findable.png",
           "2022/data/accessible.png",
           "2022/data/interoperable.png",
           "2022/data/reusable.png"))
 
-
-ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
-
-
 # Create plot ----
 
-iceblue <- c("#71a6d1", "#85b5d9", "#99c4e1", "#acd3e8", "#c0e2f0", "#d4f1f8")
-g <- rasterGrob(iceblue, width = unit(1, "npc"), height = unit(1, "npc"))
+#iceblue <- c("#71a6d1", "#85b5d9", "#99c4e1", "#acd3e8", "#c0e2f0", "#d4f1f8")
+#g <- rasterGrob(iceblue, width = unit(1, "npc"), height = unit(1, "npc"))
 
-dark <- c("#390640", "#332859", "#253c59", "#1b818c", "#17a6a6")
-dark <- c("#350c3e", "#341042", "#321947", "#30214e", "#2e2a53", "#2d2e57", "#2a3b5f", "#284366", "#0eaeb1")
+# dark <- c("#390640", "#332859", "#253c59", "#1b818c", "#17a6a6")
+# dark <- c("#350c3e", "#341042", "#321947", "#30214e", "#2e2a53", "#2d2e57", "#2a3b5f", "#284366", "#0eaeb1")
+dark <- c("#332859", "#253c59", "#20788c", "#17a6a6", "#0fbfae")
 g <- rasterGrob(dark, width = unit(1, "npc"), height = unit(1, "npc"))
 
+# g <- rasterGrob(blues9, width = unit(1, "npc"), height = unit(1, "npc"))
 
-ggplot(data = d1) +
+
+p <- ggplot(data = d1) +
   xlim(0, 1) +
   ylim(0, 1) +
   annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
   geom_image(aes(x = x.pos, y = y.pos, image = img),
-             colour = "white", size = 0.1) +
-  annotate("text", x = 0.5, y = 0.95, label = "The FAIR principles", family = "Rajdhani", size = 25, colour = "white")
+             colour = "white") +
+  annotate("text", x = 0.5, y = 0.95, label = "The FAIR principles", family = "Rajdhani", size = 25, colour = "white") +
+  annotate("text", x = 0.4, y = 0.7, label = "Findable", family = "Rajdhani", size = 25, colour = "white") +
+  annotate("text", x = 0.4, y = 0.5, label = "Accessible", family = "Rajdhani", size = 25, colour = "white") +
+  annotate("text", x = 0.4, y = 0.3, label = "Interoperable", family = "Rajdhani", size = 25, colour = "white") +
+  annotate("text", x = 0.4, y = 0.1, label = "Reusable", family = "Rajdhani", size = 25, colour = "white") +
+  annotate("text", x = 0.5, y = 0.01, label = "Visualisation: Jonathan Kitt | Data source: ... | #30DayChartChallenge 2022 | Day 2: pictogram") +
+  theme_void()
 
-p1 <- ggplot() +
-  annotate("text", x = -0.5, y = 1, label = "Munros are mountains in Scotland above 3,000 feet",
-           colour = "white", family = "Lobster", size = 20) +
-  annotate("text", x = 0.5, y = -1, label = "Out of 282 Munros, 186 are located in the Highlands",
-           colour = "white", family = "Lobster", size = 20) +
-  xlim(-15, 15) +
-  ylim(-5, 5) +
-  theme_void() +
-  theme(panel.background = element_rect(fill = "#041f32", colour = "#041f32"),
-        plot.background = element_rect(fill = "#041f32", colour = "#041f32"))
-
-p2 <- ggplot(data = highland_munros,
-             aes(x = 6, y = ratio, fill = county)) +
-  geom_bar(stat = "identity",
-           show.legend = FALSE) +
-  scale_fill_manual(values = c("#04aed9", "#c5e0f5")) +
-  coord_polar(theta = "y", start = 0) +
-  xlim(c(0.025, 8)) +
-  theme_void() +
-  theme(panel.background = element_rect(fill = "#041f32", colour = "#041f32"),
-        plot.background = element_rect(fill = "#041f32", colour = "#041f32"))
+ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
 
 p <- p1 + p2 +
   plot_annotation(
