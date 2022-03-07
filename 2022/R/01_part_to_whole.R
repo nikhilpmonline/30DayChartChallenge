@@ -68,7 +68,7 @@ p <- p1 + p2 +
     caption = "Visualisation: Jonathan Kitt | Data source: munro package | #30DayChartChallenge 2022 | Day 1: part-to-whole",
     theme = theme(plot.title = element_text(family = "Lobster", colour = "white", size = 100, hjust = 0.5,
                                             margin = margin(t = 40)),
-                  plot.background = element_rect(fill = "#041f32"),
+                  plot.background = element_rect(fill = "#041f32", colour = "#041f32"),
                   plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
 
 ggsave("2022/plots/01_part_to_whole.png", p, dpi = 320, width = 12, height = 6)

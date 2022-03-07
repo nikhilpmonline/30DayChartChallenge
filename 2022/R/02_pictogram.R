@@ -54,7 +54,7 @@ p2 <- ggplot(waffle_d1, aes(x, -y)) +
 p3 <- p1 + p2 +
   plot_annotation(
     caption = "Visualisation: Jonathan Kitt | Data source: https://gs.statcounter.com/os-market-share/mobile/worldwide | #30DayChartChallenge 2022 | Day 2: pictogram",
-    theme = theme(plot.background = element_rect(fill = "#332859"),
+    theme = theme(plot.background = element_rect(fill = "#332859", colour = "#332859"),
                   plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
 
 ggsave("2022/plots/02_pictogram.png", p3, dpi = 320, width = 12, height = 6)
