@@ -4,7 +4,22 @@
 # Day 2 : Pictogram
 # Last updated 2022-03-07
 
-# https://liamgilbey.github.io/ggwaffle/
+# https://gs.statcounter.com/os-market-share/mobile/worldwide
+
+# Data wrangling ----
+
+d1 <- tibble(
+  os = c(rep("Android", 71), rep("iOS", 28), "Other"))
+
+waffle_d1 <- waffle_iron(d1, aes_d(group = os), rows = 10) %>% 
+  mutate(label = fontawesome(c(rep("fa-android", 71), rep("fa-apple", 28), "fa-question")))
+waffle_d1
+
+waffle_data <- d1 %>% 
+  waffle_iron(aes_d(group = os))
+
+ggplot(waffle_d1, aes(x, -y, fill = group)) +
+  geom_waffle()
 
 # Testing ggwaffle ----
 
@@ -20,24 +35,40 @@ ggplot(waffle_data, aes(x, y, fill = group)) +
 iris$Species <- as.character(iris$Species)
 waffle_data <- waffle_iron(iris, aes_d(group = Species))
 
-ggplot(waffle_data, aes(x, y, fill = group)) + 
+ggplot(waffle_d1, aes(x, -y, fill = group)) + 
   geom_waffle() + 
   coord_equal() + 
   scale_fill_waffle() + 
   theme_waffle()
+
+ggplot(waffle_d1, aes(x, -y)) + 
+  geom_text(aes(label = label, colour = group),
+            family='fontawesome-webfont', size = 10,
+            show.legend = FALSE) +
+  coord_equal() + 
+  scale_colour_manual(values = c("#a4c739", "#dadada", "grey20")) + 
+  theme_waffle() +
+  theme_void()
 
 library(emojifont)
 library(dplyr)
 #library(fontawesome)
 
 iris$Species <- as.character(iris$Species)
-waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-twitter'))
+# waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-twitter'))
+waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-500px'))
+waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-coffee'))
 
-ggplot(waffle_data, aes(x, y, colour = group)) + 
+ggplot(waffle_d1, aes(x, y, colour = group)) + 
   geom_text(aes(label=label), family='fontawesome-webfont', size=4) +
   coord_equal() + 
   scale_colour_waffle() + 
-  theme_waffle() 
+  theme_waffle() +
+  theme_void()
+
+ggplot() +
+  geom_fontawesome("fa-apple") +
+  theme_void()
 
 # Load packages ----
 
