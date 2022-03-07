@@ -11,13 +11,15 @@ library(grid)
 library(ggthemes)
 #library(datardis)
 #library(ggimage)
-# library(showtext)
+library(showtext)
 # library(patchwork)
 
 # Load fonts ----
 
 # font_add_google("Lobster", "Lobster")
 # showtext_auto()
+font_add_google("Rajdhani", "Rajdhani")
+showtext_auto()
 
 # Import data ----
 
@@ -77,11 +79,16 @@ reds <- c("#7B0664", "#E32219")
 g <- rasterGrob(reds, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = TRUE)
 
 greens <- c("#d7f4d2", "#77dd66")
-g <- rasterGrob(greens, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = TRUE)
+g <- rasterGrob(greens, width = unit(1, "npc"), height = unit(1, "npc"))
+
+iceblue <- c("#71a6d1", "#85b5d9", "#99c4e1", "#acd3e8", "#c0e2f0", "#d4f1f8")
+g <- rasterGrob(iceblue, width = unit(1, "npc"), height = unit(1, "npc"))
 
 ggplot() +
+  xlim(0, 1) +
+  ylim(0, 1) +
   annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  annotate("text", x = 0, y = 0, label = "Test")
+  annotate("text", x = 0.5, y = 0.95, label = "Test", family = "Rajdhani", size = 25, colour = "white")
 
 p1 <- ggplot() +
   annotate("text", x = -0.5, y = 1, label = "Munros are mountains in Scotland above 3,000 feet",
