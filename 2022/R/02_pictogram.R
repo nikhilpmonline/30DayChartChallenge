@@ -6,6 +6,21 @@
 
 # https://gs.statcounter.com/os-market-share/mobile/worldwide
 
+# Load packages ----
+
+library(tidyverse)
+#library(grid)
+#library(ggimage)
+library(showtext)
+library(waffle)
+
+# Load fonts ----
+
+# font_add_google("Lobster", "Lobster")
+# showtext_auto()
+font_add_google("Rajdhani", "Rajdhani")
+showtext_auto()
+
 # Data wrangling ----
 
 d1 <- tibble(
@@ -25,11 +40,18 @@ p <- ggplot(waffle_d1, aes(x, -y)) +
   geom_text(aes(label = label, colour = group),
             family='fontawesome-webfont', size = 35,
             show.legend = FALSE) +
+  ggtitle(label = "Mobile OS market share worldwide") +
   coord_equal() + 
-  scale_colour_manual(values = c("#a4c739", "#dadada", "white")) + 
+  scale_colour_manual(values = c("#a4c739", "#dadada", "#0fbfae")) + 
   theme_waffle() +
   theme_void() +
-  theme(panel.background = element_rect(fill = "#332859"))
+  theme(panel.background = element_rect(fill = "#332859", colour = NA),
+        plot.background = element_rect(fill = "#332859", colour = NA),
+        plot.margin = margin(b = 30),
+        plot.title = element_text(family = "Rajdhani", size = 75, colour = "white", hjust = 0.5,
+                                  margin = margin(t = 20, b = 20)))
+
+p
 
 ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
 
@@ -83,20 +105,7 @@ ggplot() +
   geom_fontawesome("fa-apple") +
   theme_void()
 
-# Load packages ----
 
-library(tidyverse)
-library(grid)
-library(ggimage)
-library(showtext)
-library(waffle)
-
-# Load fonts ----
-
-# font_add_google("Lobster", "Lobster")
-# showtext_auto()
-font_add_google("Rajdhani", "Rajdhani")
-showtext_auto()
 
 # Data wrangling ---- 
 
