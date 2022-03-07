@@ -13,13 +13,25 @@ d1 <- tibble(
 
 waffle_d1 <- waffle_iron(d1, aes_d(group = os), rows = 10) %>% 
   mutate(label = fontawesome(c(rep("fa-android", 71), rep("fa-apple", 28), "fa-question")))
-waffle_d1
 
-waffle_data <- d1 %>% 
-  waffle_iron(aes_d(group = os))
+# Create plot ----
 
-ggplot(waffle_d1, aes(x, -y, fill = group)) +
-  geom_waffle()
+#iceblue <- c("#71a6d1", "#85b5d9", "#99c4e1", "#acd3e8", "#c0e2f0", "#d4f1f8")
+dark <- c("#332859", "#253c59", "#20788c", "#17a6a6", "#0fbfae")
+g <- rasterGrob(dark, width = unit(1, "npc"), height = unit(1, "npc"))
+
+p <- ggplot(waffle_d1, aes(x, -y)) + 
+  #annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  geom_text(aes(label = label, colour = group),
+            family='fontawesome-webfont', size = 35,
+            show.legend = FALSE) +
+  coord_equal() + 
+  scale_colour_manual(values = c("#a4c739", "#dadada", "white")) + 
+  theme_waffle() +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#332859"))
+
+ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
 
 # Testing ggwaffle ----
 
@@ -60,6 +72,7 @@ waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = font
 waffle_data <- waffle_iron(iris, aes_d(group = Species)) %>% mutate(label = fontawesome('fa-coffee'))
 
 ggplot(waffle_d1, aes(x, y, colour = group)) + 
+  annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
   geom_text(aes(label=label), family='fontawesome-webfont', size=4) +
   coord_equal() + 
   scale_colour_waffle() + 
