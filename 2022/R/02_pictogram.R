@@ -7,8 +7,10 @@
 # Load packages ----
 
 library(tidyverse)
-library(datardis)
-library(ggimage)
+library(grid)
+library(ggthemes)
+#library(datardis)
+#library(ggimage)
 # library(showtext)
 # library(patchwork)
 
@@ -68,6 +70,18 @@ ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
 #          ymax = c(max(ratio), 1))
 
 # Create plot ----
+
+g <- rasterGrob(blues9, width = unit(1, "npc"), height = unit(1, "npc"))
+
+reds <- c("#7B0664", "#E32219")
+g <- rasterGrob(reds, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = TRUE)
+
+greens <- c("#d7f4d2", "#77dd66")
+g <- rasterGrob(greens, width = unit(1, "npc"), height = unit(1, "npc"), interpolate = TRUE)
+
+ggplot() +
+  annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  annotate("text", x = 0, y = 0, label = "Test")
 
 p1 <- ggplot() +
   annotate("text", x = -0.5, y = 1, label = "Munros are mountains in Scotland above 3,000 feet",
