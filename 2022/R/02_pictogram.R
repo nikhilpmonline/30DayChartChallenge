@@ -37,6 +37,10 @@ ggsave("2022/plots/02_pictogram.png", p, dpi = 320, width = 12, height = 6)
 iceblue <- c("#71a6d1", "#85b5d9", "#99c4e1", "#acd3e8", "#c0e2f0", "#d4f1f8")
 g <- rasterGrob(iceblue, width = unit(1, "npc"), height = unit(1, "npc"))
 
+dark <- c("#390640", "#332859", "#253c59", "#1b818c", "#17a6a6")
+dark <- c("#350c3e", "#341042", "#321947", "#30214e", "#2e2a53", "#2d2e57", "#2a3b5f", "#284366", "#0eaeb1")
+g <- rasterGrob(dark, width = unit(1, "npc"), height = unit(1, "npc"))
+
 
 ggplot(data = d1) +
   xlim(0, 1) +
