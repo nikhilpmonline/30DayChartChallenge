@@ -54,7 +54,8 @@ p2 <- ggplot(data = highland_munros,
              aes(x = 6, y = ratio, fill = county)) +
   geom_bar(stat = "identity",
            show.legend = FALSE) +
-  scale_fill_manual(values = c("#04aed9", "#c5e0f5")) +
+  #scale_fill_manual(values = c("#04aed9", "#c5e0f5")) +
+  scale_fill_manual(values = c("#04aed9", "white")) +
   coord_polar(theta = "y", start = 0) +
   xlim(c(0.025, 8)) +
   theme_void() +
