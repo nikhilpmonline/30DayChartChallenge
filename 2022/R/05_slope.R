@@ -27,7 +27,7 @@ mortirolo_pass <- plotKML::readGPX(gpx.file = "2022/data/Climb Alps - Mortirolo 
 
 # Data wrangling ----
 
-profile <- mortirolo_pass$tracks[[1]][[1]] %>% 
+d1 <- mortirolo_pass$tracks[[1]][[1]] %>% 
   as_tibble() %>% 
   mutate(ele = as.numeric(ele),
          dist = distHaversine(cbind(lon, lat),
@@ -59,10 +59,80 @@ profile <- mortirolo_pass$tracks[[1]][[1]] %>%
          km.y.max = min(ele)) %>% 
   ungroup()
 
+rectangles <- d1 %>% 
+  group_by(km) %>% 
+  filter(row_number() == 1) %>% 
+  select(km, km.x.min:km.y.max) %>% 
+  ungroup()
+
+triangles <- d1 %>% 
+  group_by(km) %>% 
+  mutate(ele.min = min(ele), ele.max = max(ele)) %>% 
+  select(km, km.x.min, km.x.max, ele.min, ele.max) %>% 
+  filter(row_number() == 1)
+
+triangles.x <- list()
+triangles.y <- list()
+
+for (i in 1:nrow(triangles)) {
+  
+  triangles.x[[i]] <- c(triangles$km.x.min[triangles$km == i],
+                        triangles$km.x.max[triangles$km == i],
+                        triangles$km.x.max[triangles$km == i])
+  
+  triangles.y[[i]] <- c(triangles$ele.min[triangles$km == i],
+                        triangles$ele.min[triangles$km == i],
+                        triangles$ele.max[triangles$km == i])
+  
+}
+
+triangles <- tibble(
+  triangle = rep(1:12, each = 3),
+  x = unlist(triangles.x),
+  y = unlist(triangles.y))
+
+rm(triangles.x, triangles.y, i)
+
+slopes <- d1 %>% 
+  group_by(km) %>% 
+  filter(row_number() == 1) %>% 
+  mutate(lab.x = km.x.min + (km.x.max - km.x.min) / 2) %>% 
+  select(km, km_slope_pct, slope_colour, km.x.min, km.x.max, lab.x) %>% 
+  ungroup()
+
+p <- ggplot() +
+  geom_rect(data = rectangles,
+            aes(xmin = km.x.min, xmax = km.x.max,
+                ymin = km.y.min, ymax = km.y.max),
+            fill = "#f6cc49", colour = "#f6cc49") +
+  geom_polygon(data = triangles,
+               aes(x = x, y = y, group = triangle),
+               fill = "#f6cc49", colour = "#f6cc49") +
+  geom_line(data = d1,
+             aes(x = cum_dist, y = ele),
+             colour = "#f6cc49", size = 4) +
+  geom_rect(data = slopes,
+            aes(xmin = km.x.min, xmax = km.x.max,
+                ymin = -100, ymax = 0,
+                fill = slope_colour, colour = slope_colour),
+            show.legend = FALSE) +
+  scale_fill_manual(values = c("#141307", "#e6010c", "#024f93", "#81bb21")) +
+  scale_colour_manual(values = c("#141307", "#e6010c", "#024f93", "#81bb21")) +
+  geom_text(data = slopes,
+            aes(x = lab.x, y = -50, label = km_slope_pct),
+            colour = "white")
+
+ggsave("2022/plots/05_slope.png", p, dpi = 320, width = 12, height = 6)
+
+
 km_slopes <- profile %>% 
   group_by(km) %>% 
   filter(row_number() == 1) %>% 
-  select(km:)
+  ungroup() %>% 
+  mutate(label.x = km.x.min + ((km.x.max - km.x.min)/2))
+
+
+km_slopes
 
 triangles <- profile %>% 
   group_by(km) %>% 
@@ -109,9 +179,19 @@ p <- ggplot() +
   scale_fill_manual(values = c("#141307", "#e6010c", "#024f93", "#81bb21")) +
   geom_line(data = profile,
              aes(x = cum_dist, y = ele),
-            size = 4, colour = "white") +
+            size = 3, colour = "white") +
+  scale_colour_manual(values = c("#141307", "#e6010c", "#024f93", "#81bb21")) +
+  geom_segment(data = triangles,
+               aes(x = km.x.max, xend = km.x.max,
+                   y = 0, yend = ele.max),
+               size = 0.5, colour = "white", linetype = "dashed") +
+  geom_text(data = km_slopes,
+            aes(x = label.x, y = 100, label = km),
+            colour = "white") +
   theme_minimal() +
-  theme(panel.background = element_rect(fill = "#355c7d"))
+  theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+        plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+        panel.grid = element_blank())
 
 
 ggsave("2022/plots/05_slope.png", p, dpi = 320, width = 12, height = 6)
