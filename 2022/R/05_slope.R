@@ -23,9 +23,146 @@ library(geosphere)
 
 # Import data ----
 
-d1 <- readGPX("../Desktop/Climb Alps - Mortirolo Pass from Mazzo di Valtellina.gpx")
+mortirolo_pass <- plotKML::readGPX(gpx.file = "2022/data/Climb Alps - Mortirolo Pass from Mazzo di Valtellina.gpx")
 
-d2 <- d1$tracks[[1]][[1]]
+# Data wrangling ----
+
+profile <- mortirolo_pass$tracks[[1]][[1]] %>% 
+  as_tibble() %>% 
+  mutate(ele = as.numeric(ele),
+         dist = distHaversine(cbind(lon, lat),
+                              cbind(lag(lon), lag(lat)))) %>% 
+  mutate(dist = ifelse(is.na(dist), 0, dist)) %>% 
+  mutate(cum_dist = cumsum(dist)) %>% 
+  mutate(km = case_when(cum_dist <= 1000 ~ 1,
+                        cum_dist > 1000 & cum_dist <= 2000 ~ 2,
+                        cum_dist > 2000 & cum_dist <= 3000 ~ 3,
+                        cum_dist > 3000 & cum_dist <= 4000 ~ 4,
+                        cum_dist > 4000 & cum_dist <= 5000 ~ 5,
+                        cum_dist > 5000 & cum_dist <= 6000 ~ 6,
+                        cum_dist > 6000 & cum_dist <= 7000 ~ 7,
+                        cum_dist > 7000 & cum_dist <= 8000 ~ 8,
+                        cum_dist > 8000 & cum_dist <= 9000 ~ 9,
+                        cum_dist > 9000 & cum_dist <= 10000 ~ 10,
+                        cum_dist > 10000 & cum_dist <= 11000 ~ 11,
+                        cum_dist > 11000 & cum_dist <= 12000 ~ 12)) %>% 
+  group_by(km) %>% 
+  mutate(km_slope_pct = 0.1 * (max(ele) - min(ele))) %>% 
+  mutate(slope_colour = case_when(km_slope_pct <= 2.9 ~ "green",
+                                  km_slope_pct > 2.9 & km_slope_pct <= 5.9 ~ "blue",
+                                  km_slope_pct > 5.9 & km_slope_pct <= 8.9 ~ "red",
+                                  km_slope_pct > 8.9 ~ "black")) %>% 
+  mutate(km.x.min = (km * 1000) - 1000,
+         km.x.max = case_when(km == 12 ~ max(cum_dist),
+                              TRUE ~ 1000 * km),
+         km.y.min = 0,
+         km.y.max = min(ele)) %>% 
+  ungroup()
+
+km_slopes <- profile %>% 
+  group_by(km) %>% 
+  filter(row_number() == 1) %>% 
+  select(km:)
+
+triangles <- profile %>% 
+  group_by(km) %>% 
+  mutate(ele.min = min(ele), ele.max = max(ele)) %>% 
+  select(km, km.x.min, km.x.max, ele.min, ele.max) %>% 
+  filter(row_number() == 1)
+
+triangles.x <- list()
+triangles.y <- list()
+
+for (i in 1:nrow(triangles)) {
+  
+  triangles.x[[i]] <- c(triangles$km.x.min[triangles$km == i],
+                   triangles$km.x.max[triangles$km == i],
+                   triangles$km.x.max[triangles$km == i])
+  
+  triangles.y[[i]] <- c(triangles$ele.min[triangles$km == i],
+                   triangles$ele.min[triangles$km == i],
+                   triangles$ele.max[triangles$km == i])
+  
+}
+
+triangles.data <- tibble(
+  triangle = rep(1:12, each = 3),
+  x = unlist(triangles.x),
+  y = unlist(triangles.y),
+  colour = rep(km_slopes$slope_colour, each = 3)
+)
+
+profile %>% 
+  group_by(km) %>% 
+  filter(row_number() == 1)
+
+p <- ggplot() +
+  geom_rect(data = profile,
+            aes(xmin = km.x.min, xmax = km.x.max,
+                ymin = km.y.min, ymax = km.y.max,
+                fill = slope_colour),
+            show.legend = FALSE) +
+  geom_polygon(data = triangles.data,
+               aes(x = x, y = y, group = triangle,
+                   fill = colour),
+               show.legend = FALSE) +
+  scale_fill_manual(values = c("#141307", "#e6010c", "#024f93", "#81bb21")) +
+  geom_line(data = profile,
+             aes(x = cum_dist, y = ele),
+            size = 4, colour = "white") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#355c7d"))
+
+
+ggsave("2022/plots/05_slope.png", p, dpi = 320, width = 12, height = 6)
+
+
+d=data.frame(x=c(1,2,2, 3,4,4), y=c(1,1,2, 2,2,3), t=c('a', 'a', 'a',  'b', 'b', 'b'), r=c(1,2,3, 4,5,6))
+ggplot() +
+  geom_polygon(data=d, mapping=aes(x=x, y=y, group=t)) +
+  geom_point(data=d, aes(x=x, y=y, color=t)) +
+  geom_text(data=d, aes(x=x, y=y, label=r), hjust=0, vjust=1, size=4)
+  #opts(title="geom_polygon", plot.title=theme_text(size=40, vjust=1.5))
+
+
+slopes <- profile %>%
+  mutate(km = case_when(cum_dist <= 1000 ~ 1,
+                        cum_dist > 1000 & cum_dist <= 2000 ~ 2,
+                        cum_dist > 2000 & cum_dist <= 3000 ~ 3,
+                        cum_dist > 3000 & cum_dist <= 4000 ~ 4,
+                        cum_dist > 4000 & cum_dist <= 5000 ~ 5,
+                        cum_dist > 5000 & cum_dist <= 6000 ~ 6,
+                        cum_dist > 6000 & cum_dist <= 7000 ~ 7,
+                        cum_dist > 7000 & cum_dist <= 8000 ~ 8,
+                        cum_dist > 8000 & cum_dist <= 9000 ~ 9,
+                        cum_dist > 9000 & cum_dist <= 10000 ~ 10,
+                        cum_dist > 10000 & cum_dist <= 11000 ~ 11,
+                        cum_dist > 11000 & cum_dist <= 12000 ~ 12)) %>% 
+  
+  group_by(km) %>% 
+  mutate(slope_pct = 0.1 * (max(ele) - min(ele))) %>% 
+  filter(ele == max(ele)) %>% 
+  filter(row_number() == 1) %>% 
+  select(km, ele, slope_pct) %>% 
+  mutate(x = case_when(km == 12 ~ max(profile$cum_dist),
+                       TRUE ~ 1000 * km))
+
+slopes
+
+
+ggplot(data = test) +
+  geom_segment(aes(x = x.min, xend = x.max,
+                   y = y.min, yend = y.max))
+
+ggplot() +
+  geom_point(data = profile,
+             aes(x = cum_dist, y = ele, colour = slope_colour))
+
++
+  geom_segment(data = slopes,
+               aes(x = x, xend = x, y = 0, yend = ele)) +
+  geom_rect(data = slopes, aes(xmin = ))
+  
 
 d2 <- as_tibble(d2) %>% 
   mutate(dist = distHaversine(cbind(lon, lat),
