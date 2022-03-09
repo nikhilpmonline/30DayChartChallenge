@@ -64,6 +64,18 @@ triangles <- tibble(
         rep(unique(data_by_km$new_y)[2:12], each = 3),
         max(data_by_km$new_y)))
 
+slopes <- rectangles %>% 
+  mutate(x.lab = x.min + ((x.max - x.min) / 2)) %>% 
+  mutate(elevation = c(y.max[-1], max(data_by_km$elevation))) %>% 
+  mutate(slope_pct = (elevation - y.max) / 10) %>% 
+  select(km_nb, x.min, x.max, x.lab, slope_pct) %>% 
+  mutate(slope_colour = case_when(slope_pct <= 2.9 ~ "green",
+                                  slope_pct > 2.9 & slope_pct <= 5.9 ~ "blue",
+                                  slope_pct > 5.9 & slope_pct <= 8.9 ~ "red",
+                                  slope_pct > 8.9 ~ "black"))
+
+slopes
+
 ggplot() +
   geom_rect(data = rectangles,
             aes(xmin = x.min, xmax = x.max,
