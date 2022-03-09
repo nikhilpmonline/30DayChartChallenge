@@ -40,43 +40,43 @@ d1 <- mortirolo_pass$tracks[[1]][[1]] %>%
   select(-distance) %>% 
   mutate(km_nb = cut_interval(distance_from_start, length = 1000, labels = FALSE))
 
-test <- tibble(
-  km_nb = rep(1:12, each = 4),
-  point_nb = c(1:4, 3:6, 5:8, 7:10, 9:12, 11:14,
-               13:16, 15:18, 17:20, 19:22, 21:24, 23:26)) %>% 
-  case_when(point_nb %in% seq(2, 23, 2) ~ 0:11000)
-
-test
-
-test <- d1 %>% 
+data_by_km <- d1 %>% 
   group_by(km_nb) %>% 
-  filter(row_number() == 1 | row_number() == n())
+  filter(row_number() == 1 | row_number() == n()) %>% 
+  ungroup() %>% 
+  mutate(group = c(1, rep(2:12, each = 2), 13)) %>% 
+  group_by(group) %>% 
+  mutate(new_y = min(elevation)) %>% 
+  ungroup()
 
-head(d1)
+rectangles <- tibble(
+  km_nb = 1:12,
+  x.min = seq(0, 11e3, 1e3),
+  x.max = c(seq(1e3, 11e3, 1e3), max(data_by_km$distance_from_start)),
+  y.min = 0,
+  y.max = unique(data_by_km$new_y[data_by_km$km_nb != 12]))
 
-cut_interval(d1$distance_from_start, length = 1000)
+triangles <- tibble(
+  km_nb = rep(1:12, each = 3),
+  point_nb = rep(1:3, times = 12),
+  x = c(0, rep(seq(1e3, 11e3, 1e3), each = 3), rep(max(d1$distance_from_start), times = 2)),
+  y = c(rep(min(data_by_km$new_y[1]), 2),
+        rep(unique(data_by_km$new_y)[2:12], each = 3),
+        max(data_by_km$new_y)))
 
-plot(d1$distance_from_start, d1$elevation)
+ggplot() +
+  geom_rect(data = rectangles,
+            aes(xmin = x.min, xmax = x.max,
+                ymin = y.min, ymax = y.max),
+            fill = "#f6cc49") +
+  geom_polygon(data = triangles,
+               aes(x = x, y = y, group = km_nb),
+               fill = "#f6cc49")
 
-d1 %>% 
-  group_by(km_nb) %>% 
-  first()
 
-%>% 
-  mutate(dist = ifelse(is.na(dist), 0, dist)) %>% 
-  mutate(cum_dist = cumsum(dist)) %>% 
-  mutate(km = case_when(cum_dist <= 1000 ~ 1,
-                        cum_dist > 1000 & cum_dist <= 2000 ~ 2,
-                        cum_dist > 2000 & cum_dist <= 3000 ~ 3,
-                        cum_dist > 3000 & cum_dist <= 4000 ~ 4,
-                        cum_dist > 4000 & cum_dist <= 5000 ~ 5,
-                        cum_dist > 5000 & cum_dist <= 6000 ~ 6,
-                        cum_dist > 6000 & cum_dist <= 7000 ~ 7,
-                        cum_dist > 7000 & cum_dist <= 8000 ~ 8,
-                        cum_dist > 8000 & cum_dist <= 9000 ~ 9,
-                        cum_dist > 9000 & cum_dist <= 10000 ~ 10,
-                        cum_dist > 10000 & cum_dist <= 11000 ~ 11,
-                        cum_dist > 11000 & cum_dist <= 12000 ~ 12)) %>% 
+
+
+
   group_by(km) %>% 
   mutate(km_slope_pct = 0.1 * (max(ele) - min(ele))) %>% 
   mutate(slope_colour = case_when(km_slope_pct <= 2.9 ~ "green",
