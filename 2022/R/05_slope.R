@@ -18,8 +18,9 @@ library(geosphere)
 
 # Load fonts ----
 
-# font_add_google("Rajdhani", "Rajdhani")
-# showtext_auto()
+# font_add_google("Preahvihear", "Preahvihear")
+font_add_google("Snippet", "Snippet")
+showtext_auto()
 
 # Import data ----
 
@@ -74,22 +75,67 @@ slopes <- rectangles %>%
                                   slope_pct > 5.9 & slope_pct <= 8.9 ~ "red",
                                   slope_pct > 8.9 ~ "black"))
 
+segments <- triangles %>% 
+  group_by(km_nb) %>% 
+  filter(row_number() == 1) %>% 
+  filter(km_nb != 1)
+
 slopes
 
-ggplot() +
+p <- ggplot() +
+  geom_segment(aes(x = 0, xend = 12500,
+                   y = seq(500, 1800, 100), yend = seq(500, 1800, 100)),
+               linetype = "dotted", colour = "white") +
+  geom_text(aes(x = 12900, y = seq(500, 1800, 100),
+                label = paste0(seq(500, 1800, 100), " m")),
+            family = "Snippet", size = 15, colour = "white") +
+  # geom_hline(yintercept = seq(500, 1800, 100),
+  #            linetype = "dotted") +
   geom_rect(data = rectangles,
             aes(xmin = x.min, xmax = x.max,
                 ymin = y.min, ymax = y.max),
-            fill = "#f6cc49") +
+            fill = "#f6cc49", colour = "#f6cc49") +
   geom_polygon(data = triangles,
                aes(x = x, y = y, group = km_nb),
-               fill = "#f6cc49") +
+               fill = "#f6cc49", colour = "#f6cc49") +
   geom_rect(data = slopes,
             aes(xmin = x.min, xmax = x.max,
-                ymin = 0, ymax = 50,
+                ymin = -100, ymax = 0,
                 fill = slope_colour),
             colour = "white",
-            show.legend = FALSE)
+            show.legend = FALSE) +
+  scale_fill_manual(values = c("#141307", "#e6010c", "#024f93", "#81bb21")) +
+  geom_text(data = slopes,
+            aes(x = x.lab, y = -50, label = round(slope_pct, digits = 1)),
+            colour = "white", family = "Snippet", size = 15) +
+  geom_rect(data = slopes,
+            aes(xmin = x.min, xmax = x.max,
+                ymin = -200, ymax = -100),
+            fill = "grey40", colour = "white",
+            show.legend = FALSE) +
+  geom_text(data = slopes,
+            aes(x = x.lab, y = -150, label = km_nb),
+            colour = "white", family = "Snippet", size = 15) +
+  geom_segment(data = segments,
+               aes(x = x, xend = x,
+                   y = 100, yend = y),
+               linetype = "dashed", colour = "white") +
+  scale_y_continuous(position = "right",
+                     breaks = seq(500, 1800, 100)) +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+        plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+        panel.grid = element_blank(),
+        # panel.grid.major.x = element_blank(),
+        # panel.grid.minor = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank())
+
+ggsave("2022/plots/05_slope.png", p, dpi = 320, width = 12, height = 6)
+
+
++
+  scale_colour_manual(values = c("#141307", "#e6010c", "#024f93", "#81bb21"))
 
 
 
