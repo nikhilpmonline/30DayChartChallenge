@@ -32,22 +32,31 @@ d1 <- tibble(
         7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73,
         6.58, 5.76, 7.71, 8.84, 8.47, 7.04, 5.25, 12.5, 5.56, 7.91, 6.89))
 
-d1 %>% filter(quartet_nb == 2)
-
-d1 <- d1 %>% 
-  select(year = `Année de Year`, category = `Noms de mesures`, value = `Valeurs de mesures`)
-
-ggplot() +
-  geom_line(data = d1, aes(x = year, y = value, colour = category)) +
-  ylim(0, 200)
-
-d1 <- tibble(
-  os = c(rep("Android", 71), rep("iOS", 28), "Other"))
-
-waffle_d1 <- waffle_iron(d1, aes_d(group = os), rows = 10) %>% 
-  mutate(label = fontawesome(c(rep("fa-android", 71), rep("fa-apple", 28), "fa-question")))
-
 # Create plot ----
+
+ggplot(data = d1 %>% filter(quartet_nb == 1)) +
+  geom_point(aes(x = x, y = y)) +
+  xlim(0, 20) +
+  ylim(0, 14) +
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13)
+
+ggplot(data = d1 %>% filter(quartet_nb == 2)) +
+  geom_point(aes(x = x, y = y)) +
+  xlim(0, 20) +
+  ylim(0, 14) +
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13)
+
+ggplot(data = d1 %>% filter(quartet_nb == 3)) +
+  geom_point(aes(x = x, y = y)) +
+  xlim(0, 20) +
+  ylim(0, 14) +
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13)
+
+ggplot(data = d1 %>% filter(quartet_nb == 4)) +
+  geom_point(aes(x = x, y = y)) +
+  xlim(0, 20) +
+  ylim(0, 14) +
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13)
 
 p1 <- ggplot() +
   annotate("text", label = "Mobile OS market",
