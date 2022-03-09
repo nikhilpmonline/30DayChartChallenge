@@ -29,9 +29,21 @@ mortirolo_pass <- plotKML::readGPX(gpx.file = "2022/data/Climb Alps - Mortirolo 
 
 d1 <- mortirolo_pass$tracks[[1]][[1]] %>% 
   as_tibble() %>% 
-  mutate(ele = as.numeric(ele),
-         dist = distHaversine(cbind(lon, lat),
-                              cbind(lag(lon), lag(lat)))) %>% 
+  rename(longitude = lon,
+         latitude = lat,
+         elevation = ele) %>% 
+  mutate(elevation = as.numeric(elevation),
+         distance = distHaversine(cbind(longitude, latitude),
+                              cbind(lag(longitude), lag(latitude)))) %>% 
+  mutate(distance = ifelse(is.na(distance), 0, distance)) %>% 
+  mutate(distance_from_start = cumsum(distance)) %>% 
+  select(-distance)
+
+plot(d1$distance_from_start, d1$elevation)
+
+d1
+
+%>% 
   mutate(dist = ifelse(is.na(dist), 0, dist)) %>% 
   mutate(cum_dist = cumsum(dist)) %>% 
   mutate(km = case_when(cum_dist <= 1000 ~ 1,
