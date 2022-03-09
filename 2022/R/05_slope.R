@@ -40,11 +40,19 @@ d1 <- mortirolo_pass$tracks[[1]][[1]] %>%
   select(-distance) %>% 
   mutate(km_nb = cut_interval(distance_from_start, length = 1000, labels = FALSE))
 
+test <- d1 %>% 
+  group_by(km_nb) %>% 
+  filter(row_number() == 1 | row_number() == n())
+
+head(d1)
+
 cut_interval(d1$distance_from_start, length = 1000)
 
 plot(d1$distance_from_start, d1$elevation)
 
-d1
+d1 %>% 
+  group_by(km_nb) %>% 
+  first()
 
 %>% 
   mutate(dist = ifelse(is.na(dist), 0, dist)) %>% 
