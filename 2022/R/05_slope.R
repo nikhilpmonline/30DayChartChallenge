@@ -18,7 +18,6 @@ library(geosphere)
 
 # Load fonts ----
 
-# font_add_google("Preahvihear", "Preahvihear")
 font_add_google("Snippet", "Snippet")
 showtext_auto()
 
@@ -82,7 +81,9 @@ segments <- triangles %>%
 
 slopes
 
-p <- ggplot() +
+# Create plot ----
+
+p1 <- ggplot() +
   xlim(-200, 13000) +
   geom_segment(aes(x = 0, xend = 12300,
                    y = seq(500, 1800, 100), yend = seq(500, 1800, 100)),
@@ -119,12 +120,12 @@ p <- ggplot() +
             colour = "white", family = "Snippet", size = 15) +
   geom_segment(data = segments,
                aes(x = x, xend = x,
-                   y = 100, yend = y),
+                   y = 0, yend = y),
                linetype = "dashed", colour = "white") +
   scale_y_continuous(position = "right",
                      breaks = seq(500, 1800, 100)) +
   geom_segment(aes(x = 0, xend = 0,
-                   y = 0, yend = 1750),
+                   y = 0, yend = 1850),
                colour = "white") +
   annotate("text", x = -150, y = 1200, label = "537m - MAZZO IN VALTELLINA", angle = 90,
            family = "Snippet", colour = "white", size = 15) +
@@ -140,9 +141,18 @@ p <- ggplot() +
   theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
         plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
         panel.grid = element_blank(),
-        # panel.grid.major.x = element_blank(),
-        # panel.grid.minor = element_blank(),
         axis.title = element_blank(),
         axis.text = element_blank())
 
-ggsave("2022/plots/05_slope.png", p, dpi = 320, width = 12, height = 6)
+p <- p1 +
+  plot_annotation(
+    title = "Mortirolo Pass",
+    subtitle = "This climb is considered as one of the most demanding in professional road bicycle racing",
+    caption = "Visualisation: Jonathan Kitt | Data source: www.cyclinglocations.com | #30DayChartChallenge 2022 | Day 5: slope",
+    theme = theme(plot.title = element_text(family = "Snippet", colour = "white", size = 100, hjust = 0.5,
+                                            margin = margin(t = 20, b = 10)),
+                  plot.subtitle = element_text(family = "Snippet", colour = "white", size = 50, hjust = 0.5),
+                  plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+                  plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
+
+ggsave("2022/plots/05_slope.png", p5, dpi = 320, width = 12, height = 6)
