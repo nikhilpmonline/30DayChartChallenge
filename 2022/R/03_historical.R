@@ -34,58 +34,72 @@ d1 <- tibble(
 
 # Create plot ----
 
-ggplot(data = d1 %>% filter(quartet_nb == 1)) +
-  geom_point(aes(x = x, y = y)) +
-  xlim(0, 20) +
-  ylim(0, 14) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13) +
-  ggtitle("Anscombe's quartet") +
-  theme(plot.title = element_text(family = "Tangerine"))
+p1 <- ggplot(data = d1 %>% filter(quartet_nb == 1)) +
+  scale_x_continuous(limits = c(4, 19), breaks = seq(4, 18, 2)) +
+  scale_y_continuous(limits = c(4, 14), breaks = seq(4, 12, 2)) +
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13,
+               colour = "#000000", size = 0.05) +
+  geom_point(aes(x = x, y = y),
+             size = 2, colour = "#ffa500") +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
+        axis.line = element_line(colour = "black"),
+        panel.grid = element_blank(),
+        axis.title = element_text(family = "Tangerine", size = 50),
+        axis.text = element_text(family = "Tangerine", size = 40))
+  
+p2 <- ggplot(data = d1 %>% filter(quartet_nb == 2)) +
+  scale_x_continuous(limits = c(4, 19), breaks = seq(4, 18, 2)) +
+  scale_y_continuous(limits = c(4, 14), breaks = seq(4, 12, 2)) +
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13,
+               colour = "#000000", size = 0.05) +
+  geom_point(aes(x = x, y = y),
+             size = 2, colour = "#0099ff") +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
+        axis.line = element_line(colour = "black"),
+        panel.grid = element_blank(),
+        axis.title = element_text(family = "Tangerine", size = 50),
+        axis.text = element_text(family = "Tangerine", size = 40))
 
-ggplot(data = d1 %>% filter(quartet_nb == 2)) +
-  geom_point(aes(x = x, y = y)) +
-  xlim(0, 20) +
-  ylim(0, 14) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13)
+p3 <- ggplot(data = d1 %>% filter(quartet_nb == 3)) +
+  scale_x_continuous(limits = c(4, 19), breaks = seq(4, 18, 2)) +
+  scale_y_continuous(limits = c(4, 14), breaks = seq(4, 12, 2)) +
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13,
+               colour = "#000000", size = 0.05) +
+  geom_point(aes(x = x, y = y),
+             size = 2, colour = "#009e73") +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
+        axis.line = element_line(colour = "black"),
+        panel.grid = element_blank(),
+        axis.title = element_text(family = "Tangerine", size = 50),
+        axis.text = element_text(family = "Tangerine", size = 40))
 
-ggplot(data = d1 %>% filter(quartet_nb == 3)) +
-  geom_point(aes(x = x, y = y)) +
-  xlim(0, 20) +
-  ylim(0, 14) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13)
+p4 <- ggplot(data = d1 %>% filter(quartet_nb == 4)) +
+  scale_x_continuous(limits = c(4, 19), breaks = seq(4, 18, 2)) +
+  scale_y_continuous(limits = c(4, 14), breaks = seq(4, 12, 2)) +
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13,
+               colour = "#000000", size = 0.05) +
+  geom_point(aes(x = x, y = y),
+             size = 2, colour = "#b32db5") +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
+        axis.line = element_line(colour = "black"),
+        panel.grid = element_blank(),
+        axis.title = element_text(family = "Tangerine", size = 50),
+        axis.text = element_text(family = "Tangerine", size = 40))
 
-ggplot(data = d1 %>% filter(quartet_nb == 4)) +
-  geom_point(aes(x = x, y = y)) +
-  xlim(0, 20) +
-  ylim(0, 14) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13)
-
-p1 <- ggplot() +
-  annotate("text", label = "Mobile OS market",
-           x = 0, y = 0.25, family = "Rajdhani", size = 50, colour = "white") +
-  annotate("text", label = "share worldwide",
-           x = 0, y = -0.25, family = "Rajdhani", size = 50, colour = "white") +
-  ylim(c(-1, 1)) +
-  theme_void() +
-  theme(panel.background = element_rect(fill = "#332859", colour = "#332859"),
-        plot.background = element_rect(fill = "#332859", colour = "#332859"))
-
-p2 <- ggplot(waffle_d1, aes(x, -y)) + 
-  geom_text(aes(label = label, colour = group),
-            family='fontawesome-webfont', size = 35,
-            show.legend = FALSE) +
-  coord_equal() + 
-  scale_colour_manual(values = c("#a4c739", "#dadada", "#0fbfae")) + 
-  theme_waffle() +
-  theme_void() +
-  theme(panel.background = element_rect(fill = "#332859", colour = "#332859"),
-        plot.background = element_rect(fill = "#332859", colour = "#332859"),
-        plot.margin = margin(t = 40, r = 40, b = 40, l = 40))
-
-p3 <- p1 + p2 +
+p <- p1 + p2 + p3 + p4 +
   plot_annotation(
-    caption = "Visualisation: Jonathan Kitt | Data source: https://gs.statcounter.com/os-market-share/mobile/worldwide | #30DayChartChallenge 2022 | Day 2: pictogram",
-    theme = theme(plot.background = element_rect(fill = "#332859", colour = "#332859"),
-                  plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
+    title = "Anscombe's quartet",
+    subtitle = "Four datasets with nearly identical descriptive statistics but very different distributions",
+    caption = "Visualisation: Jonathan Kitt | Data source: www.cyclinglocations.com | #30DayChartChallenge 2022 | Day 3: historical",
+    theme = theme(plot.title = element_text(family = "Tangerine", colour = "black", size = 120, hjust = 0.5,
+                                            margin = margin(t = 20, b = 10)),
+                  plot.subtitle = element_text(family = "Tangerine", colour = "black", size = 75, hjust = 0.5,
+                                               margin = margin(b = 20)),
+                  plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
+                  plot.caption = element_text(colour = "black", hjust = 0.5, size = 25)))
 
-ggsave("2022/plots/02_pictogram.png", p3, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/03_historical.png", p, dpi = 320, width = 12, height = 6)
