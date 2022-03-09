@@ -82,11 +82,11 @@ segments <- triangles %>%
 
 slopes
 
-ggplot() +
-  xlim(0, 13000) +
+p <- ggplot() +
+  xlim(-200, 13000) +
   geom_segment(aes(x = 0, xend = 12300,
                    y = seq(500, 1800, 100), yend = seq(500, 1800, 100)),
-               linetype = "dotted", colour = "white") +
+               linetype = "dotted", colour = "white", size = 0.2) +
   geom_text(aes(x = 12400, y = seq(500, 1800, 100),
                 label = seq(500, 1800, 100)),
             family = "Snippet", size = 15, colour = "white", hjust = 0) +
@@ -123,6 +123,19 @@ ggplot() +
                linetype = "dashed", colour = "white") +
   scale_y_continuous(position = "right",
                      breaks = seq(500, 1800, 100)) +
+  geom_segment(aes(x = 0, xend = 0,
+                   y = 0, yend = 1750),
+               colour = "white") +
+  annotate("text", x = -150, y = 1200, label = "537m - MAZZO IN VALTELLINA", angle = 90,
+           family = "Snippet", colour = "white", size = 15) +
+  geom_segment(aes(x = max(data_by_km$distance_from_start), xend = max(data_by_km$distance_from_start),
+                   y = 0, yend = 2000),
+               colour = "white") +
+  geom_segment(aes(x = 8350, xend = max(data_by_km$distance_from_start),
+                   y = 2000, yend = 2000),
+               colour = "white") +
+  annotate("text", x = 10000, y = 2050, label = "1854m - PASSO DEL MORTIROLO",
+           family = "Snippet", colour = "white", size = 15) +
   theme_minimal() +
   theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
         plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
