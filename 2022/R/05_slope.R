@@ -37,7 +37,10 @@ d1 <- mortirolo_pass$tracks[[1]][[1]] %>%
                               cbind(lag(longitude), lag(latitude)))) %>% 
   mutate(distance = ifelse(is.na(distance), 0, distance)) %>% 
   mutate(distance_from_start = cumsum(distance)) %>% 
-  select(-distance)
+  select(-distance) %>% 
+  mutate(km_nb = cut_interval(distance_from_start, length = 1000, labels = FALSE))
+
+cut_interval(d1$distance_from_start, length = 1000)
 
 plot(d1$distance_from_start, d1$elevation)
 
