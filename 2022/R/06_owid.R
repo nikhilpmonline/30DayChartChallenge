@@ -4,6 +4,8 @@
 # Day 6 : Data day - Our World In Data
 # Last updated 2022-03-09
 
+# https://ourworldindata.org/nuclear-weapons-risk
+
 # Load packages ----
 
 library(tidyverse)
@@ -14,8 +16,17 @@ library(patchwork)
 
 # Load fonts ----
 
-font_add_google("Tangerine", "Tangerine")
-showtext_auto()
+# font_add_google("Tangerine", "Tangerine")
+# showtext_auto()
+
+# Import data ----
+
+nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
+
+ggplot(data = nuclear_weapons,
+       mapping = aes(x = Year, y = nuclear_weapons_stockpile,
+                     colour = Entity)) +
+  geom_line()
 
 # Data wrangling ----
 
