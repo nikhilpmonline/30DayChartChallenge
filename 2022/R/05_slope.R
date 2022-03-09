@@ -83,7 +83,13 @@ ggplot() +
             fill = "#f6cc49") +
   geom_polygon(data = triangles,
                aes(x = x, y = y, group = km_nb),
-               fill = "#f6cc49")
+               fill = "#f6cc49") +
+  geom_rect(data = slopes,
+            aes(xmin = x.min, xmax = x.max,
+                ymin = 0, ymax = 50,
+                fill = slope_colour),
+            colour = "white",
+            show.legend = FALSE)
 
 
 
