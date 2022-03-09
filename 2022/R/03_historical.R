@@ -16,8 +16,8 @@ library(patchwork)
 
 # Load fonts ----
 
-# font_add_google("Rajdhani", "Rajdhani")
-# showtext_auto()
+font_add_google("Tangerine", "Tangerine")
+showtext_auto()
 
 # Data wrangling ----
 
@@ -38,7 +38,9 @@ ggplot(data = d1 %>% filter(quartet_nb == 1)) +
   geom_point(aes(x = x, y = y)) +
   xlim(0, 20) +
   ylim(0, 14) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13)
+  geom_segment(x = 0, xend = 20, y = 3, yend = 13) +
+  ggtitle("Anscombe's quartet") +
+  theme(plot.title = element_text(family = "Tangerine"))
 
 ggplot(data = d1 %>% filter(quartet_nb == 2)) +
   geom_point(aes(x = x, y = y)) +
