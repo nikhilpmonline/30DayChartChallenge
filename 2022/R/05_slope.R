@@ -40,6 +40,14 @@ d1 <- mortirolo_pass$tracks[[1]][[1]] %>%
   select(-distance) %>% 
   mutate(km_nb = cut_interval(distance_from_start, length = 1000, labels = FALSE))
 
+test <- tibble(
+  km_nb = rep(1:12, each = 4),
+  point_nb = c(1:4, 3:6, 5:8, 7:10, 9:12, 11:14,
+               13:16, 15:18, 17:20, 19:22, 21:24, 23:26)) %>% 
+  case_when(point_nb %in% seq(2, 23, 2) ~ 0:11000)
+
+test
+
 test <- d1 %>% 
   group_by(km_nb) %>% 
   filter(row_number() == 1 | row_number() == n())
