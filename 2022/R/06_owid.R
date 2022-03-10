@@ -24,10 +24,13 @@ library(patchwork)
 nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
 
 d1 <- nuclear_weapons %>% 
-  filter(!Entity %in% c("United States", "Russia"))
+  filter(!Entity %in% c("United States", "Russia", "United Kingdom", "France"))
 
-ggplot(data = d1,
-       aes(x = Year, y = Entity, fill = nuclear_weapons_stockpile)) +
+d2 <- nuclear_weapons %>% 
+  mutate(bin = cut_interval(nuclear_weapons_stockpile, length = 10000))
+
+ggplot(data = d2,
+       aes(x = Year, y = Entity, fill = bin)) +
   geom_tile()
 
 boxplot(nuclear_weapons$Year ~ nuclear_weapons$Code)
