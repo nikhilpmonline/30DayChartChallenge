@@ -49,7 +49,10 @@ d1 <- water %>%
 
 ggplot(d1, aes(x = Category, y = Percent, fill = Access)) +
   geom_bar(position = "stack", stat = "identity") +
+  scale_fill_manual(values = c("#cf4d5f", "#f39654", "#ebcc85", "#269691", "#59697d")) +
   coord_flip() +
+  geom_text(aes(label = ifelse(Percent > 5.8, paste0(round(Percent), "%"), "")),
+            position = position_stack(vjust = 0.5), colour = "white") +
   theme(axis.title = element_blank(),
         legend.position = "top",
         legend.direction = "horizontal")
