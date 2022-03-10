@@ -44,12 +44,15 @@ d1 <- water %>%
          "Unimproved" = wat_unimp, "No access (surface water only)" = wat_sur) %>% 
   pivot_longer(cols = -Category, names_to = "Access", values_to = "Percent") %>% 
   mutate(Category = factor(Category, levels = rev(cat)),
-         Access = factor(Access, levels = c("Safely managed", "Basic", "Limited",
-                                            "Unimproved", "No access (surface water only)")))
+         Access = factor(Access, levels = c("No access (surface water only)", "Unimproved",
+                                            "Limited", "Basic", "Safely managed")))
 
 ggplot(d1, aes(x = Category, y = Percent, fill = Access)) +
   geom_bar(position = "stack", stat = "identity") +
-  coord_flip()
+  coord_flip() +
+  theme(axis.title = element_blank(),
+        legend.position = "top",
+        legend.direction = "horizontal")
 
 d1
 
