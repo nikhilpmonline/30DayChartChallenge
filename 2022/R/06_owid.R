@@ -23,7 +23,10 @@ library(patchwork)
 
 nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
 
-ggplot(data = nuclear_weapons,
+d1 <- nuclear_weapons %>% 
+  filter(!Entity %in% c("United States", "Russia"))
+
+ggplot(data = d1,
        aes(x = Year, y = Entity, fill = nuclear_weapons_stockpile)) +
   geom_tile()
 
