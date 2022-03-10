@@ -25,12 +25,29 @@ water <- read_csv("2022/data/access-drinking-water-stacked.csv")
 
 # Data wrangling ----
 
+cat <- c("High income", "North America and Europe",
+         "Western Asia and Northern Africa",
+         "Upper-middle income", "Latin America and the Caribbean",
+         "World", "Central and Southern Asia", "Lower-middle income",
+         "Sub-Saharan Africa", "Low income")
+
 d1 <- water %>% 
   filter(Entity %in% c("High income", "North America and Europe",
                        "Western Asia and Northern Africa",
                        "Upper-middle income", "Latin America and the Caribbean",
                        "World", "Central and Southern Asia", "Lower-middle income",
-                       "Sub-Saharan Africa", "Low income"))
+                       "Sub-Saharan Africa", "Low income"),
+         Year == 2020) %>% 
+  select(-c(Code, Year)) %>% 
+  rename(Category = Entity, "Safely managed" = wat_sm,
+         "Basic" = wat_bas_minus_sm, "Limited" = wat_lim,
+         "Unimproved" = wat_unimp, "No access (surface water only)" = wat_sur) %>% 
+  pivot_longer(cols = -Category, names_to = "Access", values_to = "Percent") %>% 
+  mutate(Category = factor(Category, levels = cat),
+         Access = factor(Access, levels = c("Safely managed", "Basic", "Limited",
+                                            "Unimproved", "No access (surface water only)")))
+
+d1
 
 d1 <- nuclear_weapons %>% 
   rename(country = Entity, year = Year, count = nuclear_weapons_stockpile) %>% 
