@@ -4,7 +4,7 @@
 # Day 6 : Data day - Our World In Data
 # Last updated 2022-03-09
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://ourworldindata.org/water-sanitation-2020-update
 
 # Load packages ----
 
@@ -21,16 +21,28 @@ library(patchwork)
 
 # Import data ----
 
-nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
+water <- read_csv("2022/data/access-drinking-water-stacked.csv")
+
+# Data wrangling ----
+
+d1 <- water %>% 
+  filter(Entity %in% c("High income", "North America and Europe",
+                       "Western Asia and Northern Africa",
+                       "Upper-middle income", "Latin America and the Caribbean",
+                       "World", "Central and Southern Asia", "Lower-middle income",
+                       "Sub-Saharan Africa", "Low income"))
 
 d1 <- nuclear_weapons %>% 
-  filter(!Entity %in% c("United States", "Russia", "United Kingdom", "France"))
+  rename(country = Entity, year = Year, count = nuclear_weapons_stockpile) %>% 
+  mutate(bin = case_when(count == 0 ~ "0",
+                         count >= 1 & count < 10 ~ "1-10",
+                         count >= 10 & count < 100 ~ "10-100",
+                         count >= 100 & count < 500 ~ "100-500",
+                         count >= 500 & count < 1000 ~ "500-1000",
+                         count >= 1000 ~ ">1000"))
 
-d2 <- nuclear_weapons %>% 
-  mutate(bin = cut_interval(nuclear_weapons_stockpile, length = 10000))
-
-ggplot(data = d2,
-       aes(x = Year, y = Entity, fill = bin)) +
+ggplot(data = d1,
+       aes(x = year, y = country, fill = bin)) +
   geom_tile()
 
 boxplot(nuclear_weapons$Year ~ nuclear_weapons$Code)
