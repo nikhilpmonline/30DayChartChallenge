@@ -24,6 +24,14 @@ library(patchwork)
 nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
 
 ggplot(data = nuclear_weapons,
+       aes(x = Year, y = Entity, fill = nuclear_weapons_stockpile)) +
+  geom_tile()
+
+boxplot(nuclear_weapons$Year ~ nuclear_weapons$Code)
+
+head(nuclear_weapons)
+
+ggplot(data = nuclear_weapons,
        mapping = aes(x = Year, y = nuclear_weapons_stockpile,
                      colour = Entity)) +
   geom_line()
