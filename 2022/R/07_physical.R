@@ -2,7 +2,7 @@
 # 2022
 # Category : Distributions
 # Day 7 : Physical
-# Last updated 2022-03-10
+# Last updated 2022-03-11
 
 # https://ourworldindata.org/nuclear-weapons-risk
 
