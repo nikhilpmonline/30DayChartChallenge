@@ -36,9 +36,71 @@ planets <- read_csv("2022/data/planets.csv")
 # Data wrangling ----
 
 d1 <- planets %>% 
-  select(planet, diameter, distance_from_sun)
+  select(planet, diameter, distance_from_sun) %>% 
+  filter(planet != "Pluto") %>% 
+  rowid_to_column() %>% 
+  mutate(radius = diameter / 2) %>% 
+  mutate(cum_dist = lag(cumsum(diameter))) %>% 
+  mutate(x.0 = case_when(planet == "Mercury" ~ radius,
+                         TRUE ~ cum_dist + (rowid-1)*50e3 + radius)) %>% 
+  mutate(planet = fct_inorder(planet))
+
+p <- ggplot() +
+  geom_circle(data = d1,
+              aes(x0 = x.0, y0 = 0, r = radius, fill = planet),
+              show.legend = FALSE) +
+  scale_fill_manual(values = c("#97979f", "#e3bb76", "#8cb1de", "#c1440e",
+                               "#e3dccc", "#e2bf7b", "#afdbf5", "#3e66f9")) +
+  coord_fixed() +
+  geom_text(data = d1,
+            aes(x = x.0, y = radius + 10e3, label = planet,
+                colour = planet)) +
+  scale_colour_manual(values = c("#97979f", "#e3bb76", "#8cb1de", "#c1440e",
+                               "#e3dccc", "#e2bf7b", "#afdbf5", "#3e66f9")) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "black", colour = "black"),
+        panel.background = element_rect(fill = "black", colour = "black"))
+
+ggsave("2022/plots/07_physical.png", p, dpi = 320, width = 12, height = 6)
   
-d1  
+
+d1
+
+ggplot() +
+  geom_point(data = d1, aes(x = distance_from_sun, y = 0)) +
+  geom_point()
+
+ggplot() +
+  geom_circle(data = filter(d1, planet == "Mercury"),
+              aes(x0 = x.0, y0 = 0, r = diameter/2)) +
+  geom_circle(data = filter(d1, planet == "Venus"),
+              aes(x0 = x.0, y0 = 0, r = radius)) +
+  coord_fixed()
+
+  geom_circle(data = filter(d1, planet == "Venus"),
+              aes(x0 = 10000, y0 = 0, r = diameter/2)) +
+  geom_circle(data = filter(d1, planet == "Earth"),
+              aes(x0 = 30000, y0 = 0, r = diameter/2)) +
+  coord_fixed()
+
++
+  geom_circle(data = filter(d1, planet == "Venus"),
+              aes(x0 = distance_from_sun*1e6, y0 = 0, r = diameter/2)) +
+  coord_fixed()
+  
+d1 %>% 
+  #filter(planet == "Sun") %>% 
+  ggplot() +
+  geom_circle(aes(x0 = -(diameter/2), y0 = distance_from_sun, r = diameter / 2),
+              fill = "yellow", colour = "yellow") +
+  coord_fixed()
+
+ggplot() +
+  geom_circle(aes(x0 = 0, y0 = 0, r = 10),
+              fill = "yellow", colour = "yellow") +
+  coord_fixed() +
+  xlim(0, 100) +
+  ylim(-20, 20)
 
 ggplot(d1, aes(x = distance_from_sun, y = 0)) +
   geom_point(aes(size = diameter*100e4)) +
