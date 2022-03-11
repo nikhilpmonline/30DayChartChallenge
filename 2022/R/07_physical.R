@@ -4,7 +4,7 @@
 # Day 7 : Physical
 # Last updated 2022-03-11
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://devstronomy.com/#/datasets
 
 # Load packages ----
 
@@ -13,6 +13,16 @@ library(showtext)
 # library(ggwaffle)
 # library(emojifont)
 library(patchwork)
+library(ggforce)
+
+# Testing ----
+
+ggplot() +
+  geom_circle(aes(x0 = 0, y0 = 0, r = 10),
+              fill = "yellow", colour = "yellow") +
+  coord_fixed() +
+  xlim(0, 100) +
+  ylim(-20, 20)
 
 # Load fonts ----
 
@@ -20,6 +30,12 @@ library(patchwork)
 # showtext_auto()
 
 # Import data ----
+
+d1 <- read_csv("2022/data/planets.csv")
+
+ggplot(d1, aes(x = distance_from_sun, y = 0)) +
+  geom_point(aes(size = diameter*100e4)) +
+  xlim(0, 6000)
 
 nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
 

@@ -6,6 +6,46 @@
 
 # https://eliocamp.github.io/codigo-r/en/2021/09/contour-labels/
 
+# Testing ----
+
+library(raster)
+dem.raster <- getData("SRTM", lat = 46.0146, lon = 9.344197, download = TRUE)
+
+dem.raster <- crop(dem.raster, as(my_bbox_buff_25000.sf, 'Spatial'), snap='out')
+
+dem.m  <-  rasterToPoints(dem.raster)
+dem.df <-  data.frame(dem.m)
+colnames(dem.df) = c("lon", "lat", "alt")
+
+ggplot() +
+  geom_raster(data = dem.df, aes(lon, lat, fill = alt), alpha = .45) +
+  scale_fill_gradientn(colours = terrain.colors(100)) +
+  geom_sf(data = my_bbox_buff_2500.sf, fill = NA) +
+  coord_sf(xlim = c(st_bbox(my_bbox_buff_25000.sf)['xmin'], st_bbox(my_bbox_buff_25000.sf)['xmax']), 
+           ylim = c(st_bbox(my_bbox_buff_25000.sf)['ymin'], st_bbox(my_bbox_buff_25000.sf)['ymax'])) +
+  geom_polygon(data = my_world_map, 
+               aes(x=long, y = lat, group = group), fill = NA, colour = 'black') +
+  theme_bw()
+
+data("volcano")
+head(volcano)
+
+volcano_df <- volcano %>% 
+  reshape2::melt()
+
+ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value)) +
+  coord_equal()
+
+volcano_df %>% 
+  filter(value == max(value))
+
+d1 <- volcano_df %>% 
+  filter(Var2 == 31)
+
+ggplot(d1, aes(x = Var1, y = value)) +
+  geom_point()
+
 # Load packages ----
 
 library(tidyverse)
