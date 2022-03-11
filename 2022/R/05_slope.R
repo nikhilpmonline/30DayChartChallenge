@@ -84,14 +84,26 @@ italy <- map_data("world") %>%
 
 # Create plot ----
 
-p1 <- ggplot() +
+p1 <- ggplot(italy) +
+  geom_polygon(aes(x = long, y = lat, group = group),
+               fill = "#355c7d", colour = "white") +
+  coord_fixed(1.3) +
+  geom_point(aes(x = 10.29796, y = 46.24893),
+             colour = "red", size = 4) +
+  annotate("text", x = 10, y = 45.9, label = "Mortirolo Pass",
+           colour = "white", family = "Genos", size = 12, hjust = 0) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+        panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"))
+
+p2 <- ggplot() +
   xlim(-200, 13000) +
   geom_segment(aes(x = 0, xend = 12300,
                    y = seq(500, 1800, 100), yend = seq(500, 1800, 100)),
                linetype = "dotted", colour = "white", size = 0.2) +
   geom_text(aes(x = 12400, y = seq(500, 1800, 100),
                 label = seq(500, 1800, 100)),
-            family = "Snippet", size = 15, colour = "white", hjust = 0) +
+            family = "Genos", size = 15, colour = "white", hjust = 0) +
   geom_rect(data = rectangles,
             aes(xmin = x.min, xmax = x.max,
                 ymin = y.min, ymax = y.max),
@@ -108,9 +120,9 @@ p1 <- ggplot() +
   scale_fill_manual(values = c("#141307", "#e6010c", "#024f93", "#81bb21")) +
   geom_text(data = slopes,
             aes(x = x.lab, y = -50, label = round(slope_pct, digits = 1)),
-            colour = "white", family = "Snippet", size = 15) +
-  annotate("text", x = 12000, y = -50, label = "slope %", colour = "white", size = 15, family = "Snippet", hjust = 0) +
-  annotate("text", x = 12000, y = -150, label = "km", colour = "white", size = 15, family = "Snippet", hjust = 0) +
+            colour = "white", family = "Genos", size = 15) +
+  annotate("text", x = 12000, y = -50, label = "slope %", colour = "white", size = 15, family = "Genos", hjust = 0) +
+  annotate("text", x = 12000, y = -150, label = "km", colour = "white", size = 15, family = "Genos", hjust = 0) +
   geom_rect(data = slopes,
             aes(xmin = x.min, xmax = x.max,
                 ymin = -200, ymax = -100),
@@ -118,7 +130,7 @@ p1 <- ggplot() +
             show.legend = FALSE) +
   geom_text(data = slopes,
             aes(x = x.lab, y = -150, label = km_nb),
-            colour = "white", family = "Snippet", size = 15) +
+            colour = "white", family = "Genos", size = 15) +
   geom_segment(data = segments,
                aes(x = x, xend = x,
                    y = 0, yend = y),
@@ -129,7 +141,7 @@ p1 <- ggplot() +
                    y = 0, yend = 1850),
                colour = "white") +
   annotate("text", x = -150, y = 1200, label = "537m - MAZZO IN VALTELLINA", angle = 90,
-           family = "Snippet", colour = "white", size = 15) +
+           family = "Genos", colour = "white", size = 15) +
   geom_segment(aes(x = max(data_by_km$distance_from_start), xend = max(data_by_km$distance_from_start),
                    y = 0, yend = 2000),
                colour = "white") +
@@ -137,7 +149,7 @@ p1 <- ggplot() +
                    y = 2000, yend = 2000),
                colour = "white") +
   annotate("text", x = 10000, y = 2050, label = "1854m - PASSO DEL MORTIROLO",
-           family = "Snippet", colour = "white", size = 15) +
+           family = "Genos", colour = "white", size = 15) +
   theme_minimal() +
   theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
         plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
@@ -145,84 +157,41 @@ p1 <- ggplot() +
         axis.title = element_blank(),
         axis.text = element_blank())
 
-p <- p1 +
-  plot_annotation(
-    title = "Mortirolo Pass",
-    subtitle = "This climb is considered as one of the most demanding in professional road bicycle racing",
-    caption = "Visualisation: Jonathan Kitt | Data source: www.cyclinglocations.com | #30DayChartChallenge 2022 | Day 5: slope",
-    theme = theme(plot.title = element_text(family = "Snippet", colour = "white", size = 100, hjust = 0.5,
-                                            margin = margin(t = 20, b = 10)),
-                  plot.subtitle = element_text(family = "Snippet", colour = "white", size = 50, hjust = 0.5),
-                  plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
-                  plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
-
-ggsave("2022/plots/05_slope.png", p5, dpi = 320, width = 12, height = 6)
-
-
-p2 <- ggplot(d1, aes(x = longitude, y = latitude)) +
+p3 <- ggplot(d1, aes(x = longitude, y = latitude)) +
   coord_quickmap() +
-  geom_point(colour = "white") +
+  geom_point(colour = "white", size = 0.25) +
+  geom_point(aes(x = first(longitude), y = first(latitude)),
+             colour = "green", size = 3) +
+  geom_point(aes(x = last(longitude), y = last(latitude)),
+             colour = "red", size = 3) +
+  ylim(46.244, 46.265) +
   theme_void() +
   theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
         plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"))
 
-test <- p2 + p1 +
-  plot_layout(widths = c(1, 2)) +
-  plot_annotation(
-    title = "Mortirolo Pass",
-    subtitle = "This climb is considered as one of the most demanding in professional road bicycle racing",
-    caption = "Visualisation: Jonathan Kitt | Data source: www.cyclinglocations.com | #30DayChartChallenge 2022 | Day 5: slope",
-    theme = theme(plot.title = element_text(family = "Snippet", colour = "white", size = 100, hjust = 0.5,
-                                            margin = margin(t = 20, b = 10)),
-                  plot.subtitle = element_text(family = "Snippet", colour = "white", size = 50, hjust = 0.5),
-                  plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
-                  plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
-
-
-
-ggsave("2022/plots/05_slope_test.png", test, dpi = 320, width = 12, height = 6)
-
-
-
-library(rnaturalearth)
-worldmap <- ne_countries(scale = "medium", type = "map_units", returnclass = "sf")
-italy <- worldmap[worldmap$name == "Italy", ]
-
-ggplot() +
-  geom_sf(data = italy)
-
-world <- map_data("world")
-italy <- world %>% filter(region == "Italy")
-
-italy_2 <- italy %>% 
-  filter(is.na(subregion))
-
-p3 <- ggplot(italy_2) +
-  geom_polygon(aes(x = long, y = lat, group = group),
-               fill = "#355c7d", colour = "white") +
-  coord_fixed(1.3) +
-  geom_point(aes(x = 10.29796, y = 46.24893),
-             colour = "red", size = 5) +
-  annotate("text", x = 10, y = 45.9, label = "Mortirolo Pass",
-           colour = "white", family = "Genos", size = 5, hjust = 0) +
+p4 <- ggplot() +
+  annotate("text", x = 0, y = 3, label = "Located in the italian Alps, the Mortirolo Pass is considered",
+           colour = "white", family = "Genos", size = 25, hjust = 0) +
+  annotate("text", x = 0, y = 2, label = "to be one of the most demanding climbs in professional",
+           colour = "white", family = "Genos", size = 25, hjust = 0) +
+  annotate("text", x = 0, y = 1, label = "road bicycle racing.",
+           colour = "white", family = "Genos", size = 25, hjust = 0) +
+  annotate("text", x = 0, y = -2, label = "The most famous route starts in Mazzo di Valtellina (537m)",
+           colour = "white", family = "Genos", size = 25, hjust = 0) +
+  annotate("text", x = 0, y = -3, label = "and reaches the pass (1852m) after a 12.8km climb",
+           colour = "white", family = "Genos", size = 25, hjust = 0) +
+  xlim(0, 10) +
+  ylim(-4, 4) +
   theme_void() +
-  theme(plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
-        panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"))
+  theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+        plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"))
+  
 
-test <- p3 + p1 + p2 +
-  plot_layout(ncol = 2, widths = c(1, 2), heights = c(2, 1))
-
-ggsave("2022/plots/05_slope_test.png", test, dpi = 320, width = 12, height = 6)
-
-(p3 / p2) | p1 +
-  plot_layout(widths = c(1, 2), heights = c(2, 1))
-+
+p <- p1 + p2 + p3 + p4 +
+  plot_layout(ncol = 2, widths = c(1, 2), heights = c(2, 1)) +
   plot_annotation(
-    title = "Mortirolo Pass",
-    subtitle = "This climb is considered as one of the most demanding in professional road bicycle racing",
     caption = "Visualisation: Jonathan Kitt | Data source: www.cyclinglocations.com | #30DayChartChallenge 2022 | Day 5: slope",
-    theme = theme(plot.title = element_text(family = "Snippet", colour = "white", size = 100, hjust = 0.5,
-                                            margin = margin(t = 20, b = 10)),
-                  plot.subtitle = element_text(family = "Snippet", colour = "white", size = 50, hjust = 0.5),
-                  plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+    theme = theme(plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
                   plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
+
+ggsave("2022/plots/05_slope.png", p, dpi = 320, width = 12, height = 6)
