@@ -79,6 +79,9 @@ segments <- triangles %>%
   filter(row_number() == 1) %>% 
   filter(km_nb != 1)
 
+italy <- map_data("world") %>% 
+  filter(region == "Italy", is.na(subregion))
+
 # Create plot ----
 
 p1 <- ggplot() +
