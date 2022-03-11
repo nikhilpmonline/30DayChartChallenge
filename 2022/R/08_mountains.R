@@ -5,6 +5,7 @@
 # Last updated 2022-03-11
 
 # https://eliocamp.github.io/codigo-r/en/2021/09/contour-labels/
+# https://cmerow.github.io/RDataScience/05_Raster.html
 
 # Testing ----
 
