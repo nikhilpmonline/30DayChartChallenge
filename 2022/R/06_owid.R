@@ -57,7 +57,13 @@ ggplot(d1, aes(x = Category, y = Percent, fill = Access)) +
         legend.position = "top",
         legend.direction = "horizontal")
 
-d1
+d2 <- water %>% 
+  filter(Entity == "World")
+
+ggplot(d2, aes(x = Year, y = wat_sm)) +
+  geom_line()
+
+d2
 
 d1 <- nuclear_weapons %>% 
   rename(country = Entity, year = Year, count = nuclear_weapons_stockpile) %>% 
