@@ -73,6 +73,7 @@ p1 <- ggplot(access_2000, aes(x = Category, y = Percent, fill = Access)) +
   geom_text(aes(label = ifelse(Percent > 5.8, paste0(round(Percent), "%"), "")),
             position = position_stack(vjust = 0.5), colour = "white", size = 10, family = "Glory") +
   ggtitle(label = "2000") +
+  theme_void() +
   theme(axis.title = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks = element_blank(),
@@ -80,7 +81,10 @@ p1 <- ggplot(access_2000, aes(x = Category, y = Percent, fill = Access)) +
         legend.direction = "horizontal",
         legend.title = element_blank(),
         legend.text = element_text(family = "Glory", size = 25),
-        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5))
+        legend.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
+        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5),
+        plot.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
+        panel.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"))
 
 p2 <- ggplot(access_2020, aes(x = Category, y = Percent, fill = Access)) +
   geom_bar(position = "stack", stat = "identity") +
@@ -90,6 +94,7 @@ p2 <- ggplot(access_2020, aes(x = Category, y = Percent, fill = Access)) +
   geom_text(aes(label = ifelse(Percent > 5.8, paste0(round(Percent), "%"), "")),
             position = position_stack(vjust = 0.5), colour = "white", size = 10, family = "Glory") +
   ggtitle(label = "2020") +
+  theme_void() +
   theme(axis.title = element_blank(),
         axis.text.y = element_text(hjust = 0.5, size = 30, family = "Glory"),
         axis.ticks = element_blank(),
@@ -97,7 +102,10 @@ p2 <- ggplot(access_2020, aes(x = Category, y = Percent, fill = Access)) +
         legend.direction = "horizontal",
         legend.title = element_blank(),
         legend.text = element_text(family = "Glory", size = 25),
-        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5))
+        legend.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
+        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5),
+        plot.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
+        panel.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"))
 
 
 
@@ -111,8 +119,9 @@ p <- p1 + p2 +
                                             margin = margin(t = 20, b = 10)),
                   plot.subtitle = element_text(family = "Glory", colour = "black", size = 75, hjust = 0.5,
                                                margin = margin(b = 20)),
-                  plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
-                  plot.caption = element_text(colour = "black", hjust = 0.5, size = 25),
+                  plot.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
+                  plot.caption = element_text(colour = "black", hjust = 0.5, size = 25,
+                                              margin = margin(t = 20)),
                   legend.position = "bottom"))
 
 ggsave("2022/plots/06_data_day_owid.png", p, dpi = 320, width = 12, height = 6)
