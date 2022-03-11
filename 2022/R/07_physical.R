@@ -31,7 +31,14 @@ ggplot() +
 
 # Import data ----
 
-d1 <- read_csv("2022/data/planets.csv")
+planets <- read_csv("2022/data/planets.csv")
+
+# Data wrangling ----
+
+d1 <- planets %>% 
+  select(planet, diameter, distance_from_sun)
+  
+d1  
 
 ggplot(d1, aes(x = distance_from_sun, y = 0)) +
   geom_point(aes(size = diameter*100e4)) +
