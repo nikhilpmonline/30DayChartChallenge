@@ -10,14 +10,14 @@
 
 library(tidyverse)
 library(showtext)
-# library(ggwaffle)
-# library(emojifont)
 library(patchwork)
 
 # Load fonts ----
 
-# font_add_google("Tangerine", "Tangerine")
-# showtext_auto()
+font_add_google("Zen Tokyo Zoo", "Zen Tokyo Zoo")
+font_add_google("Glory", "Glory")
+font_add_google("Tourney", "Tourney")
+showtext_auto()
 
 # Import data ----
 
@@ -31,7 +31,23 @@ cat <- c("High income", "North America and Europe",
          "World", "Central and Southern Asia", "Lower-middle income",
          "Sub-Saharan Africa", "Low income")
 
-d1 <- water %>% 
+access_2000 <- water %>% 
+  filter(Entity %in% c("High income", "North America and Europe",
+                       "Western Asia and Northern Africa",
+                       "Upper-middle income", "Latin America and the Caribbean",
+                       "World", "Central and Southern Asia", "Lower-middle income",
+                       "Sub-Saharan Africa", "Low income"),
+         Year == 2000) %>% 
+  select(-c(Code, Year)) %>% 
+  rename(Category = Entity, "Safely managed" = wat_sm,
+         "Basic" = wat_bas_minus_sm, "Limited" = wat_lim,
+         "Unimproved" = wat_unimp, "No access (surface water only)" = wat_sur) %>% 
+  pivot_longer(cols = -Category, names_to = "Access", values_to = "Percent") %>% 
+  mutate(Category = factor(Category, levels = rev(cat)),
+         Access = factor(Access, levels = c("No access (surface water only)", "Unimproved",
+                                            "Limited", "Basic", "Safely managed")))
+
+access_2020 <- water %>% 
   filter(Entity %in% c("High income", "North America and Europe",
                        "Western Asia and Northern Africa",
                        "Upper-middle income", "Latin America and the Caribbean",
@@ -47,127 +63,56 @@ d1 <- water %>%
          Access = factor(Access, levels = c("No access (surface water only)", "Unimproved",
                                             "Limited", "Basic", "Safely managed")))
 
-ggplot(d1, aes(x = Category, y = Percent, fill = Access)) +
-  geom_bar(position = "stack", stat = "identity") +
-  scale_fill_manual(values = c("#cf4d5f", "#f39654", "#ebcc85", "#269691", "#59697d")) +
-  coord_flip() +
-  geom_text(aes(label = ifelse(Percent > 5.8, paste0(round(Percent), "%"), "")),
-            position = position_stack(vjust = 0.5), colour = "white") +
-  theme(axis.title = element_blank(),
-        legend.position = "top",
-        legend.direction = "horizontal")
-
-d2 <- water %>% 
-  filter(Entity == "World")
-
-ggplot(d2, aes(x = Year, y = wat_sm)) +
-  geom_line()
-
-d2
-
-d1 <- nuclear_weapons %>% 
-  rename(country = Entity, year = Year, count = nuclear_weapons_stockpile) %>% 
-  mutate(bin = case_when(count == 0 ~ "0",
-                         count >= 1 & count < 10 ~ "1-10",
-                         count >= 10 & count < 100 ~ "10-100",
-                         count >= 100 & count < 500 ~ "100-500",
-                         count >= 500 & count < 1000 ~ "500-1000",
-                         count >= 1000 ~ ">1000"))
-
-ggplot(data = d1,
-       aes(x = year, y = country, fill = bin)) +
-  geom_tile()
-
-boxplot(nuclear_weapons$Year ~ nuclear_weapons$Code)
-
-head(nuclear_weapons)
-
-ggplot(data = nuclear_weapons,
-       mapping = aes(x = Year, y = nuclear_weapons_stockpile,
-                     colour = Entity)) +
-  geom_line()
-
-# Data wrangling ----
-
-d1 <- tibble(
-  quartet_nb = rep(1:4, each = 11),
-  x = c(10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5,
-        10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5,
-        10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5,
-        8, 8, 8, 8, 8, 8, 8, 19, 8, 8, 8),
-  y = c(8.04, 6.95, 7.58, 8.81, 8.33, 9.96, 7.24, 4.26, 10.84, 4.82, 5.68,
-        9.14, 8.14, 8.74, 8.77, 9.26, 8.1, 6.13, 3.1, 9.13, 7.26, 4.74,
-        7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73,
-        6.58, 5.76, 7.71, 8.84, 8.47, 7.04, 5.25, 12.5, 5.56, 7.91, 6.89))
-
 # Create plot ----
 
-p1 <- ggplot(data = d1 %>% filter(quartet_nb == 1)) +
-  scale_x_continuous(limits = c(4, 19), breaks = seq(4, 18, 2)) +
-  scale_y_continuous(limits = c(4, 14), breaks = seq(4, 12, 2)) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13,
-               colour = "#000000", size = 0.05) +
-  geom_point(aes(x = x, y = y),
-             size = 2, colour = "#ffa500") +
-  theme_minimal() +
-  theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
-        axis.line = element_line(colour = "black"),
-        panel.grid = element_blank(),
-        axis.title = element_text(family = "Tangerine", size = 50),
-        axis.text = element_text(family = "Tangerine", size = 40))
-  
-p2 <- ggplot(data = d1 %>% filter(quartet_nb == 2)) +
-  scale_x_continuous(limits = c(4, 19), breaks = seq(4, 18, 2)) +
-  scale_y_continuous(limits = c(4, 14), breaks = seq(4, 12, 2)) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13,
-               colour = "#000000", size = 0.05) +
-  geom_point(aes(x = x, y = y),
-             size = 2, colour = "#0099ff") +
-  theme_minimal() +
-  theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
-        axis.line = element_line(colour = "black"),
-        panel.grid = element_blank(),
-        axis.title = element_text(family = "Tangerine", size = 50),
-        axis.text = element_text(family = "Tangerine", size = 40))
+p1 <- ggplot(access_2000, aes(x = Category, y = Percent, fill = Access)) +
+  geom_bar(position = "stack", stat = "identity") +
+  scale_fill_manual(values = c("#cf4d5f", "#f39654", "#ebcc85", "#269691", "#59697d")) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  coord_flip() +
+  geom_text(aes(label = ifelse(Percent > 5.8, paste0(round(Percent), "%"), "")),
+            position = position_stack(vjust = 0.5), colour = "white", size = 10, family = "Glory") +
+  ggtitle(label = "2000") +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        legend.position = "top",
+        legend.direction = "horizontal",
+        legend.title = element_blank(),
+        legend.text = element_text(family = "Glory", size = 25),
+        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5))
 
-p3 <- ggplot(data = d1 %>% filter(quartet_nb == 3)) +
-  scale_x_continuous(limits = c(4, 19), breaks = seq(4, 18, 2)) +
-  scale_y_continuous(limits = c(4, 14), breaks = seq(4, 12, 2)) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13,
-               colour = "#000000", size = 0.05) +
-  geom_point(aes(x = x, y = y),
-             size = 2, colour = "#009e73") +
-  theme_minimal() +
-  theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
-        axis.line = element_line(colour = "black"),
-        panel.grid = element_blank(),
-        axis.title = element_text(family = "Tangerine", size = 50),
-        axis.text = element_text(family = "Tangerine", size = 40))
+p2 <- ggplot(access_2020, aes(x = Category, y = Percent, fill = Access)) +
+  geom_bar(position = "stack", stat = "identity") +
+  scale_fill_manual(values = c("#cf4d5f", "#f39654", "#ebcc85", "#269691", "#59697d")) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  coord_flip() +
+  geom_text(aes(label = ifelse(Percent > 5.8, paste0(round(Percent), "%"), "")),
+            position = position_stack(vjust = 0.5), colour = "white", size = 10, family = "Glory") +
+  ggtitle(label = "2020") +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_text(hjust = 0.5, size = 30, family = "Glory"),
+        axis.ticks = element_blank(),
+        legend.position = "top",
+        legend.direction = "horizontal",
+        legend.title = element_blank(),
+        legend.text = element_text(family = "Glory", size = 25),
+        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5))
 
-p4 <- ggplot(data = d1 %>% filter(quartet_nb == 4)) +
-  scale_x_continuous(limits = c(4, 19), breaks = seq(4, 18, 2)) +
-  scale_y_continuous(limits = c(4, 14), breaks = seq(4, 12, 2)) +
-  geom_segment(x = 0, xend = 20, y = 3, yend = 13,
-               colour = "#000000", size = 0.05) +
-  geom_point(aes(x = x, y = y),
-             size = 2, colour = "#b32db5") +
-  theme_minimal() +
-  theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
-        axis.line = element_line(colour = "black"),
-        panel.grid = element_blank(),
-        axis.title = element_text(family = "Tangerine", size = 50),
-        axis.text = element_text(family = "Tangerine", size = 40))
 
-p <- p1 + p2 + p3 + p4 +
+
+p <- p1 + p2 +
+  plot_layout(guides = "collect") +
   plot_annotation(
-    title = "Anscombe's quartet",
-    subtitle = "Four datasets with nearly identical descriptive statistics but very different distributions",
-    caption = "Visualisation: Jonathan Kitt | Data source: www.cyclinglocations.com | #30DayChartChallenge 2022 | Day 3: historical",
-    theme = theme(plot.title = element_text(family = "Tangerine", colour = "black", size = 120, hjust = 0.5,
+    title = "Clean water and sanitation",
+    subtitle = "What share of the population has access to drinking water facilities ?",
+    caption = "Visualisation: Jonathan Kitt | Data source: Our World In Data | #30DayChartChallenge 2022 | Day 6: data day - OWID",
+    theme = theme(plot.title = element_text(family = "Zen Tokyo Zoo", colour = "black", size = 120, hjust = 0.5,
                                             margin = margin(t = 20, b = 10)),
-                  plot.subtitle = element_text(family = "Tangerine", colour = "black", size = 75, hjust = 0.5,
+                  plot.subtitle = element_text(family = "Glory", colour = "black", size = 75, hjust = 0.5,
                                                margin = margin(b = 20)),
                   plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
-                  plot.caption = element_text(colour = "black", hjust = 0.5, size = 25)))
+                  plot.caption = element_text(colour = "black", hjust = 0.5, size = 25),
+                  legend.position = "bottom"))
 
-ggsave("2022/plots/03_historical.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/06_data_day_owid.png", p, dpi = 320, width = 12, height = 6)
