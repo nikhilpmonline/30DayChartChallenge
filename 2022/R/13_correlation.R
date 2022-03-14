@@ -1,11 +1,10 @@
 # 30DayChartChallenge
 # 2022
-# Category : Distributions
-# Day 10 : Experimental
+# Category : Relationships
+# Day 13 : Correlation
 # Last updated 2022-03-14
 
-# https://www.angio.net/pi/digits.html
-
+# https://ourworldindata.org/nuclear-weapons-risk
 
 # Load packages ----
 
@@ -13,7 +12,7 @@ library(tidyverse)
 library(showtext)
 # library(ggwaffle)
 # library(emojifont)
-#library(patchwork)
+library(patchwork)
 
 # Load fonts ----
 
@@ -22,21 +21,7 @@ library(showtext)
 
 # Import data ----
 
-## Here are packages I'm going to use.
-library(tidyverse)  
-library(tidytext) ## so I can break single digit per line 
-library(circlize)
-
-
-df <-data.frame(x =read_lines("http://www.geom.uiuc.edu/~huberty/math5337/groupe/digits.html"))
-
-
-df$x <- as.character(df$x)
-df <- df %>% slice(-1:-12)  ## discard first 12 lines
-df <- df %>% slice(1:1283)  ## anything after 1283 is not pi so i only want to grab 1~1283
-
-pi <- read_file("2022/data/pi1000000.txt") %>% 
-  as.double()
+nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
 
 d1 <- nuclear_weapons %>% 
   filter(!Entity %in% c("United States", "Russia", "United Kingdom", "France"))
