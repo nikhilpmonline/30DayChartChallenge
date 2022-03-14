@@ -4,49 +4,46 @@
 # Day 8 : Mountains
 # Last updated 2022-03-11
 
-# https://eliocamp.github.io/codigo-r/en/2021/09/contour-labels/
-# https://cmerow.github.io/RDataScience/05_Raster.html
-# https://www.youtube.com/watch?v=2lB2c_FTxpI
+# https://cran.r-project.org/web/packages/ggridges/vignettes/gallery.html
 
-# Testing ----
+# Testing things ----
 
-library(raster)
-dem.raster <- getData("SRTM", lat = 46.0146, lon = 9.344197, download = TRUE)
+library(ggplot2movies)
+library(ggridges)
+library(lubridate)
 
-dem.raster <- crop(dem.raster, as(my_bbox_buff_25000.sf, 'Spatial'), snap='out')
+ggplot(movies[movies$year>1912,], aes(x = length, y = year, group = year)) +
+  geom_density_ridges(scale = 10, size = 0.25, rel_min_height = 0.03) +
+  theme_ridges() +
+  scale_x_continuous(limits = c(1, 200), expand = c(0, 0)) +
+  scale_y_reverse(
+    breaks = c(2000, 1980, 1960, 1940, 1920, 1900),
+    expand = c(0, 0)
+  ) +
+  coord_cartesian(clip = "off")
 
-dem.m  <-  rasterToPoints(dem.raster)
-dem.df <-  data.frame(dem.m)
-colnames(dem.df) = c("lon", "lat", "alt")
+ggplot(munros, aes(x = height_feet, y = latitude, group = latitude)) +
+  geom_density_ridges()
 
-ggplot() +
-  geom_raster(data = dem.df, aes(lon, lat, fill = alt), alpha = .45) +
-  scale_fill_gradientn(colours = terrain.colors(100)) +
-  geom_sf(data = my_bbox_buff_2500.sf, fill = NA) +
-  coord_sf(xlim = c(st_bbox(my_bbox_buff_25000.sf)['xmin'], st_bbox(my_bbox_buff_25000.sf)['xmax']), 
-           ylim = c(st_bbox(my_bbox_buff_25000.sf)['ymin'], st_bbox(my_bbox_buff_25000.sf)['ymax'])) +
-  geom_polygon(data = my_world_map, 
-               aes(x=long, y = lat, group = group), fill = NA, colour = 'black') +
-  theme_bw()
-
-data("volcano")
-head(volcano)
-
-volcano_df <- volcano %>% 
-  reshape2::melt()
-
-ggplot(volcano_df, aes(Var1, Var2)) +
-  geom_contour(aes(z = value)) +
-  coord_equal()
-
-volcano_df %>% 
-  filter(value == max(value))
-
-d1 <- volcano_df %>% 
-  filter(Var2 == 31)
-
-ggplot(d1, aes(x = Var1, y = value)) +
+ggplot(munros, aes(x = longitude, y = latitude, colour = height_feet)) +
   geom_point()
+
+d1 <- datardis::episodes
+
+ggplot(d1, aes(x = duration, y = year(first_aired), group = year(first_aired))) +
+  geom_density_ridges(scale = 10, size = 0.25, rel_min_height = 0.03) +
+  theme_ridges() +
+  scale_x_continuous(limits = c(1, 200), expand = c(0, 0)) +
+  scale_y_reverse(
+    breaks = c(2000, 1980, 1960, 1940, 1920, 1900),
+    expand = c(0, 0)
+  ) +
+  coord_cartesian(clip = "off")
+
+
+d2 <- raster::getData("SRTM", lon = 6, lat = 46)
+plot(d2)
+points(x = 6.96299, y = 45.83301)  # Mont Blanc
 
 # Load packages ----
 
