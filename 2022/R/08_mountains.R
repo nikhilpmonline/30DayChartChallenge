@@ -5,6 +5,9 @@
 # Last updated 2022-03-11
 
 # https://cran.r-project.org/web/packages/ggridges/vignettes/gallery.html
+# https://katherinemwood.github.io/post/joy/
+# https://www.anychart.com/blog/2019/03/01/new-great-data-visualization-examples-elevation-energy-misspelling-jobs-dataviz-weekly/
+# https://www.thingsmadethinkable.com/item/earth_elevation_cross_sections_along_parallels.php
 
 # Testing things ----
 
