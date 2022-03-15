@@ -11,66 +11,42 @@
 
 library(tidyverse)
 library(showtext)
+library(viridis)
 # library(ggwaffle)
 # library(emojifont)
 #library(patchwork)
 
 # Load fonts ----
 
-# font_add_google("Tangerine", "Tangerine")
-# showtext_auto()
+font_add_google("DotGothic16", "DotGothic16")
+font_add_google("Odibee Sans", "Odibee Sans")
+showtext_auto()
 
 # Import data ----
 
 pi <- read_file("2022/data/PI10K_DP.TXT") %>% 
   str_remove(pattern = "\r") %>% 
-  str_remove(pattern = "\n")
+  str_remove(pattern = "\n") %>% 
+  str_sub(start = 1, end = 1000)
 
-test <- strsplit(pi, "(?<=.{100})", perl = TRUE)
-
-d1 <- unlist(test) %>% 
-  as_tibble() %>%
-  separate(col = value, into = paste0("col", 1:100), sep = "")
-
-pi_split <- str_split(pi, pattern = "")
+# pi_1000 <- pi[1:1000]
 
 pi_table <- tibble(
-  x = rep(1:100, times = 100),
-  y = rep(100:1, each = 100),
-  value = unlist(str_split(pi, pattern = ""))) %>% 
-  mutate(value = fct_inseq(factor(value)))
-
-p <- ggplot(pi_table, aes(x = x, y = y, colour = value)) +
-  geom_point(show.legend = FALSE, size = 1) +
-  scale_colour_manual(values = c("#9999ff", "#7d7fe2", "#6066c6", "#444eaa", "#23388f",
-                                 "#002275", "#000f5c", "#000044", "#00032c", "#000117")) +
-  xlim(1, 100) +
-  ylim(1, 100) +
-  theme_void() +
-  theme(panel.background = element_rect(fill = "white", colour = "white"),
-        plot.background = element_rect(fill = "white", colour = "white"))
-
-ggsave("2022/plots/10_experimental.png", p, dpi = 320, width = 12, height = 6)
-
-p <- ggplot(pi_table, aes(x = x, y = y, alpha = value)) +
-  geom_point(show.legend = FALSE, size = 1, colour = "#9999ff") +
-  # scale_colour_manual(values = c("#9999ff", "#7d7fe2", "#6066c6", "#444eaa", "#23388f",
-  #                                "#002275", "#000f5c", "#000044", "#00032c", "#000117")) +
-  xlim(1, 100) +
-  ylim(1, 100) +
-  theme_void() +
-  theme(panel.background = element_rect(fill = "white", colour = "white"),
-        plot.background = element_rect(fill = "white", colour = "white"))
-
-ggsave("2022/plots/10_experimental.png", p, dpi = 320, width = 12, height = 6)
+  x = rep(1:40, times = 25),
+  y = rep(25:1, each = 40),
+  value = unlist(str_split(pi, pattern = "")))
 
 p <- ggplot() +
   geom_text(data = pi_table,
-            aes(x = x, y = y, label = value),
-            size = 1.5) +
+            aes(x = x, y = y, label = value, colour = value),
+            size = 12, family = "Odibee Sans",
+            show.legend = FALSE) +
+  scale_colour_viridis(option = "magma", discrete = TRUE, direction = -1) +
+  annotate("text", x = 20, y = 12.5, label = "pi", parse = TRUE,
+           size = 400, alpha = 0.1) +
   theme_void() +
-  theme(panel.background = element_rect(fill = "white", colour = "white"),
-        plot.background = element_rect(fill = "white", colour = "white"))
+  theme(panel.background = element_rect(fill = "#858b97", colour = "#858b97"),
+        plot.background = element_rect(fill = "#858b97", colour = "#858b97"))
 
 ggsave("2022/plots/10_experimental.png", p, dpi = 320, width = 12, height = 6)
 
