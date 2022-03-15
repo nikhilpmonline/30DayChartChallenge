@@ -1,7 +1,7 @@
 # 30DayChartChallenge
 # 2022
 # Category : Distributions
-# Day 8 : Mountains
+# Day 9 : Statistics
 # Last updated 2022-03-11
 
 # https://eliocamp.github.io/codigo-r/en/2021/09/contour-labels/
