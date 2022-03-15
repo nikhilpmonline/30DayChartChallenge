@@ -6,6 +6,56 @@
 
 # https://ourworldindata.org/nuclear-weapons-risk
 
+# Testing things ----
+
+d1 <- tibble(
+  first_base = rep(c("U", "C", "A", "G"), each = 16),
+  second_base = rep(rep(c("U", "C", "A", "G"), each = 4), times = 4),
+  third_base = rep(c("U", "C", "A", "G"), times = 16))
+
+layer_2 <- tibble(
+  layer = 2,
+  x.min = seq(0, 63, 16),
+  x.max = seq(16, 64, 16),
+  y.min = 0,
+  y.max = 1)
+
+layer_1 <- tibble(
+  layer = 1,
+  x.min = seq(0, 63, 4),
+  x.max = seq(4, 64, 4),
+  y.min = 1,
+  y.max = 2)
+
+layer_3 <- tibble(
+  layer = 3,
+  x.min = seq(0, 63, 1),
+  x.max = seq(1, 64, 1),
+  y.min = 2,
+  y.max = 3)
+
+
+layers <- rbind(layer_1, layer_2, layer_3)
+
+
+
+d2 <- tibble(
+  layer = 1,
+  x.min = seq(0, 63, 16),
+  x.max = seq(16, 64, 16),
+  y.min = 0,
+  y.max = 1
+)
+
+d2
+
+ggplot() +
+  geom_rect(data = layers,
+            aes(xmin = x.min, xmax = x.max, ymin = y.min, ymax = y.max,
+                fill = layer),
+            colour = "white") +
+  coord_polar(theta = "x", start = 0)
+
 # Load packages ----
 
 library(tidyverse)
