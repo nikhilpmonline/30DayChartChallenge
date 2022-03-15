@@ -2,9 +2,8 @@
 # 2022
 # Category : Distributions
 # Day 11 : Circular
-# Last updated 2022-03-10
+# Last updated 2022-03-15
 
-# https://ourworldindata.org/nuclear-weapons-risk
 
 # Testing things ----
 
