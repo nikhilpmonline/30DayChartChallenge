@@ -11,44 +11,20 @@
 
 # Testing things ----
 
-library(ggplot2movies)
-library(ggridges)
-library(lubridate)
+# https://gis.stackexchange.com/questions/359822/adding-elevation-point-data-and-lines-to-topography-plot-using-ggplot2
 
-ggplot(movies[movies$year>1912,], aes(x = length, y = year, group = year)) +
-  geom_density_ridges(scale = 10, size = 0.25, rel_min_height = 0.03) +
-  theme_ridges() +
-  scale_x_continuous(limits = c(1, 200), expand = c(0, 0)) +
-  scale_y_reverse(
-    breaks = c(2000, 1980, 1960, 1940, 1920, 1900),
-    expand = c(0, 0)
-  ) +
-  coord_cartesian(clip = "off")
+library(tidyverse)
+library(raster)
+library(scales)
+library(rgeos)
 
-ggplot(munros, aes(x = height_feet, y = latitude, group = latitude)) +
-  geom_density_ridges()
-
-ggplot(munros, aes(x = longitude, y = latitude, colour = height_feet)) +
-  geom_point()
-
-d1 <- datardis::episodes
-
-ggplot(d1, aes(x = duration, y = year(first_aired), group = year(first_aired))) +
-  geom_density_ridges(scale = 10, size = 0.25, rel_min_height = 0.03) +
-  theme_ridges() +
-  scale_x_continuous(limits = c(1, 200), expand = c(0, 0)) +
-  scale_y_reverse(
-    breaks = c(2000, 1980, 1960, 1940, 1920, 1900),
-    expand = c(0, 0)
-  ) +
-  coord_cartesian(clip = "off")
-
-
-d2 <- raster::getData("SRTM", lon = 6, lat = 46)
-plot(d2)
-points(x = 6.96299, y = 45.83301)  # Mont Blanc
+#get elevation data
+dem1<- getData("SRTM",lat=34.5,lon=33)
+dem2<- getData("SRTM",lat=34.5,lon=36)
+dem <- merge(dem1,dem2)
 
 # Load packages ----
+
 
 library(tidyverse)
 library(showtext)
