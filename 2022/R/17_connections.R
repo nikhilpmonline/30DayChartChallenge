@@ -12,17 +12,97 @@
 # Load packages ----
 
 library(tidyverse)
-library(showtext)
+# library(showtext)
 # library(ggwaffle)
 # library(emojifont)
-library(patchwork)
+# library(patchwork)
 library(osmdata)
 
 # Testing ----
 
 getbb("Lyon")
-getbb("Swindon")
-getbb("Paris")
+# getbb("Swindon")
+# getbb("Paris")
+# getbb("Edinburgh")
+
+lyon_subway <- getbb("Lyon") %>% 
+  opq() %>% 
+  add_osm_feature(key = "route",
+                  value = "subway") %>% 
+  osmdata_sf()
+
+lyon_stops <- getbb("Lyon") %>% 
+  opq() %>% 
+  add_osm_feature(key = "railway",
+                  value = "subway_entrance") %>% 
+  osmdata_sf()
+
+lyon_subway$osm_lines
+unique(lyon_stops$osm_points$name)
+
+ligne_a <- subset(lyon_subway$osm_lines, name == "Ligne A")
+ligne_b <- subset(lyon_subway$osm_lines, name == "Ligne B")
+ligne_c <- subset(lyon_subway$osm_lines, name == "Ligne C")
+ligne_d <- subset(lyon_subway$osm_lines, name == "Ligne D")
+
+unique(lyon_stops$osm_points$name)
+
+saxe_gambetta <- subset(lyon_stops$osm_points, name == "Saxe - Gambetta")[1, ]
+charpennes <- subset(lyon_stops$osm_points, name == "Charpennes - Charles Hernu")[1, ]
+hotel_de_ville <- subset(lyon_stops$osm_points, name == "HÃ´tel de Ville - Louis Pradel")[1, ]
+bellecour <- subset(lyon_stops$osm_points, name == "Bellecour")[1, ]
+
+
+p <- ggplot() +
+  geom_sf(data = ligne_a$geometry,
+          inherit.aes = FALSE,
+          color = "#ee1927",
+          size = 4) +
+  geom_sf(data = ligne_b$geometry,
+          inherit.aes = FALSE,
+          color = "#00a0e8",
+          size = 4) +
+  geom_sf(data = ligne_c$geometry,
+          inherit.aes = FALSE,
+          color = "#fab211",
+          size = 4) +
+  geom_sf(data = ligne_d$geometry,
+          inherit.aes = FALSE,
+          color = "#22af5f",
+          size = 4) +
+  geom_sf(data = saxe_gambetta$geometry,
+          inherit.aes = FALSE,
+          color = "white",
+          size = 8) +
+  geom_sf(data = charpennes$geometry,
+          inherit.aes = FALSE,
+          color = "white",
+          size = 8) +
+  geom_sf(data = hotel_de_ville$geometry,
+          inherit.aes = FALSE,
+          color = "white",
+          size = 8) +
+  geom_sf(data = bellecour$geometry,
+          inherit.aes = FALSE,
+          color = "white",
+          size = 8) +
+  coord_sf(xlim = c(4.80, 4.92),
+           ylim = c(45.70, 45.80)) +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "grey70", colour = "grey70"),
+        plot.background = element_rect(fill = "grey70", colour = "grey70"),
+        panel.grid = element_blank(),
+        axis.text = element_blank())
+
+ggsave("2022/plots/17_connections.png", p, dpi = 320, width = 12, height = 6)
+
+
+ggplot() +
+  geom_sf(data = lyon_subway$osm_lines,
+          inherit.aes = FALSE,
+          color = "red",
+          size = .4,
+          alpha = .8)
 
 roads <- getbb("Paris") %>% 
   opq() %>% 
