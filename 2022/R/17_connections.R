@@ -27,7 +27,8 @@ getbb("Paris")
 roads <- getbb("Paris") %>% 
   opq() %>% 
   add_osm_feature(key = "highway",
-                  value = c("primary", "secondary", "tertiary",
+                  value = c("motorway", "trunk", "primary", "secondary", "tertiary",
+                            "unclassified", "residential", "motorway_link", "trunk_link",
                             "primary_link", "secondary_link", "tertiary_link")) %>% 
   osmdata_sf()
 
