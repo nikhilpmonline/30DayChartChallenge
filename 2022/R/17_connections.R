@@ -1,10 +1,13 @@
 # 30DayChartChallenge
 # 2022
-# Category : Distributions
-# Day 12 : Theme day - The Economist
+# Category : Relationships
+# Day 17 : Connections
 # Last updated 2022-03-16
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://ggplot2tutor.com/tutorials/streetmaps
+# https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/
+# https://wiki.openstreetmap.org/wiki/Map_Features
+# https://www.re-thinkingthefuture.com/designing-for-typologies/a4930-10-biggest-roundabouts-in-the-world/
 
 # Load packages ----
 
@@ -13,6 +16,63 @@ library(showtext)
 # library(ggwaffle)
 # library(emojifont)
 library(patchwork)
+library(osmdata)
+
+# Testing ----
+
+getbb("Lyon")
+getbb("Swindon")
+getbb("Paris")
+
+roads <- getbb("Paris") %>% 
+  opq() %>% 
+  add_osm_feature(key = "highway",
+                  value = c("primary", "secondary", "tertiary",
+                            "primary_link", "secondary_link", "tertiary_link")) %>% 
+  osmdata_sf()
+
+ggplot() +
+  geom_sf(data = roads$osm_lines,
+          inherit.aes = FALSE,
+          color = "black",
+          size = .4,
+          alpha = .8) +
+  coord_sf(xlim = c(2.28, 2.30),
+           ylim = c(48.86,  48.88))
+
+roundabouts <- getbb("Swindon") %>% 
+  opq() %>% 
+  add_osm_feature(key = "junction",
+                  value = "roundabout") %>% 
+  osmdata_sf()
+
+motorways <- getbb("Swindon") %>% 
+  opq() %>% 
+  add_osm_feature(key = "highway",
+                  value = "motorway") %>% 
+  osmdata_sf()
+
+primary <- getbb("Swindon") %>% 
+  opq() %>% 
+  add_osm_feature(key = "highway",
+                  value = c("primary", "secondary", "tertiary",
+                            "primary_link", "secondary_link", "tertiary_link",
+                            "mini_roundabout")) %>% 
+  osmdata_sf()
+
+ggplot() +
+  geom_sf(data = roundabouts$osm_lines,
+          inherit.aes = FALSE,
+          color = "black",
+          size = .4,
+          alpha = .8) +
+  geom_sf(data = primary$osm_lines,
+          inherit.aes = FALSE,
+          color = "black",
+          size = .4,
+          alpha = .8) +
+  coord_sf(xlim = c(-1.775, -1.770),
+           ylim = c(51.560,  51.565))
 
 # Load fonts ----
 
