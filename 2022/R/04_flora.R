@@ -2,22 +2,48 @@
 # 2022
 # Category : Comparisons
 # Day 4 : flora
-# Last updated 2022-03-09
+# Last updated 2022-03-17
+
+# https://en.wikipedia.org/wiki/List_of_tallest_trees
 
 # Load packages ----
 
 library(tidyverse)
 library(showtext)
-# library(ggwaffle)
-# library(emojifont)
 library(patchwork)
+library(rvest)
 
 # Load fonts ----
 
-font_add_google("Tangerine", "Tangerine")
-showtext_auto()
+# font_add_google("Tangerine", "Tangerine")
+# showtext_auto()
+
+# Import data ----
+
+url <- "https://en.wikipedia.org/wiki/List_of_tallest_trees"
+
+webpage <- rvest::read_html(url)
+
+tables <- rvest::html_nodes(webpage, "table.wikitable") %>%
+  rvest::html_table(header = TRUE, na.strings = c(NA, ""), convert = TRUE)
 
 # Data wrangling ----
+
+d1 <- tables[[1]]
+
+rm(tables, webpage, url)
+
+
+d1 <- tibble(
+  name = c("King Stringy", "Alpine Ash", "Neeminah Loggorale Meena", "White Knight", "Yellow Meranti",
+           "Unnamed Giant Sequoia", "Raven's Tower", "Doerner Fir", "Centurion", "Hyperion"),
+  taxonomy = c("Eucalyptus obliqua", "Eucalyptus delegatensis", "Eucalyptus globulus", "Eucalyptus viminalis", "Shorea faguetiana",
+               "Sequoiadendron giganteum", "Picea sitchensis", "Pseudotsuga menziesii", "Eucalyptus regnans", "Sequoia sempervirens"),
+  place = c("Tasmania", "Tasmania", "Tasmania", "Tasmania", "Borneo", 
+            "California", "California", "Oregon", "Tasmania", "California"),
+  height_feet = c(282, 288, 298, 301, 309, 314, 317, 327, 327.5, 380.1))
+
+d1 %>% arrange(desc(height_feet))
 
 d1 <- tibble(
   quartet_nb = rep(1:4, each = 11),
