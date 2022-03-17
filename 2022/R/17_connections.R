@@ -37,6 +37,19 @@ lyon_stops <- getbb("Lyon") %>%
                   value = "subway_entrance") %>% 
   osmdata_sf()
 
+lyon_motorway <- getbb("Lyon") %>% 
+  opq() %>%
+  add_osm_feature(key = "highway",
+                  value = "motorway") %>% 
+  osmdata_sf()
+
+ggplot() +
+  geom_sf(data = lyon_motorway,
+          inherit.aes = FALSE,
+          color = "#ee1927",
+          size = 4) 
+  
+
 lyon_subway$osm_lines
 unique(lyon_stops$osm_points$name)
 
