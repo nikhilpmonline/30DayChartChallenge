@@ -5,13 +5,15 @@
 # Last updated 2022-03-17
 
 # https://en.wikipedia.org/wiki/List_of_tallest_trees
-
+# https://www.treehugger.com/tallest-trees-world-4858795
 # Load packages ----
 
 library(tidyverse)
 library(showtext)
 library(patchwork)
 library(rvest)
+library(sf)
+library(maps)
 
 # Load fonts ----
 
@@ -32,6 +34,7 @@ d1 <- d1[2:nrow(d1), ]
 
 # Data wrangling ----
 
+
 names(d1) <- c("species", "height_m", "height_ft", "tree_name", "class", "location", "continent", "references")
 
 test <- d1 %>% 
@@ -50,7 +53,22 @@ flowering_plants <- test %>%
 
 # Create plot ----
 
-p <- ggplot() +
+wrld2 <- st_as_sf(map("world2", plot = FALSE, fill = TRUE))
+
+p1 <- ggplot() +
+  geom_sf(data = wrld2, fill = "#66bb6a", col = "#66bb6a") +
+  coord_sf(xlim = c(80, 300), ylim = c(-50, 65)) +
+  geom_point(aes(x = 147, y = -42), size = 4, colour = "white") +
+  geom_text(aes(x = 147, y = -47), size = 25, label = "Tasmania", family = "Stick", colour = "white") +
+  geom_point(aes(x = 239, y = 38), size = 4, colour = "white") +
+  geom_text(aes(x = 222, y = 38), size = 25, label = "California", family = "Stick", colour = "white") +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"),
+        plot.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"))
+
+ggsave("2022/plots/04_flora_1.png", p1, dpi = 320, width = 12, height = 6)
+
+p2 <- ggplot() +
   geom_col(data = flowering_plants,
            aes(x = species, y = height_m),
            fill = "darkgreen", width = 0.75) +
@@ -66,8 +84,11 @@ p <- ggplot() +
         axis.title = element_blank(),
         axis.text = element_blank())
 
+ggsave("2022/plots/04_flora_2.png", p2, dpi = 320, width = 12, height = 6)
+
+p <- p1 + p2 +
+  plot_layout(ncol = 1)
 ggsave("2022/plots/04_flora.png", p, dpi = 320, width = 12, height = 6)
-  
 
 
 
