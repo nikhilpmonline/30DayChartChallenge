@@ -15,8 +15,8 @@ library(rvest)
 
 # Load fonts ----
 
-# font_add_google("Tangerine", "Tangerine")
-# showtext_auto()
+font_add_google("Stick", "Stick")
+showtext_auto()
 
 # Import data ----
 
@@ -27,11 +27,49 @@ webpage <- rvest::read_html(url)
 tables <- rvest::html_nodes(webpage, "table.wikitable") %>%
   rvest::html_table(header = TRUE, na.strings = c(NA, ""), convert = TRUE)
 
+d1 <- tables[[1]]
+d1 <- d1[2:nrow(d1), ]
+
 # Data wrangling ----
 
-d1 <- tables[[1]]
+names(d1) <- c("species", "height_m", "height_ft", "tree_name", "class", "location", "continent", "references")
 
-rm(tables, webpage, url)
+test <- d1 %>% 
+  mutate(taxonomy = str_extract(species, "\\([^()]+\\)")) %>% 
+  mutate(species = str_remove(species, " \\([^()]+\\)")) %>% 
+  mutate(taxo_2 = substring(taxonomy, 2, nchar(taxonomy)-1)) %>% 
+  select(species, taxo_2, tree_name, class, location, continent, height_m, height_ft)
+
+flowering_plants <- test %>% 
+  filter(class == "Flowering plant") %>% 
+  arrange(desc(height_ft)) %>% 
+  head(10) %>% 
+  mutate(height_m = as.numeric(height_m),
+         height_ft = as.numeric(height_ft)) %>% 
+  mutate(species = fct_inorder(species))
+
+# Create plot ----
+
+p <- ggplot() +
+  geom_col(data = flowering_plants,
+           aes(x = species, y = height_m),
+           fill = "darkgreen", width = 0.75) +
+  geom_text(data = flowering_plants,
+            aes(x = species, y = height_m, label = height_m),
+            vjust = -0.5) +
+  geom_text(data = flowering_plants,
+            aes(x = species, y = 10, label = species),
+            angle = 90, hjust = 0, colour = "white") +
+  ggtitle("Ten tallest flowering plants") +
+  theme_minimal() +
+  theme(plot.title = element_text(family = "Stick", size = 25),
+        axis.title = element_blank(),
+        axis.text = element_blank())
+
+ggsave("2022/plots/04_flora.png", p, dpi = 320, width = 12, height = 6)
+  
+
+
 
 
 d1 <- tibble(
