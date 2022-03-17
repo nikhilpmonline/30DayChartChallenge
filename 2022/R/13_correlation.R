@@ -4,7 +4,7 @@
 # Day 13 : Correlation
 # Last updated 2022-03-14
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://www.tylervigen.com/spurious-correlations
 
 # Load packages ----
 
@@ -18,6 +18,19 @@ library(patchwork)
 
 # font_add_google("Tangerine", "Tangerine")
 # showtext_auto()
+
+# Data wrangling ----
+
+d1 <- tibble(
+  year = seq(2000, 2009, 1),
+  arcade_revenue = c(1.196, 1.176, 1.269, 1.24, 1.307, 1.435, 1.601, 1.654, 1.803, 1.734),
+  doctorates = c(861, 830, 809, 867, 948, 1129, 1453, 1656, 1787, 1611))
+
+ggplot(data = d1) +
+  geom_line(aes(x = year, y = arcade_revenue), colour = "red") +
+  ylim(1, 2)
+
+  geom_line(aes(x = year, y = doctorates), colour = "black")
 
 # Import data ----
 
