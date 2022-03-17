@@ -25,6 +25,27 @@ getbb("Lyon")
 # getbb("Paris")
 # getbb("Edinburgh")
 
+glasgow_subway <- getbb("Glasgow") %>% 
+  opq() %>% 
+  add_osm_feature(key = "route",
+                  value = "subway") %>% 
+  osmdata_sf()
+
+glasgow_stops <- getbb("Glasgow") %>% 
+  opq() %>% 
+  add_osm_feature(key = "public_transport",
+                  value = "stop_area") %>% 
+  osmdata_sf()
+
+glasgow_subway_stops <- subset(glasgow_stops$osm_points, network == "Glasgow Subway")
+kelvinbridge <- subset(glasgow_stops$osm_points, network == "Glasgow Subway", name == "Kelvinbridge")[1, ]
+
+glasgow_stops <- getbb("Glasgow") %>% 
+  opq() %>% 
+  add_osm_feature(key = "railway",
+                  value = "subway_entrance") %>% 
+  osmdata_sf()
+
 lyon_subway <- getbb("Lyon") %>% 
   opq() %>% 
   add_osm_feature(key = "route",
@@ -40,14 +61,24 @@ lyon_stops <- getbb("Lyon") %>%
 lyon_motorway <- getbb("Lyon") %>% 
   opq() %>%
   add_osm_feature(key = "highway",
-                  value = "motorway") %>% 
+                  value = c("motorway", "trunk")) %>% 
+  osmdata_sf()
+
+lyon_train <- getbb("Lyon") %>% 
+  opq() %>%
+  add_osm_feature(key = "railway",
+                  value = "rail") %>% 
   osmdata_sf()
 
 ggplot() +
-  geom_sf(data = lyon_motorway,
+  geom_sf(data = glasgow_subway$osm_lines,
           inherit.aes = FALSE,
           color = "#ee1927",
-          size = 4) 
+          size = 4) +
+  geom_sf(data = kelvinbridge$geometry,
+          inherit.aes = FALSE,
+          color = "white",
+          size = 8) 
   
 
 lyon_subway$osm_lines
