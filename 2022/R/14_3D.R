@@ -1,8 +1,8 @@
 # 30DayChartChallenge
 # 2022
 # Category : Distributions
-# Day 12 : Theme day - The Economist
-# Last updated 2022-03-16
+# Day 14 : 3-dimensional
+# Last updated 2022-03-18
 
 # https://ourworldindata.org/nuclear-weapons-risk
 
