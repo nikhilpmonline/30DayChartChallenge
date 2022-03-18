@@ -12,8 +12,6 @@ library(tidyverse)
 library(showtext)
 library(patchwork)
 library(rvest)
-library(sf)
-library(maps)
 
 # Load fonts ----
 
@@ -37,19 +35,82 @@ d1 <- d1[2:nrow(d1), ]
 
 names(d1) <- c("species", "height_m", "height_ft", "tree_name", "class", "location", "continent", "references")
 
-test <- d1 %>% 
+d1 <- d1 %>% 
   mutate(taxonomy = str_extract(species, "\\([^()]+\\)")) %>% 
   mutate(species = str_remove(species, " \\([^()]+\\)")) %>% 
-  mutate(taxo_2 = substring(taxonomy, 2, nchar(taxonomy)-1)) %>% 
-  select(species, taxo_2, tree_name, class, location, continent, height_m, height_ft)
-
-flowering_plants <- test %>% 
-  filter(class == "Flowering plant") %>% 
-  arrange(desc(height_ft)) %>% 
-  head(10) %>% 
+  mutate(taxonomy = substring(taxonomy, 2, nchar(taxonomy)-1)) %>% 
+  select(species, taxonomy, tree_name, class, location, continent, height_m, height_ft) %>% 
   mutate(height_m = as.numeric(height_m),
          height_ft = as.numeric(height_ft)) %>% 
-  mutate(species = fct_inorder(species))
+  arrange(desc(height_m)) %>% 
+  mutate(species = fct_inorder(factor(species))) %>% 
+  head(10)
+
+# Test ----
+
+top10 <- d1 %>% 
+  arrange(desc(height_m)) %>% 
+  head(10) %>% 
+  mutate(height_m = as.numeric(height_m)) %>% 
+  mutate(x.pos = seq(1, 40, 4))
+
+ggplot() +
+  geom_segment(data = top10,
+               aes(x = species, xend = species,
+                   y = 0, yend = height_m)) +
+  geom_circle(data = top10,
+            aes(x0 = 1:10, y0 = height_m, r = 1)) +
+  coord_fixed()
+
+ggplot() +
+  geom_segment(data = top10,
+               aes(x = species, xend = species,
+                   y = 80, yend = height_m),
+               arrow = arrow(length = unit(1, "cm"), type = "closed")) +
+  geom_segment(data = top10,
+               aes(x = species, xend = species,
+                   y = 80, yend = height_m - 0.5),
+               arrow = arrow(length = unit(2, "cm"), type = "closed")) +
+  geom_segment(data = top10,
+               aes(x = species, xend = species,
+                   y = 80, yend = height_m - 1.5),
+               arrow = arrow(length = unit(4, "cm"), type = "closed")) +
+  geom_segment(data = top10,
+               aes(x = species, xend = species,
+                   y = 80, yend = height_m - 2),
+               size = 6)
+
+ggplot() +
+  geom_segment(aes(x = 0, xend = 0,
+                   y = 0, yend = 10),
+               arrow = arrow(length = unit(3, "cm"),
+                             type = "closed"),
+               colour = "darkgreen") +
+  geom_segment(aes(x = 0, xend = 0,
+                   y = 0, yend = 9),
+               arrow = arrow(length = unit(4, "cm"),
+                             type = "closed"),
+               colour = "darkgreen") +
+  geom_segment(aes(x = 0, xend = 0,
+                   y = 0, yend = 8),
+               arrow = arrow(length = unit(6, "cm"),
+                             type = "closed"),
+               colour = "darkgreen") +
+  geom_segment(aes(x = 0, xend = 0, y = 0, yend = 5),
+               colour = "darkgreen", size = 5)
+
+ggplot() +
+  geom_segment(aes(x = 0, xend = 0, y = 0, yend = 0.5),
+               arrow = arrow(length = unit(5, "cm"),
+                             type = "closed"))
+  
+  
+  geom_segment(aes(x = 0, xend = 0, y = 0, yend = 8:10),
+               arrow = arrow(length = unit(5, "cm"),
+                             type = "closed"))
+geom_segment(aes(x = 0, xend = 0, y = 0, yend = 8:10),
+             arrow = arrow(length = unit(5, "cm"),
+                           type = "closed"))
 
 # Create plot ----
 
