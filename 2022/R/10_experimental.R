@@ -69,9 +69,9 @@ decimal_places <- tibble(
 
 ggplot(data = decimal_places %>% filter(present == TRUE)) +
   geom_segment(aes(x = x, xend = x,
-                   y = number - 0.25, yend = number + 0.25,
+                   y = number - 0.4, yend = number + 0.4,
                    colour = as.factor(number)),
-               show.legend = FALSE) +
+               show.legend = FALSE, size = 2) +
   scale_colour_viridis(option = "magma", discrete = TRUE, direction = -1) +
   xlim(0, 1000) +
   theme_void() +
