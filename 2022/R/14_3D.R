@@ -4,7 +4,12 @@
 # Day 14 : 3-dimensional
 # Last updated 2022-03-18
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://www.arcgis.com/apps/webappviewer3d/index.html?id=6292fde2362e44679d6359fb6d2bbefe
+# https://www.tylermw.com/3d-ggplots-with-rayshader/
+# https://github.com/lindbrook/cholera
+# https://geodacenter.github.io/data-and-lab/snow/
+# https://freakonometrics.hypotheses.org/19201
+# https://gist.github.com/tylermorganwall/2f3ca112b9cd13972e02e1062670b735
 
 # Load packages ----
 
@@ -13,11 +18,46 @@ library(showtext)
 # library(ggwaffle)
 # library(emojifont)
 library(patchwork)
+library(cholera)
+library(HistData)
+library(rayshader)
 
 # Load fonts ----
 
 # font_add_google("Tangerine", "Tangerine")
 # showtext_auto()
+
+# Tests ----
+
+deaths <- Snow.deaths %>%
+  as_tibble() %>% 
+  mutate(description = "case") %>% 
+  select(description, id = case, x, y)
+  
+  
+pumps <- Snow.pumps %>%
+  as_tibble() %>% 
+  mutate(description = "pump") %>% 
+  select(description, id = pump, x, y)
+  
+d1 <- rbind(deaths, pumps)
+
+ggplot(data = d1,
+       aes(x = x, y = y, colour = description)) +
+  geom_point()
+
+cholera_plot <- ggplot(data = d1,
+                       aes(x = x, y = y, colour = description)) +
+  geom_point()
+
+plot_gg(cholera_plot, width = 3.5, multicore = TRUE, windowsize = c(1400, 866), sunangle = 225,
+        zoom = 0.60, phi = 30, theta = 45)
+
+
+head(Snow.deaths)
+
+plot(Snow.deaths$x, Snow.deaths$y)
+plot(Snow.pumps$x, Snow.pumps$y, col = "red")
 
 # Import data ----
 
