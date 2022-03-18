@@ -2,9 +2,10 @@
 # 2022
 # Category : Distributions
 # Day 12 : Theme day - The Economist
-# Last updated 2022-03-16
+# Last updated 2022-03-18
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://jrnold.github.io/ggthemes/reference/theme_economist.html
+# https://www.economist.com/big-mac-index
 
 # Load packages ----
 
@@ -13,13 +14,44 @@ library(showtext)
 # library(ggwaffle)
 # library(emojifont)
 library(patchwork)
+library(lubridate)
+library(ggthemes)
 
 # Load fonts ----
 
 # font_add_google("Tangerine", "Tangerine")
 # showtext_auto()
 
-# Import data ----
+# Download data ----
+
+# d1 <- read_csv("https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/output-data/big-mac-adjusted-index.csv")
+# d1 <- read_csv("https://github.com/TheEconomist/big-mac-data/blob/master/output-data/big-mac-raw-index.csv")
+# d1 <- read_tsv("https://github.com/TheEconomist/big-mac-data/blob/master/output-data/big-mac-full-index.csv")
+d1 <- read_csv("https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/output-data/big-mac-raw-index.csv")
+
+# Data wrangling ----
+
+d2 <- d1 %>% 
+  filter(date == "2022-01-01") %>% 
+  select(country_code = iso_a3, 
+         country_name = name, 
+         USD) %>% 
+  arrange(USD) %>% 
+  mutate(country_name = fct_inorder(factor(country_name))) %>% 
+  mutate(versus_dollar = ifelse(USD > 0, "overvalued", "undervalued"))
+
+# Create plot ----
+
+p <- ggplot(data = d2) +
+  geom_point(aes(x = USD,
+                 y = country_name,
+                 colour = versus_dollar),
+             show.legend = FALSE) +
+  scale_colour_manual(values = c("#0ba5c4", "#de5864")) +
+  theme_economist()
+
+ggsave("2022/plots/12_theme_day_economist.png", p, dpi = 320, width = 12, height = 6)
+  
 
 nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
 
