@@ -10,6 +10,7 @@
 # https://geodacenter.github.io/data-and-lab/snow/
 # https://freakonometrics.hypotheses.org/19201
 # https://gist.github.com/tylermorganwall/2f3ca112b9cd13972e02e1062670b735
+# https://github.com/LKremer/ggpointdensity
 
 # Load packages ----
 
@@ -21,6 +22,7 @@ library(patchwork)
 library(cholera)
 library(HistData)
 library(rayshader)
+library(ggpointdensity)
 
 # Load fonts ----
 
@@ -28,6 +30,41 @@ library(rayshader)
 # showtext_auto()
 
 # Tests ----
+
+deaths = Snow.deaths
+streets = Snow.streets
+
+themeval = theme(panel.border = element_blank(), 
+                 panel.grid.major = element_blank(), 
+                 panel.grid.minor = element_blank(), 
+                 axis.line = element_blank(), 
+                 axis.ticks = element_blank(),
+                 axis.text.x = element_blank(), 
+                 axis.text.y = element_blank(), 
+                 axis.title.x = element_blank(), 
+                 axis.title.y = element_blank(),
+                 legend.key = element_blank(),
+                 plot.margin = unit(c(0.5, 0, 0, 0), "cm"))
+js = ggplot() + 
+  geom_path(data=streets,aes(x=x, y=y, group = street), color="grey50") +
+  geom_pointdensity(data = deaths,aes(x=x, y=y), size=1,adjust=0.1) +
+  coord_fixed() + 
+  scale_color_viridis_c() +
+  theme_bw() +
+  themeval 
+
+js2 = ggplot() + 
+  geom_path(data = streets, aes(x=x, y=y, group = street), color="white") +
+  geom_pointdensity(data = deaths, aes(x=x, y=y), size=1, adjust=0.1) +
+  coord_fixed() +
+  scale_color_viridis_c() +
+  theme_bw() +
+  themeval 
+
+ggheight = plot_gg(list(js,js2), multicore = TRUE, raytrace=TRUE,
+                   height_aes = "color", shadow_intensity = 0.3,
+                   width=8,height=7, soliddepth = -100, save_height_matrix = TRUE,
+                   background = "#f5e9dc", shadowcolor= "#4f463c",windowsize=c(1000,1000))
 
 deaths <- Snow.deaths %>%
   as_tibble() %>% 
