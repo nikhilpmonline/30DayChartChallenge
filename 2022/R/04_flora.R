@@ -12,6 +12,7 @@ library(tidyverse)
 library(showtext)
 library(patchwork)
 library(rvest)
+library(ggforce)
 
 # Load fonts ----
 
@@ -44,77 +45,105 @@ d1 <- d1 %>%
          height_ft = as.numeric(height_ft)) %>% 
   arrange(desc(height_m)) %>% 
   mutate(species = fct_inorder(factor(species))) %>% 
-  head(10)
-
-# Test ----
-
-top10 <- d1 %>% 
-  arrange(desc(height_m)) %>% 
   head(10) %>% 
-  mutate(height_m = as.numeric(height_m)) %>% 
-  mutate(x.pos = seq(1, 40, 4))
-
-ggplot() +
-  geom_segment(data = top10,
-               aes(x = species, xend = species,
-                   y = 0, yend = height_m)) +
-  geom_circle(data = top10,
-            aes(x0 = 1:10, y0 = height_m, r = 1)) +
-  coord_fixed()
-
-ggplot() +
-  geom_segment(data = top10,
-               aes(x = species, xend = species,
-                   y = 80, yend = height_m),
-               arrow = arrow(length = unit(1, "cm"), type = "closed")) +
-  geom_segment(data = top10,
-               aes(x = species, xend = species,
-                   y = 80, yend = height_m - 0.5),
-               arrow = arrow(length = unit(2, "cm"), type = "closed")) +
-  geom_segment(data = top10,
-               aes(x = species, xend = species,
-                   y = 80, yend = height_m - 1.5),
-               arrow = arrow(length = unit(4, "cm"), type = "closed")) +
-  geom_segment(data = top10,
-               aes(x = species, xend = species,
-                   y = 80, yend = height_m - 2),
-               size = 6)
-
-ggplot() +
-  geom_segment(aes(x = 0, xend = 0,
-                   y = 0, yend = 10),
-               arrow = arrow(length = unit(3, "cm"),
-                             type = "closed"),
-               colour = "darkgreen") +
-  geom_segment(aes(x = 0, xend = 0,
-                   y = 0, yend = 9),
-               arrow = arrow(length = unit(4, "cm"),
-                             type = "closed"),
-               colour = "darkgreen") +
-  geom_segment(aes(x = 0, xend = 0,
-                   y = 0, yend = 8),
-               arrow = arrow(length = unit(6, "cm"),
-                             type = "closed"),
-               colour = "darkgreen") +
-  geom_segment(aes(x = 0, xend = 0, y = 0, yend = 5),
-               colour = "darkgreen", size = 5)
-
-ggplot() +
-  geom_segment(aes(x = 0, xend = 0, y = 0, yend = 0.5),
-               arrow = arrow(length = unit(5, "cm"),
-                             type = "closed"))
-  
-  
-  geom_segment(aes(x = 0, xend = 0, y = 0, yend = 8:10),
-               arrow = arrow(length = unit(5, "cm"),
-                             type = "closed"))
-geom_segment(aes(x = 0, xend = 0, y = 0, yend = 8:10),
-             arrow = arrow(length = unit(5, "cm"),
-                           type = "closed"))
+  rowid_to_column() %>% 
+  mutate(place = c("California", "Island of Borneo", "Tasmania", "Oregon", "California",
+                   "California", "Tasmania", "Tasmania", "Washington", "Brazil"))
 
 # Create plot ----
 
-wrld2 <- st_as_sf(map("world2", plot = FALSE, fill = TRUE))
+p1 <- ggplot() +
+  geom_segment(data = d1,
+               aes(x = rowid, xend = rowid,
+                   y = 0, yend = height_m - 5),
+               size = 2, colour = "#a67b51") +
+  geom_ellipse(data = d1,
+               aes(x0 = rowid, y0 = height_m - 40,
+                   a = 0.3, b = 40, angle = 0),
+               fill = "#0cae5b", colour = "#0cae5b") +
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(breaks = seq(80, 120, 10)) +
+  ggtitle("Height in meters") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"),
+        plot.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        axis.title = element_blank(),
+        axis.text.x = element_text(family = "Stick", size = 25, colour = "#263e31"),
+        axis.text.y = element_text(family = "Stick", size = 20, colour = "#263e31"),
+        plot.title = element_text(hjust = -0.025,
+                                  margin = margin(t = 20, b = 10, l = 20),
+                                  family = "Stick", colour = "#263e31", size = 40))
+
+p2 <- ggplot() +
+  xlim(0, 10) +
+  geom_point(data = d1 %>% filter(rowid %in% 1:5),
+             aes(x = 0, y = rowid),
+             size = 10, colour = "#263e31") +
+  geom_point(data = d1 %>% filter(rowid %in% 6:10),
+             aes(x = 6, y = rowid - 5),
+             size = 10, colour = "#263e31") +
+  geom_text(data = d1 %>% filter(rowid %in% 1:5),
+            aes(x = 0, y = rowid, label = 5:1),
+            family = "Stick", colour = "white", hjust = 0.5, size = 10) +
+  geom_text(data = d1 %>% filter(rowid %in% 6:10),
+            aes(x = 6, y = rowid - 5, label = 10:6),
+            family = "Stick", colour = "white", hjust = 0.5, size = 10) +
+  geom_text(data = d1 %>% filter(rowid %in% 1:5),
+            aes(x = 0.5, y = rev(rowid) + 0.25, label = species),
+            family = "Stick", colour = "#263e31", hjust = 0, size = 15) +
+  geom_text(data = d1 %>% filter(rowid %in% 6:10),
+            aes(x = 6.5, y = rev(rowid) - 5 + 0.25, label = species),
+            family = "Stick", colour = "#263e31", hjust = 0, size = 15) +
+  geom_text(data = d1 %>% filter(rowid %in% 1:5),
+            aes(x = 0.5, y = rev(rowid), label = paste0(height_m, " m")),
+            family = "Stick", colour = "#0cae5b", hjust = 0, size = 15) +
+  geom_text(data = d1 %>% filter(rowid %in% 6:10),
+            aes(x = 6.5, y = rev(rowid) - 5, label = paste0(height_m, " m")),
+            family = "Stick", colour = "#0cae5b", hjust = 0, size = 15) +
+  geom_text(data = d1 %>% filter(rowid %in% 1:5),
+            aes(x = 0.5, y = rev(rowid) - 0.25, label = place),
+            family = "Stick", colour = "#263e31", hjust = 0, size = 15) +
+  geom_text(data = d1 %>% filter(rowid %in% 6:10),
+            aes(x = 6.5, y = rev(rowid) - 5 - 0.25, label = place),
+            family = "Stick", colour = "#263e31", hjust = 0, size = 15) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"),
+        plot.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"))
+  
+
+p <- p1 + p2 +
+  plot_annotation(
+    title = "The ten tallest trees",
+    caption = "Visualisation: Jonathan Kitt | Data source: Wikipedia | #30DayChartChallenge 2022 | Day 4: flora",
+    theme = theme(plot.title = element_text(family = "Stick", colour = "#263e31", size = 120, hjust = 0.5,
+                                            margin = margin(t = 20, b = 10)),
+                  plot.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"),
+                  plot.caption = element_text(colour = "#263e31", hjust = 0.5, size = 25)))
+
+ggsave("2022/plots/04_flora.png", p, dpi = 320, width = 12, height = 6)
+
+
+
+  geom_text(data = d1 %>% filter(rowid %in% 1:5),
+            aes(x = 0.5, y = rev(rowid) - 0.15, label = place),
+            family = "Stick", colour = "#0cae5b", hjust = 0, size = 15) +
+  geom_text(data = d1 %>% filter(rowid %in% 6:10),
+            aes(x = 6.5, y = rev(rowid) - 5 + 0.15, label = paste0(species, " (", height_m, " m)")),
+            family = "Stick", colour = "#263e31", hjust = 0, size = 15) +
+  geom_text(data = d1 %>% filter(rowid %in% 6:10),
+            aes(x = 6.5, y = rev(rowid) - 5 - 0.15, label = place),
+            family = "Stick", colour = "#0cae5b", hjust = 0, size = 15) +
+
+  theme(panel.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"),
+        plot.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"))
+
+
+
+# Create plot ----
+
 
 p1 <- ggplot() +
   geom_sf(data = wrld2, fill = "#66bb6a", col = "#66bb6a") +
