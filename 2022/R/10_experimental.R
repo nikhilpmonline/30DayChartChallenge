@@ -36,7 +36,7 @@ pi_table <- tibble(
   y = rep(25:1, each = 40),
   value = unlist(str_split(pi, pattern = "")))
 
-p <- ggplot() +
+p1 <- ggplot() +
   geom_text(data = pi_table,
             aes(x = x, y = y, label = value, colour = value),
             size = 12, family = "Odibee Sans",
@@ -48,18 +48,40 @@ p <- ggplot() +
   theme(panel.background = element_rect(fill = "#858b97", colour = "#858b97"),
         plot.background = element_rect(fill = "#858b97", colour = "#858b97"))
 
-ggsave("2022/plots/10_experimental.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/10_experimental_1.png", p, dpi = 320, width = 12, height = 6)
 
-ggplot(pi_table, aes(x = x, y = y, colour = value)) +
-  geom_text(show.legend = FALSE, size = 1)
+test <- str_split(string = pi, pattern = "") %>% unlist()
+dec_0 <- test == 0 
+dec_1 <- test == 1
+dec_2 <- test == 2 
+dec_3 <- test == 3 
+dec_4 <- test == 4 
+dec_5 <- test == 5 
+dec_6 <- test == 6 
+dec_7 <- test == 7 
+dec_8 <- test == 8 
+dec_9 <- test == 9 
 
-  scale_colour_manual(values = c("#9999ff", "#7d7fe2", "#6066c6", "#444eaa", "#23388f",
-                                 "#002275", "#000f5c", "#000044", "#00032c", "#000117")) +
-  xlim(1, 100) +
-  ylim(1, 100) +
+decimal_places <- tibble(
+  number = rep(0:9, each = 1000),
+  x = rep(1:1000, times = 10),
+  present = c(dec_0, dec_1, dec_2, dec_3, dec_4, dec_5, dec_6, dec_7, dec_8, dec_9))
+
+ggplot(data = decimal_places %>% filter(present == TRUE)) +
+  geom_segment(aes(x = x, xend = x,
+                   y = number - 0.25, yend = number + 0.25,
+                   colour = as.factor(number)),
+               show.legend = FALSE) +
+  scale_colour_viridis(option = "magma", discrete = TRUE, direction = -1) +
+  xlim(0, 1000) +
   theme_void() +
-  theme(panel.background = element_rect(fill = "white", colour = "white"),
-        plot.background = element_rect(fill = "white", colour = "white"))
+  theme(panel.background = element_rect(fill = "#858b97", colour = "#858b97"),
+        plot.background = element_rect(fill = "#858b97", colour = "#858b97"))
+  
+  
+  geom_point(aes(x = x, y = number,
+                 colour = present),
+             show.legend = FALSE)
 
 ## Here are packages I'm going to use.
 library(tidyverse)  
