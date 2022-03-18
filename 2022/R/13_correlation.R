@@ -24,11 +24,92 @@ library(patchwork)
 d1 <- tibble(
   year = seq(2000, 2009, 1),
   arcade_revenue = c(1.196, 1.176, 1.269, 1.24, 1.307, 1.435, 1.601, 1.654, 1.803, 1.734),
-  doctorates = c(861, 830, 809, 867, 948, 1129, 1453, 1656, 1787, 1611))
+  doctorates = c(861, 830, 809, 867, 948, 1129, 1453, 1656, 1787, 1611)) %>% 
+  mutate(arcade_revenue_scaled = (arcade_revenue - 1),
+         doctorates_scaled = (doctorates - 500) / 1500)
+
+axis_ticks <- tibble(
+  x = seq(1999.5, 2009.5, 1),
+  y1 = 0,
+  y2 = 1)
+
+# Create plot ----
+
+p <- ggplot() +
+  geom_segment(aes(x = 1999.5, xend = 2009.5, y = 1/3, yend = 1/3), colour = "grey") +
+  geom_segment(aes(x = 1999.5, xend = 2009.5, y = 2/3, yend = 2/3), colour = "grey") +
+  geom_segment(data = d1,
+               x = 1999.5, xend = 2009.5, y = 0, yend = 0,
+               colour = "grey") +
+  geom_point(data = d1,
+             aes(x = year, y = arcade_revenue_scaled),
+             colour = "red") +
+  geom_line(data = d1,
+            aes(x = year, y = arcade_revenue_scaled),
+              colour = "red") +
+  geom_point(data = d1,
+             aes(x = year, y = doctorates_scaled),
+             colour = "black") +
+  geom_line(data = d1,
+            aes(x = year, y = doctorates_scaled),
+            colour = "black") +
+  geom_text(data = d1,
+            aes(x = year, y = -0.05, label = year),
+            colour = "black") +
+  geom_text(data = d1,
+            aes(x = year, y = 1.05, label = year),
+            colour = "red") +
+  geom_segment(data = d1,
+               x = 1999.5, xend = 2009.5, y = 0, yend = 0,
+               colour = "grey") +
+  geom_segment(data = d1,
+               x = 1999.5, xend = 2009.5, y = 1, yend = 1,
+               colour = "grey") +
+  geom_segment(data = axis_ticks,
+               aes(x = x, xend = x,
+                   y = y1, yend = y1 - 0.025),
+               colour = "grey") +
+  geom_segment(data = axis_ticks,
+               aes(x = x, xend = x,
+                   y = y2, yend = y2 + 0.025),
+               colour = "grey") +
+  annotate("text", x = 1999, y = 0, label = "$1 billion", colour = "red", hjust = 1) +
+  annotate("text", x = 1999, y = 0.25, label = "$1.25 billion", colour = "red", hjust = 1) +
+  annotate("text", x = 1999, y = 0.5, label = "$1.5 billion", colour = "red", hjust = 1) +
+  annotate("text", x = 1999, y = 0.75, label = "$1.75 billion", colour = "red", hjust = 1) +
+  annotate("text", x = 1999, y = 1, label = "$2 billion", colour = "red", hjust = 1) +
+  annotate("text", x = 2010, y = 0, label = "500 degrees", colour = "black", hjust = 0) +
+  annotate("text", x = 2010, y = 1/3, label = "1000 degrees", colour = "black", hjust = 0) +
+  annotate("text", x = 2010, y = 2/3, label = "1500 degrees", colour = "black", hjust = 0) +
+  annotate("text", x = 2010, y = 1, label = "2000 degrees", colour = "black", hjust = 0) +
+  xlim(1998, 2011) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "white", colour = "white"),
+        plot.background = element_rect(fill = "white", colour = "white"),
+        axis.title = element_blank(),
+        axis.text = element_blank())
+
+ggsave("2022/plots/13_correlation.png", p, dpi = 320, width = 12, height = 6)
+  
+
+d1
+
+  mutate(arcade_revenue_scaled = arcade_revenue / (2-1),
+         doctorates_scaled = doctorates / (2000-500))
+
+
+
+ggplot(data = d1) +
+  geom_line(aes(x = year, y = doctorates),
+            colour = "black") +
+  ylim(500, 2000)
 
 ggplot(data = d1) +
   geom_line(aes(x = year, y = arcade_revenue), colour = "red") +
-  ylim(1, 2)
+  geom_line(aes(x = year, y = doctorates), colour = "black") +
+  scale_y_continuous(
+    name = "Arcade revenue",
+    sec.axis = sec_axis(~.*500, name = "Doctorates"))
 
   geom_line(aes(x = year, y = doctorates), colour = "black")
 
