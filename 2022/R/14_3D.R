@@ -68,6 +68,29 @@ library(corrr)
 library(recipes)
 library(palmerpenguins)
 
+d1 <- penguins %>% 
+  rowid_to_column() %>% 
+  rename(individual = rowid) %>% 
+  select(individual, bill_length_mm:body_mass_g)
+
+pca_fit <- PCA(d1)
+
+pca_res <- tibble(
+  individual = 1:nrow(penguins),
+  species = penguins$species,
+  pc1 = pca_fit$ind$coord[, 1],
+  pc2 = pca_fit$ind$coord[, 2],
+  pc3 = pca_fit$ind$coord[, 3]) %>% 
+  mutate(species_code = case_when(species == "Adelie" ~ 1,
+                                  species == "Gentoo" ~ 2,
+                                  species == "Chinstrap" ~ 3))
+
+plot(pca_res$pc1, pca_res$pc2)
+
+plot3D::scatter3D(x = pca_res$pc1, y = pca_res$pc3, z = pca_res$pc2,
+                  colvar = pca_res$species_code, bty = "g", colkey = FALSE,
+                  col = c("darkorange", "cyan4", "darkorchid"),
+                  phi = 0, pch = 18, cex = 0.5)
 
 penguin_recipe <-
   recipe(~., data = penguins) %>% 
@@ -80,6 +103,9 @@ penguin_recipe <-
 penguin_pca <- 
   penguin_recipe %>% 
   tidy(id = "pca") 
+
+pca_wider <- penguin_pca %>%
+  tidyr::pivot_wider(names_from = component, id_cols = terms)
 
 penguin_pca
 
