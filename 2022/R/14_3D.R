@@ -12,8 +12,6 @@
 # https://gist.github.com/tylermorganwall/2f3ca112b9cd13972e02e1062670b735
 # https://github.com/LKremer/ggpointdensity
 
-# https://overpass-turbo.eu/
-
 # Load packages ----
 
 library(tidyverse)
@@ -44,8 +42,63 @@ scatter3D(x, y, z, clab = c("Sepal", "Width (cm)"))
 
 # Tests ----
 
-deaths = Snow.deaths
-streets = Snow.streets
+## =======================================================================
+## With a surface
+## =======================================================================
+
+par(mfrow = c(1, 1))
+
+# surface = volcano
+M <- mesh(1:nrow(volcano), 1:ncol(volcano))
+
+# 100 points above volcano 
+N  <- 100
+xs <- runif(N) * 87
+ys <- runif(N) * 61
+zs <- runif(N)*50 + 154
+
+# scatter + surface
+scatter3D(xs, ys, zs, ticktype = "detailed", pch = 16, 
+          bty = "f", xlim = c(1, 87), ylim = c(1,61), zlim = c(94, 215), 
+          surf = list(x = M$x, y = M$y, z = volcano,  
+                      NAcol = "grey", shade = 0.1))
+
+mortirolo_pass <- plotKML::readGPX(gpx.file = "2022/data/Climb Alps - Mortirolo Pass from Mazzo di Valtellina.gpx")
+
+# Data wrangling ----
+
+
+deaths <- Snow.deaths %>% 
+  as_tibble() %>% 
+  mutate(z = 0.5) %>% 
+  mutate(description = "case") %>% 
+  mutate(id = 1:nrow(.)) %>% 
+  select(description, id, x, y, z)
+
+pumps <- Snow.pumps %>% 
+  as_tibble() %>% 
+  mutate(z = 0.25) %>% 
+  mutate(description = "pump") %>% 
+  mutate(id = 1:nrow(.)) %>% 
+  select(description, id, x, y, z)
+
+d1 <- rbind(deaths, pumps) 
+
+scatter3D(x = d1$x, y = d1$y, z = d1$z, 
+          pch = 19, cex = 0.5,
+          bty = "g", phi = 5, plot = T)
+
+p <- ggplot(deaths) +
+  geom_point(aes(x, y, colour = z))
+
+p1 <- plot_gg(p, multicore = TRUE, sunangle = 225, zoom = 0.60, phi = 30, theta = 45)
+p1 <- render_snapshot(clear = TRUE)
+
+ggsave("2022/plots/14_3_dimensional.png", p, dpi = 320, width = 12, height = 6)
+
+deaths
+
+streets <- Snow.streets
 
 themeval = theme(panel.border = element_blank(), 
                  panel.grid.major = element_blank(), 
