@@ -12,6 +12,42 @@
 # https://gist.github.com/tylermorganwall/2f3ca112b9cd13972e02e1062670b735
 # https://github.com/LKremer/ggpointdensity
 
+# Palmer penguins PCA ----
+
+# https://allisonhorst.github.io/palmerpenguins/articles/articles/pca.html
+
+penguin_pca %>% broom::augment(penguins)
+
+d1 <- penguins %>% 
+  rowid_to_column()
+
+pca_fit <- prcomp(penguins)
+
+pca_fit <- prcomp(genotyping_data)
+
+pca_fit %>% 
+  tidy(matrix = "eigenvalues") %>% 
+  filter(PC %in% 1:20) %>% 
+  ggplot(mapping = aes(x = PC, y = percent)) +
+  geom_col(fill = "#56B4E9", alpha = 0.8) +
+  ggtitle("% of variance explained") +
+  scale_y_continuous(labels = scales::percent_format(),
+                     expand = expansion(mult = c(0, 0.01))) +
+  theme_minimal() +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.title.y = element_blank())
+
+d1 <- augment(pca_fit, data = genotyping_data)
+
+ggplot(d1, mapping = aes(.fittedPC1, .fittedPC2)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  labs(title = "Genetic diversity", x = "PC1", y = "PC2") +
+  theme_minimal()
+
 # Load packages ----
 
 library(tidyverse)
@@ -25,6 +61,56 @@ library(rayshader)
 library(ggpointdensity)
 
 # Testing plot3D package ----
+
+# https://allisonhorst.github.io/palmerpenguins/articles/articles/pca.html
+
+library(corrr)
+library(recipes)
+library(palmerpenguins)
+
+
+penguin_recipe <-
+  recipe(~., data = penguins) %>% 
+  update_role(species, island, sex, new_role = "id") %>% 
+  step_naomit(all_predictors()) %>% 
+  step_normalize(all_predictors()) %>%
+  step_pca(all_predictors(), id = "pca") %>% 
+  prep()
+
+penguin_pca <- 
+  penguin_recipe %>% 
+  tidy(id = "pca") 
+
+penguin_pca
+
+penguins %>% 
+  dplyr::select(where(is.numeric)) %>% 
+  tidyr::drop_na() %>% 
+  scale() %>% 
+  prcomp() %>%  
+  .$rotation
+
+penguin_recipe %>% 
+  tidy(id = "pca", type = "variance") %>% 
+  dplyr::filter(terms == "percent variance") %>% 
+  ggplot(aes(x = component, y = value)) + 
+  geom_col(fill = "#b6dfe2") + 
+  xlim(c(0, 5)) + 
+  ylab("% of total variance")
+
+penguin_pca %>%
+  mutate(terms = tidytext::reorder_within(terms, 
+                                          abs(value), 
+                                          component)) %>%
+  ggplot(aes(abs(value), terms, fill = value > 0)) +
+  geom_col() +
+  facet_wrap(~component, scales = "free_y") +
+  tidytext::scale_y_reordered() +
+  scale_fill_manual(values = c("#b6dfe2", "#0A537D")) +
+  labs(
+    x = "Absolute value of contribution",
+    y = NULL, fill = "Positive?"
+  ) 
 
 install.packages("plot3D")
 library(plot3D)
