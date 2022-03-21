@@ -12,6 +12,8 @@
 # https://gist.github.com/tylermorganwall/2f3ca112b9cd13972e02e1062670b735
 # https://github.com/LKremer/ggpointdensity
 
+# https://overpass-turbo.eu/
+
 # Load packages ----
 
 library(tidyverse)
@@ -23,6 +25,17 @@ library(cholera)
 library(HistData)
 library(rayshader)
 library(ggpointdensity)
+
+# Testing plot3D package ----
+
+install.packages("plot3D")
+library(plot3D)
+
+x <- sep.l <- iris$Sepal.Length
+y <- pet.l <- iris$Petal.Length
+z <- sep.w <- iris$Petal.Width
+
+scatter3D(x, y, z, clab = c("Sepal", "Width (cm)"))
 
 # Load fonts ----
 
