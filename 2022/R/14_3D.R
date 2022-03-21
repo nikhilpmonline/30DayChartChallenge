@@ -42,6 +42,9 @@ scatter3D(x, y, z, clab = c("Sepal", "Width (cm)"))
 
 # Tests ----
 
+
+
+
 ## =======================================================================
 ## With a surface
 ## =======================================================================
@@ -83,6 +86,22 @@ pumps <- Snow.pumps %>%
   select(description, id, x, y, z)
 
 d1 <- rbind(deaths, pumps) 
+
+
+p <- ggplot() +
+  stat_density_2d(data = deaths,
+               aes(x = x, y = y, fill = ..density..),
+               geom = "raster", contour = FALSE) +
+  geom_point(data = pumps, 
+             aes(x = x, y = y))
+
+
+plot_gg(p, zoom = 0.60, theta = -45, phi = 30)
+render_snapshot(clear = TRUE)
+
+ggplot(deaths) +
+  stat_density2d(aes(x = x, y = y, fill = ..density..),
+                 geom = "raster", contour = FALSE)
 
 scatter3D(x = d1$x, y = d1$y, z = d1$z, 
           pch = 19, cex = 0.5,
