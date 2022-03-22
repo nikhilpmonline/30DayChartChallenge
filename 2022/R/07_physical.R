@@ -10,19 +10,8 @@
 
 library(tidyverse)
 library(showtext)
-# library(ggwaffle)
-# library(emojifont)
 library(patchwork)
 library(ggforce)
-
-# Testing ----
-
-ggplot() +
-  geom_circle(aes(x0 = 0, y0 = 0, r = 10),
-              fill = "yellow", colour = "yellow") +
-  coord_fixed() +
-  xlim(0, 100) +
-  ylim(-20, 20)
 
 # Load fonts ----
 
@@ -59,43 +48,15 @@ p1 <- ggplot() +
             show.legend = FALSE, family = "Goldman", size = 12) +
   scale_colour_manual(values = c("#97979f", "#e3bb76", "#8cb1de", "#c1440e",
                                "#e3dccc", "#e2bf7b", "#afdbf5", "#3e66f9")) +
-  annotate("text", x = 100e3, y = 60e3, label = "Relative sizes", family = "Goldman", colour = "white",
-           size = 25) +
+  ggtitle(label = "Relative sizes of the planets in the solar system") +
+  labs(caption = "Visualisation: Jonathan Kitt | Data source: www.devstronomy.com | #30DayChartChallenge 2022 | Day 7: physical") +
   theme_void() +
   theme(plot.background = element_rect(fill = "black", colour = "black"),
         panel.background = element_rect(fill = "black", colour = "black"),
-        plot.margin = margin(b = 20))
+        plot.margin = margin(b = 20),
+        plot.title = element_text(family = "Goldman", colour = "white",
+                                  hjust = 0.5, size = 80, margin = margin(b = 80)),
+        plot.caption = element_text(colour = "white", hjust = 0.5,
+                                    size = 25, margin = margin(t = 80)))
 
-p2 <- ggplot() +
-  geom_segment(data = d1, aes(x = 0, xend = distance_from_sun, 
-                              y = planet, yend = planet),
-               show.legend = FALSE, colour = "#ffffff", size = 0.1) +
-  geom_point(data = d1, aes(x = distance_from_sun, y = planet, colour = planet),
-             size = 6, show.legend = FALSE)  +
-  geom_text(data = d1,
-            aes(x = distance_from_sun + 100, y = planet, label = paste0(planet, " - ", round(distance_from_sun)),
-                colour = planet),
-            show.legend = FALSE, family = "Goldman", size = 12, hjust = 0) +
-  scale_colour_manual(values = c("#97979f", "#e3bb76", "#8cb1de", "#c1440e",
-                                 "#e3dccc", "#e2bf7b", "#afdbf5", "#3e66f9")) +
-  xlim(0, 5500) +
-  annotate("text", x = 3000, y = 3, label = "Distances from the Sun", family = "Goldman", colour = "white",
-           size = 25) +
-  annotate("text", x = 3000, y = 1.5, label = "(in millions km)", family = "Goldman", colour = "white",
-           size = 25) +
-  theme_void() +
-  theme(plot.background = element_rect(fill = "black", colour = "black"),
-        panel.background = element_rect(fill = "black", colour = "black"),
-        plot.margin = margin(t = 20, b = 20))
-
-p <- p1 + p2 +
-  plot_layout(ncol = 1, widths = c(1, 1)) +
-  plot_annotation(
-    title = "Planets of the solar system",
-    caption = "Visualisation: Jonathan Kitt | Data source: www.devstronomy.com | #30DayChartChallenge 2022 | Day 7: physical",
-    theme = theme(plot.title = element_text(family = "Goldman", colour = "white", size = 120, hjust = 0.5,
-                                            margin = margin(t = 20, b = 20)),
-                  plot.background = element_rect(fill = "black", colour = "black"),
-                  plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
-
-ggsave("2022/plots/07_physical.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/07_physical.png", p1, dpi = 320, width = 12, height = 6)
