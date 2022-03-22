@@ -105,11 +105,13 @@ p <- ggtern(data = characters, aes(x, y, z, label = character)) +
        y = "The Two Towers",
        z = "The Return of\nthe King",
        title = "The Lord of The Rings") +
-  theme(axis.title = element_text(family = "Medieval"),
-        axis.text = element_text(family = "Medieval"),
+  theme(axis.title = element_text(family = "Medieval", colour = "#d9a404"),
+        axis.text = element_text(family = "Medieval", colour = "#d9a404"),
         axis.ticks = element_blank(),
         plot.title = element_text(family = "Medieval", hjust = 0.5, size = 100,
-                                  margin = margin(t = 50)))
+                                  margin = margin(t = 50), colour = "#d9a404"),
+        plot.background = element_rect(fill = "#014023", colour = "#014023"),
+        panel.background = element_rect(fill = "#014023", colour = "#014023"))
 
 
 ggsave("2022/plots/14_3dimensional.png", p, dpi = 320, width = 12, height = 6)
