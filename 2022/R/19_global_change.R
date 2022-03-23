@@ -5,6 +5,9 @@
 # Last updated 2022-03-12
 
 # https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/
+# https://www.climate-lab-book.ac.uk/2018/warming-stripes/
+# https://www.metoffice.gov.uk/research/climate/maps-and-data/historic-station-data
+# https://stats4sd.org/blog/67
 
 # Load packages ----
 
@@ -13,6 +16,27 @@ library(showtext)
 library(lubridate)
 library(RColorBrewer)
 library(patchwork)
+
+# Lerwick data ----
+
+raw <- read.table(url("https://www.metoffice.gov.uk/pub/data/weather/uk/climate/stationdata/lerwickdata.txt"),
+                 skip = 5, header = TRUE, fill = TRUE, na.strings = "---") %>% 
+  as_tibble()
+
+tidied <- raw %>% 
+  slice(-1) %>% 
+  filter(yyyy < 2021) %>% 
+  mutate_all(~str_remove(., "[*]")) %>% 
+  mutate_all(~as.numeric(.))
+
+summary(tidied)
+
+plot(1:nrow(tidied), tidied$rain)
+
+head(tidied)
+
+head(raw)
+tail(raw)
 
 # Working through Dominic Royé's tutorial ----
 
