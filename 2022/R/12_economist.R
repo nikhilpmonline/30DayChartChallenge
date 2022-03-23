@@ -11,8 +11,6 @@
 
 library(tidyverse)
 library(showtext)
-# library(ggwaffle)
-# library(emojifont)
 library(patchwork)
 library(lubridate)
 library(ggthemes)
@@ -38,17 +36,35 @@ d2 <- d1 %>%
          USD) %>% 
   arrange(USD) %>% 
   mutate(country_name = fct_inorder(factor(country_name))) %>% 
-  mutate(versus_dollar = ifelse(USD > 0, "overvalued", "undervalued"))
+  mutate(versus_dollar = ifelse(USD > 0, "overvalued", "undervalued")) %>% 
+  filter(country_name != "United States")
 
 # Create plot ----
 
-p <- ggplot(data = d2) +
+ggplot(data = d2) +
   geom_point(aes(x = USD,
                  y = country_name,
                  colour = versus_dollar),
-             show.legend = FALSE) +
+             show.legend = FALSE, size = 2) +
+  geom_segment(aes(x = 0, xend = USD, y = country_name, yend = country_name,
+                 colour = versus_dollar),
+             show.legend = FALSE, size = 0.25) +
+  geom_text(aes(x = ifelse(versus_dollar == "undervalued", USD - 0.01, USD + 0.01),
+                y = country_name,
+                label = country_name,
+                hjust = ifelse(versus_dollar == "undervalued", 1, 0),
+                colour = versus_dollar),
+            show.legend = FALSE, size = 8) +
+  geom_vline(xintercept = 0, linetype = "dashed", size = 0.25) +
   scale_colour_manual(values = c("#0ba5c4", "#de5864")) +
-  theme_economist()
+  xlim(-0.75, 0.75) +
+  ggtitle("The Big Mac index") +
+  theme_economist() +
+  theme(panel.grid.major.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        plot.title = element_text(size = 50))
 
 ggsave("2022/plots/12_theme_day_economist.png", p, dpi = 320, width = 12, height = 6)
   
