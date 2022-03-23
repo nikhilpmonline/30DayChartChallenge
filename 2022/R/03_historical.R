@@ -5,6 +5,7 @@
 # Last updated 2022-03-09
 
 # Source : https://en.wikipedia.org/wiki/Anscombe%27s_quartet
+# https://blog.rtwilson.com/updated-snow-gis-data/
 
 # Load packages ----
 
@@ -13,6 +14,56 @@ library(showtext)
 # library(ggwaffle)
 # library(emojifont)
 library(patchwork)
+
+# Testing John Snow cholera map ----
+
+library(HistData)
+
+cases <- as_tibble(Snow.deaths) %>% 
+  mutate(description = "case") %>% 
+  select(description, id = case, x, y)
+ 
+pumps <- as_tibble(Snow.pumps) %>% 
+  mutate(description = "pump") %>% 
+  select(description, id = pump, x, y)
+
+ggplot(cases, aes(x = x, y = y)) +
+  geom_density2d()
+
+ggplot(cases, aes(x = x, y = y)) +
+  stat_density2d(aes(fill = ..level..), geom = "polygon") +
+  geom_point(data = pumps, aes(x = 12.6, y = 11.7),
+             colour = "red", size = 5)
+
+d1 <- rbind(cases, pumps)
+
+ggplot() +
+  stat_density_2d(data = cases, aes(x = x, y = y)) +
+  geom_point(data = pumps, aes(x = 12.6, y = 11.7),
+             colour = "red", size = 5) +
+  geom_point(data = cases, aes(x = x, y = y),
+             colour = "grey80")
+
+ggplot() +
+  geom_point(data = d1,
+             aes(x = x, y = y, colour = description))
+
+
+d3 <- Snow.streets %>% as_tibble() %>% 
+  group_by(street) %>% 
+  summarise(x1 = min(x), x2 = max(x),
+            y1 = min(y), y2 = max(y))
+
+
+streets
+
+ggplot(streets) +
+  geom_segment(aes(x = x1, xend = x2,
+                   y = y1, yend = y2,
+                   colour = street))
+
+plot(d1$x, d1$y)
+plot(d2$x, d2$y, col = "red")
 
 # Load fonts ----
 
