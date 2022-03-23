@@ -2,12 +2,11 @@
 # 2022
 # Category : Comparisons
 # Day 1 : Part-to-whole
-# Last updated 2022-03-04
+# Last updated 2022-03-23
 
 # Load packages ----
 
 library(tidyverse)
-library(munro)
 library(showtext)
 library(patchwork)
 
@@ -21,6 +20,31 @@ showtext_auto()
 munros <- munro::munros
 
 # Data wrangling ---- 
+
+d1 <- tibble(
+  status = c("explored", "unexplored"),
+  ratio = c(0.2, 0.8)) %>% 
+  mutate(ymin = c(0, max(ratio)),
+         ymax = c(max(ratio), 1))
+
+d1
+
+# Create plot ----
+
+p1 <- ggplot(data = d1,
+       aes(x = 6, y = ratio, fill = status)) +
+  geom_bar(stat = "identity",
+           show.legend = FALSE) +
+  #scale_fill_manual(values = c("#04aed9", "#c5e0f5")) +
+  scale_fill_manual(values = c("#003c54", "white")) +
+  coord_polar(theta = "y", start = 0) +
+  xlim(c(0.025, 8)) +
+  annotate("text", x = 0.025, y = 0.5, label = "80 %", colour = "white", size = 60, family = "Lobster") +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#003c54", colour = "#003c54"),
+        plot.background = element_rect(fill = "#003c54", colour = "#003c54"))
+
+ggsave("2022/plots/01_part_to_whole_1.png", p, dpi = 320, width = 12, height = 6)
 
 d1 <- munros %>% 
   mutate(unique_name = paste(1:nrow(.), name, sep = " - ")) %>% 
