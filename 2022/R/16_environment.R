@@ -1,10 +1,10 @@
 # 30DayChartChallenge
 # 2022
 # Category : Distributions
-# Day 12 : Theme day - The Economist
-# Last updated 2022-03-16
+# Day 16 : Environment
+# Last updated 2022-03-23
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://mlurgi.github.io/networks_for_r/
 
 # Load packages ----
 
