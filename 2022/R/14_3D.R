@@ -6,8 +6,47 @@
 
 # https://www.flerlagetwins.com/2019/08/ternary.html
 # https://jserizay.com/blog/text_mining_and_sentiment_analysis_in_r/
+# https://www.rayshader.com/reference/plot_gg.html
 
 # Load packages ----
+
+library(rayshader)
+
+# Testing John Snow cholera map ----
+
+library(HistData)
+
+cases <- as_tibble(Snow.deaths) %>% 
+  mutate(description = "case") %>% 
+  select(description, id = case, x, y)
+
+pumps <- as_tibble(Snow.pumps) %>% 
+  mutate(description = "pump") %>% 
+  select(description, id = pump, x, y)
+
+cases_density <- ggplot(cases, aes(x = x, y = y)) +
+  stat_density2d(aes(fill = ..level..), geom = "polygon") +
+  geom_point(data = pumps, aes(x = 12.6, y = 11.7),
+             colour = "red", size = 5)
+
+plot_gg(cases_density) %>% 
+  render_label(x = 12.6, y = 11.7, text = "Pump")
+
+ggplot(cases, aes(x = x, y = y)) +
+  stat_density2d(aes(fill = ..level..), geom = "polygon") +
+  geom_point(data = pumps, aes(x = 12.6, y = 11.7),
+             colour = "red", size = 5)
+
+d1 <- rbind(cases, pumps)
+
+ggplot() +
+  stat_density_2d_filled(data = cases, aes(x = x, y = y)) +
+  geom_point(data = pumps, aes(x = 12.6, y = 11.7),
+             colour = "red", size = 5)
+
+
+  # geom_point(data = cases, aes(x = x, y = y),
+  #            colour = "grey80")
 
 library(tidyverse)
 library(tidytext)
@@ -85,36 +124,43 @@ characters <- word_count %>%
          y = `The Two Towers`,
          z = `The Return of the King`) %>% 
   ungroup() %>% 
-  mutate(total = rowSums(.[2:4]))
+  mutate(total = rowSums(.[2:4])) %>% 
+  rowid_to_column()
 
 
 # Create plot ----
 
 
-p <- ggtern(data = characters, aes(x, y, z, label = character)) + 
+p <- ggtern(data = characters, aes(x, y, z, label = rowid)) + 
   # geom_text() +
   geom_mask() +
-  geom_point(aes(size = total, colour = character),
-             alpha = 0.5) + 
-  theme_nomask() +
+  geom_point(size = 8, colour = "#d9a404", alpha = 0.5) + 
+  theme_void() +
+  # theme_nomask() +
   theme_hideticks() +
   theme_hidelabels() +
-  theme_showarrows() +
+  geom_text(aes(x, y, label = rowid)) +
+  # theme_showarrows() +
   theme_clockwise() +
   labs(x = "The Fellowhip\nof the Ring",
        y = "The Two Towers",
        z = "The Return of\nthe King",
-       title = "The Lord of The Rings") +
+       title = "The Lord of the Rings",
+       subtitle = "How frequently do members of the Fellowship appear in the books ?") +
   theme(axis.title = element_text(family = "Medieval", colour = "#d9a404"),
         axis.text = element_text(family = "Medieval", colour = "#d9a404"),
         axis.ticks = element_blank(),
         plot.title = element_text(family = "Medieval", hjust = 0.5, size = 100,
                                   margin = margin(t = 50), colour = "#d9a404"),
+        plot.subtitle = element_text(family = "Medieval", hjust = 0.5, size = 75,
+                                  margin = margin(t = 50), colour = "#d9a404"),
         plot.background = element_rect(fill = "#014023", colour = "#014023"),
         panel.background = element_rect(fill = "#014023", colour = "#014023"))
 
 
-ggsave("2022/plots/14_3dimensional.png", p, dpi = 320, width = 12, height = 6)
+# ggsave("2022/plots/14_3dimensional.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/14_3dimensional.png", p, dpi = 320, width = 6, height = 6)
+
 
 +
   theme(panel.background = element_rect(fill = "black", colour = "black"),
