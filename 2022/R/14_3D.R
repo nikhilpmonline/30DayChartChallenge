@@ -58,7 +58,8 @@ p3d <- plot_gg(pp)
 plot_gg(pp) %>% 
   save_png("2022/plots/14_3dimensional.png")
 
-plot_gg(p)
+plot_gg(pp)
+render_snapshot(title_text = "Cholera outbreak", "2022/plots/14_3dimensional.png")
 
 plot_gg(p)
 
