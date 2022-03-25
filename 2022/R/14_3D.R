@@ -10,11 +10,11 @@
 
 # Load packages ----
 
+library(tidyverse)
 library(rayshader)
+library(HistData)
 
 # Testing John Snow cholera map ----
-
-library(HistData)
 
 cases <- as_tibble(Snow.deaths) %>% 
   mutate(description = "case") %>% 
@@ -24,8 +24,47 @@ pumps <- as_tibble(Snow.pumps) %>%
   mutate(description = "pump") %>% 
   select(description, id = pump, x, y)
 
-cases_density <- ggplot(cases, aes(x = x, y = y)) +
-  stat_density2d(aes(fill = ..level..), geom = "polygon") +
+p <- ggplot() +
+  stat_density2d(data = cases,
+                 aes(x = x, y = y, fill = ..density..),
+                 geom = "raster", contour = FALSE,
+                 show.legend = FALSE) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_gradient(low = "pink", high = "red") +
+  geom_point(data = pumps, 
+             aes(x = x, y = y))
+
+p3d <- plot_gg(p)
+
+render_label(p3d, text = "Broad street pump", x = 12.6, y = 11.7, z = 450)
+render_snapshot()
+
+pp <- ggplot(cases, aes(x = x, y = y)) +
+  stat_density2d(aes(fill = ..density..),
+                 geom = "raster", contour = FALSE,
+                 show.legend = FALSE) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_gradient(low = "#d0efff", high = "#03254c") +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = "#d0efff", colour = "#d0efff"),
+        plot.background = element_rect(fill = "#d0efff", colour = "#d0efff"))
+
+p3d <- plot_gg(pp)
+
+plot_gg(pp) %>% 
+  save_png("2022/plots/14_3dimensional.png")
+
+plot_gg(p)
+
+plot_gg(p)
+
+ggplot(cases, aes(x = x, y = y, fill = ..density..)) +
+  stat_density2d(geom = "raster")
++
   geom_point(data = pumps, aes(x = 12.6, y = 11.7),
              colour = "red", size = 5)
 
