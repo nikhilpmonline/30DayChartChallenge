@@ -31,6 +31,29 @@ tidied <- raw %>%
 
 summary(tidied)
 
+head(tidied)
+
+refmean <- tidied %>% 
+  filter(yyyy >= 1971 & yyyy <= 2000) %>% 
+  summarise()
+
+lerwick_data <- tidied %>% 
+  mutate(tmean = (tmin + tmax) / 2) %>% 
+  group_by(yyyy) %>% 
+  summarise(tmean = mean(tmean)) %>% 
+  mutate(anomaly = tmean)
+
+head(lerwick_data)
+
+lerwick_yr <- tidied %>% 
+  group_by(yyyy) %>% 
+  summarise(tmax_av = mean(tmax),
+            tmin_av = mean(tmin))
+
+lerwick_yr
+
+plot(lerwick_yr$yyyy, lerwick_yr$tmax_av)
+
 plot(1:nrow(tidied), tidied$rain)
 
 head(tidied)
@@ -84,6 +107,8 @@ p <- ggplot(temp_lisboa_yr,
        caption = "Datos: GISS Surface Temperature Analysis")+
   # theme_strip
   theme_void()
+
+p
 
 ggsave("2022/plots/19_global_change.png", p, dpi = 320, width = 12, height = 6)
 
