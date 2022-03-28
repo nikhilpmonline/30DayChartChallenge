@@ -2,7 +2,13 @@
 # 2022
 # Category : Distributions
 # Day 9 : Statistics
-# Last updated 2022-03-11
+# Last updated 2022-03-28
+
+# Load packages ----
+
+library(patchwork)
+library(showtext)
+library(tidyverse)
 
 # Load fonts ----
 
@@ -32,19 +38,6 @@ p1 <- ggplot() +
         panel.grid = element_blank(),
         axis.title = element_blank(),
         axis.text = element_blank())
-
-# p1 <- ggplot() +
-#   geom_bar(aes(x = binomial_data),
-#            width = 0.2, fill = "white", colour = "white") +
-#   xlab(label = "Binomial") +
-#   theme_minimal() +
-#   theme(panel.background = element_rect(fill = "#804fb3", colour = "#804fb3"),
-#         plot.background = element_rect(fill = "#804fb3", colour = "#804fb3"),
-#         panel.grid = element_blank(),
-#         axis.title.x = element_text(family = "Big Shoulders Inline Text",
-#                                     colour = "white", size = 50),
-#         axis.title.y = element_blank(),
-#         axis.text = element_blank())
 
 p2 <- ggplot() +
   geom_bar(aes(x = poisson_data),
@@ -121,4 +114,6 @@ p <- p1 + p2 + p3 + p4 + p5 + p6 +
                   plot.background = element_rect(fill = "#804fb3", colour = "#804fb3"),
                   plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
 
-ggsave("2022/plots/09_statistics.png", p, dpi = 320, width = 12, height = 6)
+# Save plot ----
+
+ggsave("2022/plots/finished/09_statistics.png", p, dpi = 320, width = 12, height = 6)
