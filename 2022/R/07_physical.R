@@ -2,21 +2,20 @@
 # 2022
 # Category : Distributions
 # Day 7 : Physical
-# Last updated 2022-03-11
+# Last updated 2022-03-28
 
 # https://devstronomy.com/#/datasets
 
 # Load packages ----
 
-library(tidyverse)
-library(showtext)
-library(patchwork)
 library(ggforce)
+library(patchwork)
+library(showtext)
+library(tidyverse)
 
 # Load fonts ----
 
 font_add_google("Goldman", "Goldman")
-font_add_google("Big Shoulders Inline Text", "Big Shoulders Inline Text")
 showtext_auto()
 
 # Import data ----
@@ -35,6 +34,8 @@ d1 <- planets %>%
                          TRUE ~ cum_dist + (rowid-1)*50e3 + radius)) %>% 
   mutate(planet = fct_inorder(planet))
 
+# Create plot ----
+
 p1 <- ggplot() +
   geom_circle(data = d1,
               aes(x0 = x.0, y0 = 0, r = radius, fill = planet),
@@ -48,15 +49,17 @@ p1 <- ggplot() +
             show.legend = FALSE, family = "Goldman", size = 12) +
   scale_colour_manual(values = c("#97979f", "#e3bb76", "#8cb1de", "#c1440e",
                                "#e3dccc", "#e2bf7b", "#afdbf5", "#3e66f9")) +
-  ggtitle(label = "Relative sizes of the planets in the solar system") +
+  ggtitle(label = "Planets of the solar system") +
   labs(caption = "Visualisation: Jonathan Kitt | Data source: www.devstronomy.com | #30DayChartChallenge 2022 | Day 7: physical") +
   theme_void() +
   theme(plot.background = element_rect(fill = "black", colour = "black"),
         panel.background = element_rect(fill = "black", colour = "black"),
         plot.margin = margin(b = 20),
         plot.title = element_text(family = "Goldman", colour = "white",
-                                  hjust = 0.5, size = 80, margin = margin(b = 80)),
+                                  hjust = 0.5, size = 100, margin = margin(b = 80)),
         plot.caption = element_text(colour = "white", hjust = 0.5,
                                     size = 25, margin = margin(t = 80)))
+
+# Save plot ----
 
 ggsave("2022/plots/07_physical.png", p1, dpi = 320, width = 12, height = 6)
