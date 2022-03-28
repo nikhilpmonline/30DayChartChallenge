@@ -2,14 +2,13 @@
 # 2022
 # Category : Comparisons
 # Day 1 : Part-to-whole
-# Last updated 2022-03-23
+# Last updated 2022-03-28
 
 # Load packages ----
 
-library(tidyverse)
-library(showtext)
 library(patchwork)
-library(ggtext)
+library(showtext)
+library(tidyverse)
 
 # Load fonts ----
 
@@ -64,4 +63,4 @@ p <- p1 + p2 +
 
 # Save plot ----
   
-ggsave("2022/plots/01_part_to_whole.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/finished/01_part_to_whole.png", p, dpi = 320, width = 12, height = 6)
