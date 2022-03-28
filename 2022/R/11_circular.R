@@ -2,15 +2,13 @@
 # 2022
 # Category : Distributions
 # Day 11 : Circular
-# Last updated 2022-03-18
+# Last updated 2022-03-28
 
 # Load packages ----
 
-library(tidyverse)
-library(showtext)
-# library(ggwaffle)
-# library(emojifont)
 library(patchwork)
+library(showtext)
+library(tidyverse)
 
 # Load fonts ----
 
@@ -68,7 +66,7 @@ d1 <- tibble(
 
 # Create plot ----
 
-p <- ggplot() +
+p1 <- ggplot() +
   geom_rect(data = codons,
             aes(xmin = x.min, xmax = x.max, ymin = y.min, ymax = y.max,
                 fill = base),
@@ -88,8 +86,8 @@ p <- ggplot() +
                 label = prot), 
             colour = "white", size = 6) +
   coord_polar(theta = "x", start = 0) +
-  ggtitle("Genetic code") +
-  labs(caption = "Visualisation: Jonathan Kitt | Data source: Wikipedia| #30DayChartChallenge 2022 | Day 11: circular") +
+  # ggtitle("Genetic code") +
+  # labs(caption = "Visualisation: Jonathan Kitt | Data source: Wikipedia| #30DayChartChallenge 2022 | Day 11: circular") +
   theme_void() +
   theme(panel.background = element_rect(fill = "#0b0742", colour = "#0b0742"),
         plot.background = element_rect(fill = "#0b0742", colour = "#0b0742"),
@@ -97,6 +95,8 @@ p <- ggplot() +
                                   margin = margin(t = 20)),
         plot.caption = element_text(colour = "white", size = 25, hjust = 0.5))
 
+p <- p1 + plot_spacer()
+
+ggsave("2022/plots/work_in_progress/11_circular.png", p, dpi = 320, width = 12, height = 6)
 
 
-ggsave("2022/plots/11_circular.png", p, dpi = 320, width = 12, height = 6)
