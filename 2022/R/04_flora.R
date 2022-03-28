@@ -69,6 +69,7 @@ p1 <- ggplot() +
   theme(panel.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"),
         plot.background = element_rect(fill = "#a5d6a7", colour = "#a5d6a7"),
         panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(colour = "white", linetype = "dotted"),
         panel.grid.minor.x = element_blank(),
         panel.grid.minor.y = element_blank(),
         axis.title = element_blank(),
