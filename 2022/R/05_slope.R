@@ -2,7 +2,7 @@
 # 2022
 # Category : Comparisons
 # Day 5 : Slope
-# Last updated 2022-03-08
+# Last updated 2022-03-28
 
 # https://www.cyclinglocations.com/mortirolo-pass-mazzo
 # https://scriptsandstatistics.wordpress.com/2018/03/29/how-to-plot-gps-data-using-r-ggplot2-and-ggmaps/
@@ -10,11 +10,11 @@
 
 # Load packages ----
 
-library(tidyverse)
-library(showtext)
+library(geosphere)
 library(patchwork)
 library(plotKML)
-library(geosphere)
+library(showtext)
+library(tidyverse)
 
 # Load fonts ----
 
@@ -89,7 +89,7 @@ p1 <- ggplot(italy) +
                fill = "#355c7d", colour = "white") +
   coord_fixed(1.3) +
   geom_point(aes(x = 10.29796, y = 46.24893),
-             colour = "red", size = 4) +
+             colour = "red", size = 3) +
   annotate("text", x = 10, y = 45.9, label = "Mortirolo Pass",
            colour = "white", family = "Genos", size = 12, hjust = 0) +
   theme_void() +
@@ -138,18 +138,19 @@ p2 <- ggplot() +
   scale_y_continuous(position = "right",
                      breaks = seq(500, 1800, 100)) +
   geom_segment(aes(x = 0, xend = 0,
-                   y = 0, yend = 1850),
+                   y = 0, yend = 1925),
                colour = "white") +
-  annotate("text", x = -150, y = 1200, label = "537m - MAZZO IN VALTELLINA", angle = 90,
+  annotate("text", x = -150, y = 1200, label = "537m - MAZZO DI VALTELLINA", angle = 90,
            family = "Genos", colour = "white", size = 15) +
   geom_segment(aes(x = max(data_by_km$distance_from_start), xend = max(data_by_km$distance_from_start),
                    y = 0, yend = 2000),
                colour = "white") +
-  geom_segment(aes(x = 8350, xend = max(data_by_km$distance_from_start),
+  geom_segment(aes(x = 7500, xend = max(data_by_km$distance_from_start),
                    y = 2000, yend = 2000),
                colour = "white") +
-  annotate("text", x = 10000, y = 2050, label = "1854m - PASSO DEL MORTIROLO",
-           family = "Genos", colour = "white", size = 15) +
+  annotate("text", x = max(data_by_km$distance_from_start), y = 2050,
+           label = "1854m - PASSO DEL MORTIROLO",
+           family = "Genos", colour = "white", size = 15, hjust = 1) +
   theme_minimal() +
   theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
         plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
@@ -178,7 +179,7 @@ p4 <- ggplot() +
            colour = "white", family = "Genos", size = 25, hjust = 0) +
   annotate("text", x = 0, y = -2, label = "The most famous route starts in Mazzo di Valtellina (537m)",
            colour = "white", family = "Genos", size = 25, hjust = 0) +
-  annotate("text", x = 0, y = -3, label = "and reaches the pass (1852m) after a 12.8km climb",
+  annotate("text", x = 0, y = -3, label = "and reaches the pass (1854m) after a 12.8km climb",
            colour = "white", family = "Genos", size = 25, hjust = 0) +
   xlim(0, 10) +
   ylim(-4, 4) +
@@ -186,7 +187,6 @@ p4 <- ggplot() +
   theme(panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
         plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"))
   
-
 p <- p1 + p2 + p3 + p4 +
   plot_layout(ncol = 2, widths = c(1, 2), heights = c(2, 1)) +
   plot_annotation(
@@ -194,4 +194,6 @@ p <- p1 + p2 + p3 + p4 +
     theme = theme(plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
                   plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
 
-ggsave("2022/plots/05_slope.png", p, dpi = 320, width = 12, height = 6)
+# Save plot ----
+
+ggsave("2022/plots/finished/05_slope.png", p, dpi = 320, width = 12, height = 6)
