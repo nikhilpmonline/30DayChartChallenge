@@ -2,21 +2,21 @@
 # 2022
 # Category : Comparisons
 # Day 6 : Data day - Our World In Data
-# Last updated 2022-03-09
+# Last updated 2022-03-28
 
 # https://ourworldindata.org/water-sanitation-2020-update
 
 # Load packages ----
 
-library(tidyverse)
-library(showtext)
+library(ggtext)
 library(patchwork)
+library(showtext)
+library(tidyverse)
 
 # Load fonts ----
 
 font_add_google("Zen Tokyo Zoo", "Zen Tokyo Zoo")
 font_add_google("Glory", "Glory")
-font_add_google("Tourney", "Tourney")
 showtext_auto()
 
 # Import data ----
@@ -82,9 +82,9 @@ p1 <- ggplot(access_2000, aes(x = Category, y = Percent, fill = Access)) +
         legend.title = element_blank(),
         legend.text = element_text(family = "Glory", size = 25),
         legend.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
-        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5),
-        plot.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
-        panel.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"))
+        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5, colour = "#b4d2d3"),
+        plot.background = element_rect(fill = "#152636", colour = "#152636"),
+        panel.background = element_rect(fill = "#152636", colour = "#152636"))
 
 p2 <- ggplot(access_2020, aes(x = Category, y = Percent, fill = Access)) +
   geom_bar(position = "stack", stat = "identity") +
@@ -96,16 +96,16 @@ p2 <- ggplot(access_2020, aes(x = Category, y = Percent, fill = Access)) +
   ggtitle(label = "2020") +
   theme_void() +
   theme(axis.title = element_blank(),
-        axis.text.y = element_text(hjust = 0.5, size = 30, family = "Glory"),
+        axis.text.y = element_text(hjust = 0.5, size = 30, family = "Glory", colour = "#b4d2d3"),
         axis.ticks = element_blank(),
         legend.position = "top",
         legend.direction = "horizontal",
         legend.title = element_blank(),
         legend.text = element_text(family = "Glory", size = 25),
         legend.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
-        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5),
-        plot.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
-        panel.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"))
+        plot.title = element_text(family = "Zen Tokyo Zoo", size = 100, hjust = 0.5, colour = "#b4d2d3"),
+        plot.background = element_rect(fill = "#152636", colour = "#152636"),
+        panel.background = element_rect(fill = "#152636", colour = "#152636"))
 
 
 
@@ -113,15 +113,23 @@ p <- p1 + p2 +
   plot_layout(guides = "collect") +
   plot_annotation(
     title = "Clean water and sanitation",
-    subtitle = "What share of the population has access to drinking water facilities ?",
+    #subtitle = "What share of the population has access to drinking water facilities ?",
+    subtitle = paste0("Access to <b style = 'color:#59697d'>safely managed</b>",
+                      ", <b style = 'color:#269691'>basic</b>",
+                      ", <b style = 'color:#ebcc85'>limited</b>",
+                      ", <b style = 'color:#f39654'>unimproved</b>",
+                      ", or <b style = 'color:#cf4d5f'>no access</b> to water facilities"),
     caption = "Visualisation: Jonathan Kitt | Data source: Our World In Data | #30DayChartChallenge 2022 | Day 6: data day - OWID",
-    theme = theme(plot.title = element_text(family = "Zen Tokyo Zoo", colour = "black", size = 120, hjust = 0.5,
+    theme = theme(plot.title = element_text(family = "Zen Tokyo Zoo", colour = "#b4d2d3", size = 120, hjust = 0.5,
                                             margin = margin(t = 20, b = 10)),
-                  plot.subtitle = element_text(family = "Glory", colour = "black", size = 75, hjust = 0.5,
+                  # plot.subtitle = element_text(family = "Glory", colour = "black", size = 75, hjust = 0.5,
+                  #                              margin = margin(b = 20)),
+                  plot.subtitle = element_markdown(family = "Glory", colour = "#b4d2d3", size = 75, hjust = 0.5,
                                                margin = margin(b = 20)),
-                  plot.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"),
-                  plot.caption = element_text(colour = "black", hjust = 0.5, size = 25,
+                  # plot.background = element_rect(fill = "#9ed8f0", colour = "#9ed8f0"
+                  plot.background = element_rect(fill = "#152636", colour = "#152636"),
+                  plot.caption = element_text(colour = "#b4d2d3", hjust = 0.5, size = 25,
                                               margin = margin(t = 20)),
-                  legend.position = "bottom"))
+                  legend.position = "none"))
 
 ggsave("2022/plots/06_data_day_owid.png", p, dpi = 320, width = 12, height = 6)
