@@ -2,17 +2,17 @@
 # 2022
 # Category : Comparisons
 # Day 2 : Pictogram
-# Last updated 2022-03-07
+# Last updated 2022-03-28
 
 # https://gs.statcounter.com/os-market-share/mobile/worldwide
 
 # Load packages ----
 
-library(tidyverse)
-library(showtext)
-library(ggwaffle)
 library(emojifont)
+library(ggwaffle)
 library(patchwork)
+library(showtext)
+library(tidyverse)
 
 # Load fonts ----
 
@@ -57,4 +57,6 @@ p3 <- p1 + p2 +
     theme = theme(plot.background = element_rect(fill = "#332859", colour = "#332859"),
                   plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
 
-ggsave("2022/plots/02_pictogram.png", p3, dpi = 320, width = 12, height = 6)
+# Save plot ----
+
+ggsave("2022/plots/finished/02_pictogram.png", p3, dpi = 320, width = 12, height = 6)
