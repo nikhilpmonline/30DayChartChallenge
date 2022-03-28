@@ -2,68 +2,15 @@
 # 2022
 # Category : Comparisons
 # Day 3 : Historical
-# Last updated 2022-03-09
+# Last updated 2022-03-28
 
-# Source : https://en.wikipedia.org/wiki/Anscombe%27s_quartet
-# https://blog.rtwilson.com/updated-snow-gis-data/
+# Source : https://en.wikipedia.org/wiki/Anscombe's_quartet
 
 # Load packages ----
 
-library(tidyverse)
-library(showtext)
-# library(ggwaffle)
-# library(emojifont)
 library(patchwork)
-
-# Testing John Snow cholera map ----
-
-library(HistData)
-
-cases <- as_tibble(Snow.deaths) %>% 
-  mutate(description = "case") %>% 
-  select(description, id = case, x, y)
- 
-pumps <- as_tibble(Snow.pumps) %>% 
-  mutate(description = "pump") %>% 
-  select(description, id = pump, x, y)
-
-ggplot(cases, aes(x = x, y = y)) +
-  geom_density2d()
-
-ggplot(cases, aes(x = x, y = y)) +
-  stat_density2d(aes(fill = ..level..), geom = "polygon") +
-  geom_point(data = pumps, aes(x = 12.6, y = 11.7),
-             colour = "red", size = 5)
-
-d1 <- rbind(cases, pumps)
-
-ggplot() +
-  stat_density_2d(data = cases, aes(x = x, y = y)) +
-  geom_point(data = pumps, aes(x = 12.6, y = 11.7),
-             colour = "red", size = 5) +
-  geom_point(data = cases, aes(x = x, y = y),
-             colour = "grey80")
-
-ggplot() +
-  geom_point(data = d1,
-             aes(x = x, y = y, colour = description))
-
-
-d3 <- Snow.streets %>% as_tibble() %>% 
-  group_by(street) %>% 
-  summarise(x1 = min(x), x2 = max(x),
-            y1 = min(y), y2 = max(y))
-
-
-streets
-
-ggplot(streets) +
-  geom_segment(aes(x = x1, xend = x2,
-                   y = y1, yend = y2,
-                   colour = street))
-
-plot(d1$x, d1$y)
-plot(d2$x, d2$y, col = "red")
+library(showtext)
+library(tidyverse)
 
 # Load fonts ----
 
@@ -92,6 +39,11 @@ p1 <- ggplot(data = d1 %>% filter(quartet_nb == 1)) +
                colour = "#000000", size = 0.05) +
   geom_point(aes(x = x, y = y),
              size = 2, colour = "#ffa500") +
+  annotate("text", family = "Tangerine", size = 12, x = 3, y = 12, label = "mean(y) = 7.5") +
+  annotate("text", family = "Tangerine", size = 12, x = 3, y = 10, label = "var(y) = 4.13") +
+  annotate("text", family = "Tangerine", size = 12, x = 16, y = 5, label = "mean(x) = 9") +
+  annotate("text", family = "Tangerine", size = 12, x = 16, y = 3, label = "var(x) = 7.5") +
+  annotate("text", family = "Tangerine", size = 12, x = 18, y = 11.5, angle = 12, label = "y = 3 + 0.5x") +
   theme_minimal() +
   theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
         plot.margin = margin(t = 10, r = 40, b = 10, l = 10),
@@ -107,6 +59,11 @@ p2 <- ggplot(data = d1 %>% filter(quartet_nb == 2)) +
                colour = "#000000", size = 0.05) +
   geom_point(aes(x = x, y = y),
              size = 2, colour = "#0099ff") +
+  annotate("text", family = "Tangerine", size = 12, x = 3, y = 12, label = "mean(y) = 7.5") +
+  annotate("text", family = "Tangerine", size = 12, x = 3, y = 10, label = "var(y) = 4.13") +
+  annotate("text", family = "Tangerine", size = 12, x = 16, y = 5, label = "mean(x) = 9") +
+  annotate("text", family = "Tangerine", size = 12, x = 16, y = 3, label = "var(x) = 7.5") +
+  annotate("text", family = "Tangerine", size = 12, x = 18, y = 11.5, angle = 12, label = "y = 3 + 0.5x") +
   theme_minimal() +
   theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
         plot.margin = margin(t = 10, r = 40, b = 10, l = 10),
@@ -122,6 +79,11 @@ p3 <- ggplot(data = d1 %>% filter(quartet_nb == 3)) +
                colour = "#000000", size = 0.05) +
   geom_point(aes(x = x, y = y),
              size = 2, colour = "#009e73") +
+  annotate("text", family = "Tangerine", size = 12, x = 3, y = 12, label = "mean(y) = 7.5") +
+  annotate("text", family = "Tangerine", size = 12, x = 3, y = 10, label = "var(y) = 4.12") +
+  annotate("text", family = "Tangerine", size = 12, x = 16, y = 5, label = "mean(x) = 9") +
+  annotate("text", family = "Tangerine", size = 12, x = 16, y = 3, label = "var(x) = 7.5") +
+  annotate("text", family = "Tangerine", size = 12, x = 18, y = 11.5, angle = 12, label = "y = 3 + 0.5x") +
   theme_minimal() +
   theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
         plot.margin = margin(t = 10, r = 40, b = 10, l = 10),
@@ -137,6 +99,11 @@ p4 <- ggplot(data = d1 %>% filter(quartet_nb == 4)) +
                colour = "#000000", size = 0.05) +
   geom_point(aes(x = x, y = y),
              size = 2, colour = "#b32db5") +
+  annotate("text", family = "Tangerine", size = 12, x = 3, y = 12, label = "mean(y) = 7.5") +
+  annotate("text", family = "Tangerine", size = 12, x = 3, y = 10, label = "var(y) = 4.12") +
+  annotate("text", family = "Tangerine", size = 12, x = 16, y = 5, label = "mean(x) = 9") +
+  annotate("text", family = "Tangerine", size = 12, x = 16, y = 3, label = "var(x) = 7.5") +
+  annotate("text", family = "Tangerine", size = 12, x = 18, y = 11.5, angle = 12, label = "y = 3 + 0.5x") +
   theme_minimal() +
   theme(plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
         plot.margin = margin(t = 10, r = 40, b = 10, l = 10),
@@ -147,8 +114,8 @@ p4 <- ggplot(data = d1 %>% filter(quartet_nb == 4)) +
 
 p <- p1 + p2 + p3 + p4 +
   plot_annotation(
-    title = "Anscombe's quartet",
-    subtitle = "In 1973, Francis Anscombe constructed four datasets with nearly identical descriptive statistics but very different distributions",
+    title = "Anscombe's quartet (1973)",
+    subtitle = "Nearly identical descriptive statistics but very different distributions",
     caption = "Visualisation: Jonathan Kitt | Data source: Wikipedia | #30DayChartChallenge 2022 | Day 3: historical",
     theme = theme(plot.title = element_text(family = "Tangerine", colour = "black", size = 120, hjust = 0.5,
                                             margin = margin(t = 20, b = 10)),
@@ -157,4 +124,6 @@ p <- p1 + p2 + p3 + p4 +
                   plot.background = element_rect(fill = "#f3ddc2", colour = "#f3ddc2"),
                   plot.caption = element_text(colour = "black", hjust = 0.5, size = 25)))
 
-ggsave("2022/plots/03_historical.png", p, dpi = 320, width = 12, height = 6)
+# Save plot ----
+
+ggsave("2022/plots/finished/03_historical.png", p, dpi = 320, width = 12, height = 6)
