@@ -9,12 +9,6 @@
 # Load packages ----
 
 library(tidyverse)
-library(showtext)
-
-# Load fonts ----
-
-# font_add_google("Tangerine", "Tangerine")
-# showtext_auto()
 
 # Data wrangling ----
 
@@ -92,7 +86,8 @@ p <- ggplot() +
         plot.background = element_rect(fill = "white", colour = "white"),
         axis.title = element_blank(),
         axis.text = element_blank(),
-        plot.caption = element_text(colour = "black", hjust = 0.5, size = 25))
+        plot.caption = element_text(colour = "black", hjust = 0.5, size = 25,
+                                    margin = margin(b = 10)))
 
 ggsave("2022/plots/13_correlation.png", p, dpi = 320, width = 12, height = 6)
   
