@@ -115,4 +115,4 @@ p <- p1 + p2 +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/06_data_day_owid.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/finished/06_owid.png", p, dpi = 320, width = 12, height = 6)
