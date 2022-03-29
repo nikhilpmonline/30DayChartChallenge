@@ -115,34 +115,34 @@ p2 <- ggplot(data = aa_names) +
            label = "The 20 amino-acids encoded by the human genetic code") +
   annotate("text", family = "Gluten", colour = "white", x = 0, y = 1.5, size = 15, hjust = 0,
            label = "are either") +
-  # annotate("text", family = "Gluten", colour = "#d11141", x = 2.75, y = 1.5, size = 15, hjust = 0,
-  #          label = "aliphatic") +
-  # annotate("text", family = "Gluten", colour = "white", x = 5.1, y = 1.5, size = 15, hjust = 0,
-  #          label = ", ") +
-  # annotate("text", family = "Gluten", colour = "#00b159", x = 5.5, y = 1.5, size = 15, hjust = 0,
-  #          label = "aromatic") +
-  # annotate("text", family = "Gluten", colour = "white", x = 7.95, y = 1.5, size = 15, hjust = 0,
-  #          label = ", ") +
-  # annotate("text", family = "Gluten", colour = "#f37735", x = 9.35, y = 1.5, size = 15, hjust = 0,
-  #          label = "acidic") +
-  # annotate("text", family = "Gluten", colour = "white", x = 11.15, y = 1.5, size = 15, hjust = 0,
-  #          label = ", ") +
-  # annotate("text", family = "Gluten", colour = "#00aedb", x = 11.55, y = 1.5, size = 15, hjust = 0,
-  #          label = "basic") +
-  # annotate("text", family = "Gluten", colour = "white", x = 13.15, y = 1.5, size = 15, hjust = 0,
-  #          label = ", ") +
-  # annotate("text", family = "Gluten", colour = "#8c8c8c", x = 0, y = 1, size = 15, hjust = 0,
-  #          label = "hydroxylic") +
-  # annotate("text", family = "Gluten", colour = "white", x = 3.2, y = 1, size = 15, hjust = 0,
-  #          label = ", ") +
-  # annotate("text", family = "Gluten", colour = "#ffc425", x = 3.6, y = 1, size = 15, hjust = 0,
-  #          label = "sulfur-containing") +
-  # annotate("text", family = "Gluten", colour = "white", x = 9.2, y = 1, size = 15, hjust = 0,
-  #          label = "or ") +
-  # annotate("text", family = "Gluten", colour = "#cccccc", x = 10.1, y = 1, size = 15, hjust = 0,
-  #          label = "amidic") +
-  # annotate("text", family = "Gluten", colour = "white", x = 12, y = 1, size = 15, hjust = 0,
-  #          label = ".") +
+  annotate("text", family = "Gluten", colour = "#d11141", x = 2.75, y = 1.5, size = 15, hjust = 0,
+           label = "aliphatic") +
+  annotate("text", family = "Gluten", colour = "white", x = 5, y = 1.5, size = 15, hjust = 0,
+           label = ", ") +
+  annotate("text", family = "Gluten", colour = "#00b159", x = 5.3, y = 1.5, size = 15, hjust = 0,
+           label = "aromatic") +
+  annotate("text", family = "Gluten", colour = "white", x = 7.6, y = 1.5, size = 15, hjust = 0,
+           label = ", ") +
+  annotate("text", family = "Gluten", colour = "#f37735", x = 7.9, y = 1.5, size = 15, hjust = 0,
+           label = "acidic") +
+  annotate("text", family = "Gluten", colour = "white", x = 9.4, y = 1.5, size = 15, hjust = 0,
+           label = ", ") +
+  annotate("text", family = "Gluten", colour = "#00aedb", x = 9.7, y = 1.5, size = 15, hjust = 0,
+           label = "basic") +
+  annotate("text", family = "Gluten", colour = "white", x = 11.05, y = 1.5, size = 15, hjust = 0,
+           label = ", ") +
+  annotate("text", family = "Gluten", colour = "#8c8c8c", x = 11.35, y = 1.5, size = 15, hjust = 0,
+           label = "hydroxylic") +
+  annotate("text", family = "Gluten", colour = "white", x = 14.1, y = 1.5, size = 15, hjust = 0,
+           label = ", ") +
+  annotate("text", family = "Gluten", colour = "#ffc425", x = 0, y = 1, size = 15, hjust = 0,
+           label = "sulfur-containing") +
+  annotate("text", family = "Gluten", colour = "white", x = 4.85, y = 1, size = 15, hjust = 0,
+           label = "or ") +
+  annotate("text", family = "Gluten", colour = "#cccccc", x = 5.6, y = 1, size = 15, hjust = 0,
+           label = "amidic") +
+  annotate("text", family = "Gluten", colour = "white", x = 7.25, y = 1, size = 15, hjust = 0,
+           label = ".") +
   xlim(0, 18) +
   ylim(0, 12) +
   theme_void() +
@@ -162,4 +162,4 @@ p <- p1 + p2 +
 
 # Save plot ----
 
-ggsave("2022/plots/work_in_progress/11_circular.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/finished/11_circular.png", p, dpi = 320, width = 12, height = 6)
