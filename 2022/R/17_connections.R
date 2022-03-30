@@ -46,6 +46,30 @@ glasgow_stops <- getbb("Glasgow") %>%
                   value = "subway_entrance") %>% 
   osmdata_sf()
 
+lille_subway <- getbb("Lille") %>% 
+  opq() %>% 
+  add_osm_feature(key = "route",
+                  value = "subway") %>% 
+  osmdata_sf()
+
+lille_ligne_1 <- subset(lille_subway$osm_lines, name == "Ligne 1")
+lille_ligne_2 <- subset(lille_subway$osm_lines, name == "Ligne 2")
+
+ggplot() +
+  geom_sf(data = lille_ligne_1$geometry,
+          inherit.aes = FALSE,
+          color = "#ee1927",
+          size = 4) +
+  geom_sf(data = lille_ligne_2$geometry,
+          inherit.aes = FALSE,
+          color = "#00a0e8",
+          size = 4) +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "grey70", colour = "grey70"),
+        plot.background = element_rect(fill = "grey70", colour = "grey70"),
+        panel.grid = element_blank(),
+        axis.text = element_blank())
+
 lyon_subway <- getbb("Lyon") %>% 
   opq() %>% 
   add_osm_feature(key = "route",
@@ -73,7 +97,7 @@ lyon_train <- getbb("Lyon") %>%
 ggplot() +
   geom_sf(data = glasgow_subway$osm_lines,
           inherit.aes = FALSE,
-          color = "#ee1927",
+          color = "orange",
           size = 4) +
   geom_sf(data = kelvinbridge$geometry,
           inherit.aes = FALSE,
