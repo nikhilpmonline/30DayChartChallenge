@@ -13,31 +13,7 @@ library(tidyverse)
 
 # Import datasets ----
 
-getbb("Lyon")
-# getbb("Swindon")
-# getbb("Paris")
-# getbb("Edinburgh")
-
-glasgow_subway <- getbb("Glasgow") %>% 
-  opq() %>% 
-  add_osm_feature(key = "route",
-                  value = "subway") %>% 
-  osmdata_sf()
-
-glasgow_stops <- getbb("Glasgow") %>% 
-  opq() %>% 
-  add_osm_feature(key = "public_transport",
-                  value = "stop_area") %>% 
-  osmdata_sf()
-
-glasgow_subway_stops <- subset(glasgow_stops$osm_points, network == "Glasgow Subway")
-kelvinbridge <- subset(glasgow_stops$osm_points, network == "Glasgow Subway", name == "Kelvinbridge")[1, ]
-
-glasgow_stops <- getbb("Glasgow") %>% 
-  opq() %>% 
-  add_osm_feature(key = "railway",
-                  value = "subway_entrance") %>% 
-  osmdata_sf()
+# Lille
 
 lille_subway <- getbb("Lille") %>% 
   opq() %>% 
@@ -45,23 +21,13 @@ lille_subway <- getbb("Lille") %>%
                   value = "subway") %>% 
   osmdata_sf()
 
-lille_ligne_1 <- subset(lille_subway$osm_lines, name == "Ligne 1")
-lille_ligne_2 <- subset(lille_subway$osm_lines, name == "Ligne 2")
+lille_stops <- getbb("Lille") %>% 
+  opq() %>% 
+  add_osm_feature(key = "railway",
+                  value = "subway_entrance") %>% 
+  osmdata_sf()
 
-ggplot() +
-  geom_sf(data = lille_ligne_1$geometry,
-          inherit.aes = FALSE,
-          color = "yellow",
-          size = 4) +
-  geom_sf(data = lille_ligne_2$geometry,
-          inherit.aes = FALSE,
-          color = "red",
-          size = 4) +
-  theme_minimal() +
-  theme(panel.background = element_rect(fill = "grey70", colour = "grey70"),
-        plot.background = element_rect(fill = "grey70", colour = "grey70"),
-        panel.grid = element_blank(),
-        axis.text = element_blank())
+# Lyon
 
 lyon_subway <- getbb("Lyon") %>% 
   opq() %>% 
@@ -75,38 +41,55 @@ lyon_stops <- getbb("Lyon") %>%
                   value = "subway_entrance") %>% 
   osmdata_sf()
 
-lyon_motorway <- getbb("Lyon") %>% 
-  opq() %>%
-  add_osm_feature(key = "highway",
-                  value = c("motorway", "trunk")) %>% 
+# Edinburgh
+
+edinburgh_tramway <- getbb("Edinburgh") %>% 
+  opq() %>% 
+  add_osm_feature(key = "route",
+                  value = "tram") %>% 
   osmdata_sf()
 
-lyon_train <- getbb("Lyon") %>% 
-  opq() %>%
+edinburgh_buses <- getbb("Edinburgh") %>% 
+  opq() %>% 
+  add_osm_feature(key = "route",
+                  value = "bus") %>% 
+  osmdata_sf()
+
+line_1 <- edinbu
+
+lothian_buses <- subset(edinburgh_buses$osm_multilines, operator %in% c("Lothian Buses", "Lothian City Buses"))
+
+line_1_a <- subset(lothian_buses, name == "Lothian City Buses 1: Clermiston => Seafield")
+line_1_b <- subset(lothian_buses, name == "Lothian City Buses 1: Seafield => Clermiston")
+
+
+unique(edinburgh_buses$osm_lines$operator)
+
+edinburgh_tramway_stops <- getbb("Edinburgh") %>% 
+  opq() %>% 
   add_osm_feature(key = "railway",
-                  value = "rail") %>% 
+                  value = "tram_stop") %>% 
   osmdata_sf()
 
-ggplot() +
-  geom_sf(data = glasgow_subway$osm_lines,
-          inherit.aes = FALSE,
-          color = "orange",
-          size = 4) +
-  geom_sf(data = kelvinbridge$geometry,
-          inherit.aes = FALSE,
-          color = "white",
-          size = 8) 
-  
+ggplot() + 
+  geom_sf(data = line_1_b$geometry)
 
-lyon_subway$osm_lines
-unique(lyon_stops$osm_points$name)
+# Data wrangling ----
 
-ligne_a <- subset(lyon_subway$osm_lines, name == "Ligne A")
-ligne_b <- subset(lyon_subway$osm_lines, name == "Ligne B")
-ligne_c <- subset(lyon_subway$osm_lines, name == "Ligne C")
-ligne_d <- subset(lyon_subway$osm_lines, name == "Ligne D")
+# Lille
 
-unique(lyon_stops$osm_points$name)
+lille_ligne_1 <- subset(lille_subway$osm_lines, name == "Ligne 1")
+lille_ligne_2 <- subset(lille_subway$osm_lines, name == "Ligne 2")
+
+porte_des_postes <- subset(lille_stops$osm_points, name == "Porte des Postes")[1, ]
+lille_flandres <- subset(lille_stops$osm_points, name == "Gare Lille Flandres")[1, ]
+
+# Lyon
+
+lyon_ligne_a <- subset(lyon_subway$osm_lines, name == "Ligne A")
+lyon_ligne_b <- subset(lyon_subway$osm_lines, name == "Ligne B")
+lyon_ligne_c <- subset(lyon_subway$osm_lines, name == "Ligne C")
+lyon_ligne_d <- subset(lyon_subway$osm_lines, name == "Ligne D")
 
 saxe_gambetta <- subset(lyon_stops$osm_points, name == "Saxe - Gambetta")[1, ]
 charpennes <- subset(lyon_stops$osm_points, name == "Charpennes - Charles Hernu")[1, ]
@@ -114,20 +97,46 @@ hotel_de_ville <- subset(lyon_stops$osm_points, name == "HÃ´tel de Ville - Lou
 bellecour <- subset(lyon_stops$osm_points, name == "Bellecour")[1, ]
 
 
-p <- ggplot() +
-  geom_sf(data = ligne_a$geometry,
+
+# Create plot ----
+
+p1 <- ggplot() +
+  geom_sf(data = lille_ligne_1$geometry,
+          inherit.aes = FALSE,
+          color = "yellow",
+          size = 4) +
+  geom_sf(data = lille_ligne_2$geometry,
+          inherit.aes = FALSE,
+          color = "red",
+          size = 4) +
+  geom_sf(data = lille_flandres$geometry,
+          inherit.aes = FALSE,
+          color = "white",
+          size = 8) +
+  geom_sf(data = porte_des_postes$geometry,
+          inherit.aes = FALSE,
+          color = "white",
+          size = 8) +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "grey70", colour = "grey70"),
+        plot.background = element_rect(fill = "grey70", colour = "grey70"),
+        panel.grid = element_blank(),
+        axis.text = element_blank())
+
+p2 <- ggplot() +
+  geom_sf(data = lyon_ligne_a$geometry,
           inherit.aes = FALSE,
           color = "#ee1927",
           size = 4) +
-  geom_sf(data = ligne_b$geometry,
+  geom_sf(data = lyon_ligne_b$geometry,
           inherit.aes = FALSE,
           color = "#00a0e8",
           size = 4) +
-  geom_sf(data = ligne_c$geometry,
+  geom_sf(data = lyon_ligne_c$geometry,
           inherit.aes = FALSE,
           color = "#fab211",
           size = 4) +
-  geom_sf(data = ligne_d$geometry,
+  geom_sf(data = lyon_ligne_d$geometry,
           inherit.aes = FALSE,
           color = "#22af5f",
           size = 4) +
@@ -154,6 +163,9 @@ p <- ggplot() +
         plot.background = element_rect(fill = "grey70", colour = "grey70"),
         panel.grid = element_blank(),
         axis.text = element_blank())
+
+p <- p1 + p2
+p
 
 ggsave("2022/plots/17_connections.png", p, dpi = 320, width = 12, height = 6)
 
