@@ -58,11 +58,11 @@ lille_ligne_2 <- subset(lille_subway$osm_lines, name == "Ligne 2")
 ggplot() +
   geom_sf(data = lille_ligne_1$geometry,
           inherit.aes = FALSE,
-          color = "#ee1927",
+          color = "yellow",
           size = 4) +
   geom_sf(data = lille_ligne_2$geometry,
           inherit.aes = FALSE,
-          color = "#00a0e8",
+          color = "red",
           size = 4) +
   theme_minimal() +
   theme(panel.background = element_rect(fill = "grey70", colour = "grey70"),
