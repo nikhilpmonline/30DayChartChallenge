@@ -11,8 +11,8 @@
 # Github contributions graph ----
 
 d1 <- tibble(
-  week = rep(1:7, each = 13),
-  day = rep(1:7, times = 13),
+  week = rep(1:13, each = 7),
+  day = rep(7:1, times = 13),
   nb_contributions = c(0, 0, 6, 1, 2, 7, 0,
                        0, 0, 1, 0, 5, 6, 0,
                        0, 11, 7, 16, 11, 15, 0,
@@ -44,7 +44,8 @@ ggplot(data = d1,
        aes(x = week, y = day, fill = as.factor(level))) +
   geom_tile(colour = "white") +
   scale_fill_manual(values = c("#ebedf0", "#9be9a8", "#40c463", 
-                               "#30a14e", "#216e39"))
+                               "#30a14e", "#216e39")) +
+  theme(panel.background = element_rect(fill = "white", colour = "white"))
 
 # Load packages ----
 
