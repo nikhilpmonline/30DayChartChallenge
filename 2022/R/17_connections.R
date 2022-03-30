@@ -11,6 +11,18 @@ library(patchwork)
 library(showtext)
 library(tidyverse)
 
+# Load fonts ----
+
+font_add_google("Cinzel Decorative", "Cinzel")
+font_add_google("Aladin", "Aladin")
+font_add_google("Cormorant SC", "Cormorant SC")
+font_add_google("Metamorphous", "Metamorphous")
+font_add_google("Almendra", "Almendra")
+font_add_google("Uncial Antiqua", "Uncial Antiqua")
+font_add_google("Eagle Lake", "Eagle Lake")
+font_add_google("Snowburst One", "Snowburst One")
+showtext_auto()
+
 # Import datasets ----
 
 # Lille
