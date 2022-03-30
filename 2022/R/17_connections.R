@@ -55,6 +55,13 @@ edinburgh_buses <- getbb("Edinburgh") %>%
                   value = "bus") %>% 
   osmdata_sf()
 
+list_of_buses <- tibble(line = unique(lothian_buses$name))
+
+filtered_buses <- list_of_buses %>% filter(across(line, ~ grepl("Lothian", .))) %>% 
+  mutate(line = gsub("Lothian City Buses", "", line)) %>% 
+  mutate(line = gsub("Lothian Buses", "", line)) %>% 
+  arrange(line)
+
 line_1 <- edinbu
 
 lothian_buses <- subset(edinburgh_buses$osm_multilines, operator %in% c("Lothian Buses", "Lothian City Buses"))
