@@ -2,23 +2,16 @@
 # 2022
 # Category : Relationships
 # Day 17 : Connections
-# Last updated 2022-03-16
-
-# https://ggplot2tutor.com/tutorials/streetmaps
-# https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/
-# https://wiki.openstreetmap.org/wiki/Map_Features
-# https://www.re-thinkingthefuture.com/designing-for-typologies/a4930-10-biggest-roundabouts-in-the-world/
+# Last updated 2022-03-30
 
 # Load packages ----
 
-library(tidyverse)
-# library(showtext)
-# library(ggwaffle)
-# library(emojifont)
-# library(patchwork)
 library(osmdata)
+library(patchwork)
+library(showtext)
+library(tidyverse)
 
-# Testing ----
+# Import datasets ----
 
 getbb("Lyon")
 # getbb("Swindon")
