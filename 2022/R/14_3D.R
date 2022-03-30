@@ -10,28 +10,32 @@
 
 # Load packages ----
 
-library(tidyverse)
-library(rayshader)
-library(HistData)
 library(ggtern)
 library(palmerpenguins)
-library(rgl)
+library(showtext)
+library(tidyverse)
 
-# Testing ternary plot on Palmer Penguins ----
+# Load fonts ----
 
-data("penguins")
-penguins
+font_add_google("Righteous", "Righteous")
+showtext_auto()
 
-max_bill_length_mm <- max(penguins$bill_length_mm, na.rm = )
+# Import data ----
 
-penguins <- penguins %>% 
+penguins <- palmerpenguins::penguins
+
+# Data wrangling ----
+
+d1 <- penguins %>% 
   mutate(bill_length_ratio = bill_length_mm / max(bill_length_mm, na.rm = TRUE),
          bill_depth_ratio = bill_depth_mm / max(bill_depth_mm, na.rm = TRUE),
          flipper_length_ratio = flipper_length_mm / max(flipper_length_mm, na.rm = TRUE)) %>% 
   select(species, island, bill_length_ratio, bill_depth_ratio, flipper_length_ratio) %>% 
   filter(!is.na(bill_depth_ratio))
 
-ggtern(data = penguins, aes(x = bill_length_ratio, y = bill_depth_ratio, z = flipper_length_ratio)) +
+# Create plot ----
+
+ggtern(data = d1, aes(x = bill_length_ratio, y = bill_depth_ratio, z = flipper_length_ratio)) +
   geom_point(aes(colour = species),
              show.legend = FALSE) +
   scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
@@ -43,12 +47,26 @@ ggtern(data = penguins, aes(x = bill_length_ratio, y = bill_depth_ratio, z = fli
   theme_void() +
   theme(panel.background = element_rect(fill = "#161b33", colour = "#161b33"),
         plot.background = element_rect(fill = "#161b33", colour = "#161b33"),
+        axis.line = element_line(colour = "lightblue")) +
+  theme_hidelabels() +
+  theme_hideticks() +
+  theme_hidegrid()
+  # theme_hidelabels() +
+  # theme_hideticks() +
+  # theme_hidegrid() +
+
+
+
+  theme(axis.line = element_line(colour = "black"))
+  # theme_void() +
+  theme(panel.background = element_rect(fill = "#161b33", colour = "#161b33"),
+        plot.background = element_rect(fill = "#161b33", colour = "#161b33"),
         # panel.background = element_rect(fill = "#9ebfe0", colour = "#9ebfe0"),
         # plot.background = element_rect(fill = "#9ebfe0", colour = "#9ebfe0")
         axis.title = element_blank(),
         axis.ticks = element_blank(),
-        axis.text.y = element_blank(),
-        axis.text.x = element_text(family = "Righteous", colour = "#041f32", size = 25),
+        axis.text = element_blank(),
+        axis.line = element_line(colour = "white"),
         panel.grid.minor = element_blank(),
         panel.grid.major.x = element_line(colour = "white", linetype = "dotted", size = 0.5),
         panel.grid.major.y = element_blank(),
