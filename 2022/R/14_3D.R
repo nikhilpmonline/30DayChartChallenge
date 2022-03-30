@@ -44,8 +44,8 @@ p <- ggtern(data = d1, aes(x = bill_length_ratio, y = bill_depth_ratio, z = flip
   annotate("text", x = 0.5, y = 0.5, z = 0.4, label = "Chinstrap", colour = "purple", family = "Righteous", size = 10) +
   annotate("text", x = 0.5, y = 0.5, z = 0.8, label = "Gentoo", colour = "cyan4", family = "Righteous", size = 10) +
   labs(x = "Bill length", y = "Bill depth", z = "Flipper length") +
-  ggtitle("Palmer penguins",
-          subtitle = "Clustering three species according to bill depth, bill length & flipper length\nVisualisation: Jonathan Kitt | Data source: Palmer Penguins | #30DayChartChallenge 2022 | Day 8: mountains") +
+  ggtitle("How to differenciate penguins",
+          subtitle = "Visualisation: Jonathan Kitt | Data source: Palmer Penguins | #30DayChartChallenge 2022 | Day 8: 3-dimensional") +
   theme_void() +
   theme(panel.background = element_rect(fill = "#161b33", colour = "#161b33"),
         plot.background = element_rect(fill = "#161b33", colour = "#161b33"),
@@ -53,11 +53,11 @@ p <- ggtern(data = d1, aes(x = bill_length_ratio, y = bill_depth_ratio, z = flip
         axis.title = element_text(family = "Righteous", colour = "lightblue", size = 22),
         plot.title = element_text(family = "Righteous", colour = "lightblue", size = 75, hjust = 0.5,
                                   margin = margin(t = 10)),
-        plot.subtitle = element_text(family = "Righteous", colour = "lightblue", size = 30, hjust = 0.5)) +
+        plot.subtitle = element_text(family = "Righteous", colour = "lightblue", size = 20, hjust = 0.5)) +
   theme_hidelabels() +
   theme_hideticks() +
   theme_hidegrid()
 
 # Save plot ----
   
-ggsave("2022/plots/work_in_progress/14_3dimensional_2.png", p, dpi = 320, width = 6, height = 6)
+ggsave("2022/plots/finished/14_3dimensional.png", p, dpi = 320, width = 12, height = 6)
