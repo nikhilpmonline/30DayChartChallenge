@@ -13,6 +13,60 @@
 library(tidyverse)
 library(rayshader)
 library(HistData)
+library(ggtern)
+library(palmerpenguins)
+library(rgl)
+
+# Testing ternary plot on Palmer Penguins ----
+
+data("penguins")
+penguins
+
+max_bill_length_mm <- max(penguins$bill_length_mm, na.rm = )
+
+penguins <- penguins %>% 
+  mutate(bill_length_ratio = bill_length_mm / max(bill_length_mm, na.rm = TRUE),
+         bill_depth_ratio = bill_depth_mm / max(bill_depth_mm, na.rm = TRUE),
+         flipper_length_ratio = flipper_length_mm / max(flipper_length_mm, na.rm = TRUE)) %>% 
+  select(species, island, bill_length_ratio, bill_depth_ratio, flipper_length_ratio) %>% 
+  filter(!is.na(bill_depth_ratio))
+
+ggtern(data = penguins, aes(x = bill_length_ratio, y = bill_depth_ratio, z = flipper_length_ratio)) +
+  geom_point(aes(colour = species),
+             show.legend = FALSE) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme_zoom_center(0.55) +
+  annotate("text", x = 0.3, y = 0.5, z = 0.4, label = "Adelie", colour = "darkorange") +
+  annotate("text", x = 0.5, y = 0.5, z = 0.4, label = "Chinstrap", colour = "purple") +
+  annotate("text", x = 0.5, y = 0.5, z = 0.8, label = "Gentoo", colour = "cyan4") +
+  ggtitle("Test") +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#161b33", colour = "#161b33"),
+        plot.background = element_rect(fill = "#161b33", colour = "#161b33"),
+        # panel.background = element_rect(fill = "#9ebfe0", colour = "#9ebfe0"),
+        # plot.background = element_rect(fill = "#9ebfe0", colour = "#9ebfe0")
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(family = "Righteous", colour = "#041f32", size = 25),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_line(colour = "white", linetype = "dotted", size = 0.5),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_text(colour = "#041f32", size = 25, hjust = 0.5,
+                                  family = "Righteous",
+                                  margin = margin(t = 20, b = 10)),
+        plot.subtitle = element_text(colour = "#041f32", size = 60, hjust = 0.5,
+                                     margin = margin(t = 0, b = 40), family = "Righteous"),
+        plot.caption = element_text(colour = "#041f32", hjust = 0.5,
+                                    margin = margin(b = 15, t = 20), size = 25))
+
+
+
+
+ggsave("2022/plots/work_in_progress/14_3dimensional_2.png", p, dpi = 320, width = 6, height = 6)
+
+plot3d(x = penguins$bill_length_mm, y = penguins$bill_depth_mm, z = penguins$flipper_length_mm,
+       type = "s", radius = 0.4)
 
 # Testing John Snow cholera map ----
 
