@@ -99,10 +99,64 @@ d1 <- rbind(stornoway_clean, durham_clean, sheffield_clean, oxford_clean) %>%
 rm(durham_clean, durham_raw, oxford_clean, oxford_raw, 
    sheffield_clean, sheffield_raw, stornoway_clean, stornoway_raw)
 
-ggplot(data = d1,
+# Create plot ----
+
+stations <- d1 %>% 
+  group_by(station) %>% 
+  filter(row_number() == 1) %>% 
+  select(station, x, y)
+
+uk <- map_data("world") %>% 
+  filter(region == "UK", subregion != "Northern Ireland")
+
+p1 <- ggplot() +
+  geom_polygon(data = uk,
+               aes(x = long, y = lat, group = group),
+               fill = "#525888", colour = "#d3d3d3") +
+  coord_fixed(1.3) +
+  geom_segment(data = stations,
+               aes(x = x, xend = 2, y = y, yend = c(59.65, 56.75, 54, 51.25)),
+               colour = "white", size = 0.5) +
+  geom_point(data = stations,
+             aes(x = x, y = y),
+             colour = "white", size = 3) +
+  # geom_text(data = stations,
+  #           aes(x = x , y = y + 0.3, label = station),
+  #           colour = "white", size = 12) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#525888", colour = "#525888"),
+        panel.background = element_rect(fill = "#525888", colour = "#525888"))
+
+
+p2 <- ggplot(data = d1,
        aes(x = year, y = station, fill = anomaly)) +
-  geom_col(width = 0.75) +
-  scale_fill_fermenter(palette = "RdBu", limits = c(-1.5, 1.5))
+  geom_col(width = 0.5, show.legend = FALSE) +
+  scale_fill_fermenter(palette = "RdBu", limits = c(-1.5, 1.5)) +
+  scale_x_continuous(labels = seq(1921, 2020, 20)) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#525888", colour = "#525888"),
+        panel.background = element_rect(fill = "#525888", colour = "#525888"),
+        axis.text.y = element_text(colour = "white", size = 30, hjust = 0))
+
+p <- p1 + p2 +
+  # plot_layout(ncol = 2, widths = c(1, 2), heights = c(2, 2)) +
+  plot_annotation(
+    title = "Global change in the United Kingom",
+    subtitle = "Evolution in temperatures (1921-2020)",
+    caption = "Visualisation: Jonathan Kitt | Data source: metoffice.gov.uk | #30DayChartChallenge 2022 | Day 19: global change",
+    theme = theme(plot.background = element_rect(fill = "#525888", colour = "#525888"),
+                  plot.title = element_text(colour = "white", hjust = 0.5, size = 50, margin = margin(t = 20)),
+                  plot.subtitle = element_text(colour = "white", hjust = 0.5, size = 30, margin = margin(t = 10)),
+                  plot.caption = element_text(colour = "white", hjust = 0.5, size = 25)))
+
+ggsave("2022/plots/work_in_progress/19_globalchange.png", p, dpi = 320, width = 12, height = 6)
+
+
+
++
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+        panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"))
 
 southampton_clean <- southampton_raw %>% 
   slice(-1) %>% 
