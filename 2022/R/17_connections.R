@@ -2,7 +2,7 @@
 # 2022
 # Category : Relationships
 # Day 17 : Connections
-# Last updated 2022-03-30
+# Last updated 2022-04-01
 
 # Load packages ----
 
@@ -23,49 +23,43 @@ font_add_google("Eagle Lake", "Eagle Lake")
 font_add_google("Snowburst One", "Snowburst One")
 showtext_auto()
 
-# Import datasets ----
+# Data wrangling ----
 
-# Lille
-
-lille_subway <- getbb("Lille") %>% 
-  opq() %>% 
-  add_osm_feature(key = "route",
-                  value = "subway") %>% 
-  osmdata_sf()
-
-lille_stops <- getbb("Lille") %>% 
-  opq() %>% 
-  add_osm_feature(key = "railway",
-                  value = "subway_entrance") %>% 
-  osmdata_sf()
-
-# Lyon
-
-lyon_subway <- getbb("Lyon") %>% 
-  opq() %>% 
-  add_osm_feature(key = "route",
-                  value = "subway") %>% 
-  osmdata_sf()
-
-lyon_stops <- getbb("Lyon") %>% 
-  opq() %>% 
-  add_osm_feature(key = "railway",
-                  value = "subway_entrance") %>% 
-  osmdata_sf()
-
-# Edinburgh
-
-edinburgh_tramway <- getbb("Edinburgh") %>% 
-  opq() %>% 
-  add_osm_feature(key = "route",
-                  value = "tram") %>% 
-  osmdata_sf()
-
-edinburgh_buses <- getbb("Edinburgh") %>% 
+edin_buses <- getbb("Edinburgh") %>% 
   opq() %>% 
   add_osm_feature(key = "route",
                   value = "bus") %>% 
   osmdata_sf()
+
+list_buses <- tibble(
+  osm_id = edin_buses$osm_multilines$osm_id,
+  name = edin_buses$osm_multilines$name,
+  ref = edin_buses$osm_multilines$ref,
+  operator = edin_buses$osm_multilines$operator,
+  network = edin_buses$osm_multilines$network,
+  from = edin_buses$osm_multilines$from,
+  to = edin_buses$osm_multilines$to)
+
+lothian_buses_list <- c(1:5, 7, 8, 10:12, 14:16, 19, 21:27, 29:31, 33:38,
+                        41, 42, 44, 45, 47:49, 100, 200, 300, 400)
+
+filtered_buses <- list_buses %>% 
+  filter(ref %in% lothian_buses_list) %>% 
+  mutate(ref = as.numeric(ref)) %>% 
+  arrange(ref)
+
+line_1 <- subset(edin_buses, osm_id == 103630)
+
+b3 <- list_buses %>% 
+  filter(ref == 3, from == "Clovenstone")
+
+
+
+lothian_buses <- list_buses %>% 
+  filter(network == "Lothian Buses") %>% 
+  arrange(ref)
+
+unique(edin_buses$osm_multilines$name)
 
 list_of_buses <- tibble(line = unique(lothian_buses$name))
 

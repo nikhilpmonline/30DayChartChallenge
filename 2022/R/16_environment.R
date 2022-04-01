@@ -1,8 +1,8 @@
 # 30DayChartChallenge
 # 2022
-# Category : Distributions
+# Category : Relationships
 # Day 16 : Environment
-# Last updated 2022-03-23
+# Last updated 2022-04-01
 
 # https://mlurgi.github.io/networks_for_r/
 
