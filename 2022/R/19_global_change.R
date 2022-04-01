@@ -2,7 +2,7 @@
 # 2022
 # Category : Timeseries
 # Day 19 : Global change
-# Last updated 2022-03-12
+# Last updated 2022-04-01
 
 # https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/
 # https://www.climate-lab-book.ac.uk/2018/warming-stripes/
@@ -17,25 +17,167 @@ library(lubridate)
 library(RColorBrewer)
 library(patchwork)
 
-# Lerwick data ----
+# Import datasets ----
 
-raw <- read.table(url("https://www.metoffice.gov.uk/pub/data/weather/uk/climate/stationdata/lerwickdata.txt"),
-                 skip = 5, header = TRUE, fill = TRUE, na.strings = "---") %>% 
-  as_tibble()
+stornoway_raw <- as_tibble(read.table(url("https://www.metoffice.gov.uk/pub/data/weather/uk/climate/stationdata/stornowaydata.txt"),
+                          skip = 5, header = TRUE, fill = TRUE, na.strings = "---"))
 
-tidied <- raw %>% 
+durham_raw <- as_tibble(read.table(url("https://www.metoffice.gov.uk/pub/data/weather/uk/climate/stationdata/durhamdata.txt"),
+                                      skip = 5, header = TRUE, fill = TRUE, na.strings = "---"))
+
+sheffield_raw <- as_tibble(read.table(url("https://www.metoffice.gov.uk/pub/data/weather/uk/climate/stationdata/sheffielddata.txt"),
+                                   skip = 5, header = TRUE, fill = TRUE, na.strings = "---"))
+
+oxford_raw <- as_tibble(read.table(url("https://www.metoffice.gov.uk/pub/data/weather/uk/climate/stationdata/oxforddata.txt"),
+                                      skip = 5, header = TRUE, fill = TRUE, na.strings = "---"))
+
+# Data wrangling ----
+
+stornoway_clean <- stornoway_raw %>% 
+  slice(-1) %>% 
+  mutate_all(~str_remove(., "[*]")) %>% 
+  mutate_all(~as.numeric(.)) %>% 
+  mutate(tave = (tmin + tmax) / 2) %>% 
+  filter(yyyy >= 1921, yyyy < 2021) %>% 
+  group_by(yyyy) %>% 
+  summarise(tave = mean(tave, na.rm = TRUE)) %>% 
+  mutate(ref_ave = mean(tave)) %>% 
+  mutate(anomaly = tave - ref_ave) %>% 
+  mutate(station = "Stornoway",
+         x = -6.318,
+         y = 58.214) %>% 
+  select(station, x, y, year = yyyy, anomaly)
+
+durham_clean <- durham_raw %>% 
+  slice(-1) %>% 
+  mutate_all(~str_remove(., "[*]")) %>% 
+  mutate_all(~as.numeric(.)) %>% 
+  mutate(tave = (tmin + tmax) / 2) %>% 
+  filter(yyyy >= 1921, yyyy < 2021) %>% 
+  group_by(yyyy) %>% 
+  summarise(tave = mean(tave, na.rm = TRUE)) %>% 
+  mutate(ref_ave = mean(tave)) %>% 
+  mutate(anomaly = tave - ref_ave) %>% 
+  mutate(station = "Durham",
+         x = -1.585,
+         y = 54.768) %>% 
+  select(station, x, y, year = yyyy, anomaly)
+
+sheffield_clean <- sheffield_raw %>% 
+  slice(-1) %>% 
+  mutate_all(~str_remove(., "[*]")) %>% 
+  mutate_all(~as.numeric(.)) %>% 
+  mutate(tave = (tmin + tmax) / 2) %>% 
+  filter(yyyy >= 1921, yyyy < 2021) %>% 
+  group_by(yyyy) %>% 
+  summarise(tave = mean(tave, na.rm = TRUE)) %>% 
+  mutate(ref_ave = mean(tave)) %>% 
+  mutate(anomaly = tave - ref_ave) %>% 
+  mutate(station = "Sheffield",
+         x = -1.490,
+         y = 53.381) %>% 
+  select(station, x, y, year = yyyy, anomaly)
+
+oxford_clean <- oxford_raw %>% 
+  slice(-1) %>% 
+  mutate_all(~str_remove(., "[*]")) %>% 
+  mutate_all(~as.numeric(.)) %>% 
+  mutate(tave = (tmin + tmax) / 2) %>% 
+  filter(yyyy >= 1921, yyyy < 2021) %>% 
+  group_by(yyyy) %>% 
+  summarise(tave = mean(tave, na.rm = TRUE)) %>% 
+  mutate(ref_ave = mean(tave)) %>% 
+  mutate(anomaly = tave - ref_ave) %>% 
+  mutate(station = "Oxford",
+         x = -1.262,
+         y = 51.761) %>% 
+  select(station, x, y, year = yyyy, anomaly)
+
+d1 <- rbind(stornoway_clean, durham_clean, sheffield_clean, oxford_clean) %>% 
+  mutate(station = factor(station, levels = c("Oxford", "Sheffield", "Durham", "Stornoway")))
+
+rm(durham_clean, durham_raw, oxford_clean, oxford_raw, 
+   sheffield_clean, sheffield_raw, stornoway_clean, stornoway_raw)
+
+ggplot(data = d1,
+       aes(x = year, y = station, fill = anomaly)) +
+  geom_col(width = 0.75) +
+  scale_fill_fermenter(palette = "RdBu", limits = c(-1.5, 1.5))
+
+southampton_clean <- southampton_raw %>% 
+  slice(-1) %>% 
+  mutate_all(~str_remove(., "[*]")) %>% 
+  mutate_all(~as.numeric(.)) %>% 
+  mutate(tave = (tmin + tmax) / 2) %>% 
+  filter(yyyy >= 1921, yyyy < 2021) %>% 
+  group_by(yyyy) %>% 
+  summarise(tave = mean(tave, na.rm = TRUE)) %>% 
+  mutate(ref_ave = mean(tave)) %>% 
+  mutate(anomaly = tave - ref_ave) %>% 
+  mutate(station = "Durham",
+         x = -1.490,
+         y = 53.381) %>% 
+  select(station, x, y, year = yyyy, anomaly)
+  
+stornoway_clean
+
+
+lerwick_refmean <- lerwick_clean %>% 
+  filter(yyyy >= 1971 & yyyy <= 2000) %>% 
+  summarise(mean = mean(tmean))
+
+lerwick_clean <- lerwick_clean %>% 
+  group_by(yyyy) %>% 
+  summarise(tmean = mean(tmean)) %>% 
+  mutate(anomaly = tmean - lerwick_refmean$mean) %>% 
+  mutate(station = "Lerwick")
+
+
+
+
+wick_clean <- wick_raw %>% 
   slice(-1) %>% 
   filter(yyyy < 2021) %>% 
   mutate_all(~str_remove(., "[*]")) %>% 
-  mutate_all(~as.numeric(.))
+  mutate_all(~as.numeric(.)) %>% 
+  mutate(tmean = (tmin + tmax) / 2)
 
-summary(tidied)
-
-head(tidied)
-
-refmean <- tidied %>% 
+wick_refmean <- wick_clean %>% 
   filter(yyyy >= 1971 & yyyy <= 2000) %>% 
-  summarise()
+  summarise(mean = mean(tmean))
+
+wick_clean <- wick_clean %>% 
+  group_by(yyyy) %>% 
+  summarise(tmean = mean(tmean)) %>% 
+  mutate(anomaly = tmean - lerwick_refmean$mean) %>% 
+  filter(yyyy >= 1930) %>% 
+  mutate(station = "Wick")
+
+d1 <- rbind(lerwick_clean, wick_clean)
+
+# Map of UK ----
+
+uk <- map_data("world") %>% 
+  filter(region == "UK", subregion != "Northern Ireland")
+
+ggplot(uk) +
+  geom_polygon(aes(x = long, y = lat, group = group),
+               fill = "#355c7d", colour = "white") +
+  coord_fixed(1.3) +
+  geom_point(aes(x = -1.183, y = 60.139),
+             colour = "red", size = 3) +
+  # annotate("text", x = 10, y = 45.9, label = "Mortirolo Pass",
+  #          colour = "white", family = "Genos", size = 12, hjust = 0) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#355c7d", colour = "#355c7d"),
+        panel.background = element_rect(fill = "#355c7d", colour = "#355c7d"))
+
+# Create plot ----
+
+ggplot(data = d1,
+       aes(x = year, y = station, fill = anomaly)) +
+  geom_col(width = 0.75) +
+  scale_fill_fermenter(palette = "RdBu", limits = c(-1.5, 1.5))
 
 lerwick_data <- tidied %>% 
   mutate(tmean = (tmin + tmax) / 2) %>% 
