@@ -1,8 +1,8 @@
 # 30DayChartChallenge
 # 2022
-# Category : Distributions
-# Day 12 : Theme day - The Economist
-# Last updated 2022-03-16
+# Category : Relationships
+# Day 15 - multivariate
+# Last updated 2022-04-01
 
 # https://ourworldindata.org/nuclear-weapons-risk
 
