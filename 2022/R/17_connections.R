@@ -31,6 +31,36 @@ edin_buses <- getbb("Edinburgh") %>%
                   value = "bus") %>% 
   osmdata_sf()
 
+d1 <- subset(edin_buses$osm_multilines, network %in% c("Lothian Buses"))
+
+ggplot() +
+  geom_sf(data = d1$geometry,
+          inherit.aes = FALSE,
+          size = 0.4)
+
+d1 <- subset(edin_buses$osm_multilines, network == "Lothian Buses") %>% 
+  filter(!ref %in% c("X37", "X60", "X59", "X24", "X5"))
+
+ggplot() +
+  geom_sf(data = d1$geometry,
+          inherit.aes = FALSE,
+          size = 0.4,
+          colour = "white") +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "black", colour = "black"),
+        plot.background = element_rect(fill = "black", colour = "black"))
+
+lothian_buses <- subset(edin_buses$osm_multilines, network == "Lothian Buses")
+
+bus1 <- subset(edin_buses$osm_multilines, ref == 1 & from == "Clermiston")
+bus1$colour <- "lightblue"
+
+ggplot() +
+  geom_sf(data = bus1$geometry,
+          inherit.aes = FALSE,
+          color = bus1$colour,
+          size = 0.4)
+
 list_buses <- tibble(
   osm_id = edin_buses$osm_multilines$osm_id,
   name = edin_buses$osm_multilines$name,
@@ -39,6 +69,9 @@ list_buses <- tibble(
   network = edin_buses$osm_multilines$network,
   from = edin_buses$osm_multilines$from,
   to = edin_buses$osm_multilines$to)
+
+lothian_city_buses <- list_buses %>% 
+  filter(operator == "Lothian City Buses")
 
 lothian_buses_list <- c(1:5, 7, 8, 10:12, 14:16, 19, 21:27, 29:31, 33:38,
                         41, 42, 44, 45, 47:49, 100, 200, 300, 400)
