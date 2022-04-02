@@ -2,7 +2,7 @@
 # 2022
 # Category : Comparisons
 # Day 2 : Pictogram
-# Last updated 2022-03-28
+# Last updated 2022-04-02
 
 # https://gs.statcounter.com/os-market-share/mobile/worldwide
 
@@ -59,4 +59,4 @@ p3 <- p1 + p2 +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/02_pictogram.png", p3, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/02_pictogram.png", p3, dpi = 320, width = 12, height = 6)
