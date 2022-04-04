@@ -2,10 +2,9 @@
 # 2022
 # Category : Comparisons
 # Day 4 : flora
-# Last updated 2022-03-28
+# Last updated 2022-04-04
 
 # https://en.wikipedia.org/wiki/List_of_tallest_trees
-# https://www.treehugger.com/tallest-trees-world-4858795
 
 # Load packages ----
 
@@ -127,4 +126,4 @@ p <- p1 + p2 +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/04_flora.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/04_flora.png", p, dpi = 320, width = 12, height = 6)
