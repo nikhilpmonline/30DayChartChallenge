@@ -1,18 +1,16 @@
 # 30DayChartChallenge
 # 2022
 # Category : Distributions
-# Day 12 : Theme day - The Economist
-# Last updated 2022-03-16
+# Day 18 : Data day - OECD
+# Last updated 2022-04-04
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://data.oecd.org/agroutput/crop-production.htm
 
 # Load packages ----
 
 library(tidyverse)
 library(showtext)
-# library(ggwaffle)
-# library(emojifont)
-library(patchwork)
+#library(patchwork)
 
 # Load fonts ----
 
@@ -21,7 +19,15 @@ library(patchwork)
 
 # Import data ----
 
-nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
+crops <- read_csv("2022/data/DP_LIVE_04042022163230780.csv")
+
+# Data wrangling ----
+
+d1 <- crops %>% 
+  filter(LOCATION == "OECD", MEASURE == "TONNE_HA", TIME <= 2021)
+
+ggplot(d1, aes(x = TIME, y = Value, colour = SUBJECT)) +
+  geom_line()
 
 d1 <- nuclear_weapons %>% 
   filter(!Entity %in% c("United States", "Russia", "United Kingdom", "France"))
