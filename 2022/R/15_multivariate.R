@@ -2,17 +2,17 @@
 # 2022
 # Category : Relationships
 # Day 15 - multivariate
-# Last updated 2022-04-01
+# Last updated 2022-04-05
 
-# https://ourworldindata.org/nuclear-weapons-risk
+# https://allisonhorst.github.io/palmerpenguins/
 
 # Load packages ----
 
+library(GGally)
+library(palmerpenguins)
 library(tidyverse)
 library(showtext)
-# library(ggwaffle)
-# library(emojifont)
-library(patchwork)
+#library(patchwork)
 
 # Load fonts ----
 
@@ -21,7 +21,10 @@ library(patchwork)
 
 # Import data ----
 
-nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
+penguins <- palmerpenguins::penguins
+
+ggpairs(data = penguins,
+        aes(colour = species))
 
 d1 <- nuclear_weapons %>% 
   filter(!Entity %in% c("United States", "Russia", "United Kingdom", "France"))
