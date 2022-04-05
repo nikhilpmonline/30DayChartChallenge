@@ -2,7 +2,7 @@
 # 2022
 # Category : Comparisons
 # Day 5 : Slope
-# Last updated 2022-03-28
+# Last updated 2022-04-05
 
 # https://www.cyclinglocations.com/mortirolo-pass-mazzo
 # https://scriptsandstatistics.wordpress.com/2018/03/29/how-to-plot-gps-data-using-r-ggplot2-and-ggmaps/
@@ -196,4 +196,4 @@ p <- p1 + p2 + p3 + p4 +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/05_slope.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/05_slope.png", p, dpi = 320, width = 12, height = 6)
