@@ -2,7 +2,7 @@
 # 2022
 # Category : Comparisons
 # Day 6 : Data day - Our World In Data
-# Last updated 2022-03-28
+# Last updated 2022-04-06
 
 # https://ourworldindata.org/water-sanitation-2020-update
 
@@ -115,4 +115,4 @@ p <- p1 + p2 +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/06_owid.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/06_owid.png", p, dpi = 320, width = 12, height = 6)
