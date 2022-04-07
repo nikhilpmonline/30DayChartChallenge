@@ -2,7 +2,7 @@
 # 2022
 # Category : Distributions
 # Day 7 : Physical
-# Last updated 2022-03-28
+# Last updated 2022-04-07
 
 # https://devstronomy.com/#/datasets
 
@@ -62,4 +62,4 @@ p1 <- ggplot() +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/07_physical.png", p1, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/07_physical.png", p1, dpi = 320, width = 12, height = 6)
