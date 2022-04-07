@@ -21,10 +21,15 @@ library(showtext)
 
 # Import data ----
 
-penguins <- palmerpenguins::penguins
+penguins <- palmerpenguins::penguins %>% 
+  mutate(ratio = bill_length_mm / bill_depth_mm)
 
-ggpairs(data = penguins,
-        aes(colour = species))
+p <- ggpairs(data = penguins, columns = c(3, 4, 5, 9),
+        aes(colour = species)) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4"))
+
+ggsave("2022/plots/work_in_progress/15_multivariate.png", p, dpi = 320, width = 12, height = 6)
 
 d1 <- nuclear_weapons %>% 
   filter(!Entity %in% c("United States", "Russia", "United Kingdom", "France"))
