@@ -75,26 +75,31 @@ munros <- munro::munros %>%
   mutate(type = "Munro") %>% 
   select(type, name, height_meters, height_feet, longitude, latitude)
 
-top10_munros <- munros %>% 
+top5_munros <- munros %>% 
   arrange(desc(height_meters)) %>% 
-  head(10) %>% 
+  head(5) %>% 
   mutate(name = fct_rev(fct_inorder(name)))
 
 corbetts <- munro::corbetts %>% 
   mutate(type = "Corbett") %>% 
   select(type, name, height_meters, height_feet, longitude, latitude)
 
+top5_corbetts <- corbetts %>% 
+  arrange(desc(height_meters)) %>% 
+  head(5) %>% 
+  mutate(name = fct_rev(fct_inorder(name)))
+
 grahams <- munro::grahams %>%
   mutate(type = "Graham") %>% 
   select(type, name, height_meters, height_feet, longitude, latitude)
 
+top5_grahams <- grahams %>% 
+  arrange(desc(height_meters)) %>% 
+  head(5) %>% 
+  mutate(name = fct_rev(fct_inorder(name)))
+
 uk <- map_data("world") %>% 
   filter(region == "UK", subregion != "Northern Ireland")
-
-top10_munros <- munros %>% 
-  arrange(desc(height_meters)) %>% 
-  head(10) %>% 
-  mutate(name = rev(fct_inorder(name)))
 
 p1 <- ggplot() +
   geom_polygon(data = uk,
@@ -132,13 +137,55 @@ p3 <- ggplot() +
   theme(panel.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
         plot.background = element_rect(fill = "#0a2248", colour = "#0a2248"))
 
-ggplot(top10_munros,
-       aes(x = name, y = height_feet)) +
-  geom_col(width = 0.5) +
-  coord_flip()
+p4 <- ggplot(top5_munros,
+       aes(x = name, y = height_meters)) +
+  geom_col(width = 0.25, colour = "#3caea3", fill = "#3caea3") +
+  geom_text(aes(x = name, y = height_meters + 10, label = paste0(height_meters, " m"), hjust = 0),
+            colour = "white") +
+  geom_text(aes(x = rev(seq(1.2, 5.2, 1)), y = 0, label = name, hjust = 0),
+            colour = "white") +
+  coord_flip() +
+  ylim(c(0, 1500)) +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        plot.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        plot.margin = margin(t = 50, b = 50),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        panel.grid = element_blank())
+
+p5 <- ggplot(top5_corbetts,
+             aes(x = name, y = height_meters)) +
+  geom_col(width = 0.5, colour = "#f6d55c", fill = "#f6d55c") +
+  geom_text(aes(x = name, y = height_meters + 10, label = paste0(height_meters, " m"), hjust = 0),
+            colour = "white") +
+  coord_flip() +
+  ylim(c(0, 1500)) +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        plot.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        axis.title = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(colour = "white"),
+        panel.grid = element_blank())
+
+p6 <- ggplot(top5_grahams,
+             aes(x = name, y = height_meters)) +
+  geom_col(width = 0.5, colour = "#ed553b", fill = "#ed553b") +
+  geom_text(aes(x = name, y = height_meters + 10, label = paste0(height_meters, " m"), hjust = 0),
+            colour = "white") +
+  coord_flip() +
+  ylim(c(0, 1500)) +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        plot.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        axis.title = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(colour = "white"),
+        panel.grid = element_blank())
   
 
-p <- p1 + p2 + p3 + plot_spacer() + plot_spacer() + plot_spacer() +
+p <- p1 + p2 + p3 + p4 + p5 + p6 +
   plot_layout(ncol = 3)
 p
   coord_cartesian(xlim = c(-7.75, 0), ylim = c(54.6, 60.75))
