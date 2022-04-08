@@ -60,3 +60,92 @@ p <- ggplot(d1, aes(x = ratio, fill = species, colour = species)) +
 # Save plot ----
 
 ggsave("2022/plots/finished/08_mountains.png", p, dpi = 320, width = 12, height = 6)
+
+
+
+
+
+# Scottish mountains ----
+
+library(tidyverse)
+library(munro)
+library(patchwork)
+
+munros <- munro::munros %>% 
+  mutate(type = "Munro") %>% 
+  select(type, name, height_meters, height_feet, longitude, latitude)
+
+top10_munros <- munros %>% 
+  arrange(desc(height_meters)) %>% 
+  head(10) %>% 
+  mutate(name = fct_rev(fct_inorder(name)))
+
+corbetts <- munro::corbetts %>% 
+  mutate(type = "Corbett") %>% 
+  select(type, name, height_meters, height_feet, longitude, latitude)
+
+grahams <- munro::grahams %>%
+  mutate(type = "Graham") %>% 
+  select(type, name, height_meters, height_feet, longitude, latitude)
+
+uk <- map_data("world") %>% 
+  filter(region == "UK", subregion != "Northern Ireland")
+
+top10_munros <- munros %>% 
+  arrange(desc(height_meters)) %>% 
+  head(10) %>% 
+  mutate(name = rev(fct_inorder(name)))
+
+p1 <- ggplot() +
+  geom_polygon(data = uk,
+               aes(x = long, y = lat, group = group),
+               fill = "#a9b7d2", colour = "#a9b7d2") +
+  coord_map("gilbert", xlim = c(-7.75, 0), ylim = c(54.6, 59.6)) +
+  geom_point(data = munros, 
+             aes(x = longitude, y = latitude),
+             pch = 17, colour = "#3caea3", size = 3) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        plot.background = element_rect(fill = "#0a2248", colour = "#0a2248"))
+
+p2 <- ggplot() +
+  geom_polygon(data = uk,
+               aes(x = long, y = lat, group = group),
+               fill = "#a9b7d2", colour = "#a9b7d2") +
+  coord_map("gilbert", xlim = c(-7.75, 0), ylim = c(54.6, 59.6)) +
+  geom_point(data = corbetts, 
+             aes(x = longitude, y = latitude),
+             pch = 17, colour = "#f6d55c", size = 3) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        plot.background = element_rect(fill = "#0a2248", colour = "#0a2248"))
+
+p3 <- ggplot() +
+  geom_polygon(data = uk,
+               aes(x = long, y = lat, group = group),
+               fill = "#a9b7d2", colour = "#a9b7d2") +
+  coord_map("gilbert", xlim = c(-7.75, 0), ylim = c(54.6, 59.6)) +
+  geom_point(data = grahams, 
+             aes(x = longitude, y = latitude),
+             pch = 17, colour = "#ed553b", size = 3) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#0a2248", colour = "#0a2248"),
+        plot.background = element_rect(fill = "#0a2248", colour = "#0a2248"))
+
+ggplot(top10_munros,
+       aes(x = name, y = height_feet)) +
+  geom_col(width = 0.5) +
+  coord_flip()
+  
+
+p <- p1 + p2 + p3 + plot_spacer() + plot_spacer() + plot_spacer() +
+  plot_layout(ncol = 3)
+p
+  coord_cartesian(xlim = c(-7.75, 0), ylim = c(54.6, 60.75))
+  
+  coord_fixed(1.3) +
+  geom_point(data = d1, 
+             aes(x = longitude, y = latitude, colour = type)) +
+  xlim(-7.75, 0) +
+  geom_hline(yintercept = c(54.6, 61))
+  # geom_vline(xintercept = c(-7.75, 0))
