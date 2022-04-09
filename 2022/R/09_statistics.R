@@ -2,7 +2,7 @@
 # 2022
 # Category : Distributions
 # Day 9 : Statistics
-# Last updated 2022-03-28
+# Last updated 2022-04-09
 
 # Load packages ----
 
@@ -116,4 +116,4 @@ p <- p1 + p2 + p3 + p4 + p5 + p6 +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/09_statistics.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/09_statistics.png", p, dpi = 320, width = 12, height = 6)
