@@ -2,7 +2,7 @@
 # 2022
 # Category : Distributions
 # Day 10 : Experimental
-# Last updated 2022-03-28
+# Last updated 2022-04-10
 
 # https://www.angio.net/pi/digits.html
 
@@ -110,4 +110,4 @@ p <- p1 + p2 +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/10_experimental.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/10_experimental.png", p, dpi = 320, width = 12, height = 6)
