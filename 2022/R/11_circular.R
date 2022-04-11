@@ -6,7 +6,7 @@
 
 # Sources : 
 # https://en.wikipedia.org/wiki/DNA_and_RNA_codon_tables#Translation_table_1
-# https://quantum-society.com/2022/03/05/biochemistry-101-amino-acids/
+# https://www.compoundchem.com/2014/09/16/aminoacids/
 
 # Load packages ----
 
@@ -153,7 +153,7 @@ p2 <- ggplot(data = aa_names) +
 p <- p1 + p2 +
   plot_annotation(
     title = "Genetic code",
-    caption = "Visualisation: Jonathan Kitt | Data source: Wikipedia| #30DayChartChallenge 2022 | Day 11: circular",
+    caption = "Visualisation: Jonathan Kitt | Data source: Wikipedia & Compound Chemistry | #30DayChartChallenge 2022 | Day 11: circular",
     theme = theme(plot.title = element_text(family = "Fredericka", colour = "white", size = 120, hjust = 0.5,
                                             margin = margin(t = 20)),
                   plot.background = element_rect(fill = "#0b0742", colour = "#0b0742"),
@@ -162,4 +162,4 @@ p <- p1 + p2 +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/11_circular.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/11_circular.png", p, dpi = 320, width = 12, height = 6)
