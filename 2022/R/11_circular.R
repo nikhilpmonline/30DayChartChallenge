@@ -112,7 +112,7 @@ p2 <- ggplot(data = aa_names) +
                 label = name), hjust = 0, size = 10, colour = "white",
             family = "Gluten") +
   annotate("text", family = "Gluten", colour = "white", x = 0, y = 2, size = 15, hjust = 0,
-           label = "The 20 amino-acids encoded by the human genetic code") +
+           label = "The 20 amino acids encoded by the human genetic code") +
   annotate("text", family = "Gluten", colour = "white", x = 0, y = 1.5, size = 15, hjust = 0,
            label = "are either") +
   annotate("text", family = "Gluten", colour = "#d11141", x = 2.75, y = 1.5, size = 15, hjust = 0,
