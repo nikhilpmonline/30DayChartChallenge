@@ -2,7 +2,7 @@
 # 2022
 # Category : Distributions
 # Day 12 : Theme day - The Economist
-# Last updated 2022-03-18
+# Last updated 2022-04-12
 
 # https://jrnold.github.io/ggthemes/reference/theme_economist.html
 # https://www.economist.com/big-mac-index
@@ -48,7 +48,7 @@ p <- ggplot() +
                 label = country_name,
                 hjust = ifelse(versus_dollar == "undervalued", 1, 0),
                 colour = versus_dollar),
-            show.legend = FALSE, size = 2.5) +
+            show.legend = FALSE, size = 2) +
   scale_colour_manual(values = c("#0ba5c4", "#de5864")) +
   scale_x_continuous(breaks = c(-0.5, 0, 0.5), labels = c("- 50%", "US $", "+ 50%"), limits = c(-0.8, 0.8)) +
   xlab("US $") +
@@ -67,7 +67,4 @@ p <- ggplot() +
 
 # Save plot ----
 
-ggsave("2022/plots/finished/12_economist.png", p, dpi = 320, width = 12, height = 6)
-  
-
-ggsave("2022/plots/03_historical.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/12_economist.png", p, dpi = 320, width = 12, height = 6)
