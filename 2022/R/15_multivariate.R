@@ -29,7 +29,8 @@ d1 <- penguins %>%
          "Bill depth (mm)" = bill_depth_mm, "Flipper length (mm)" = flipper_length_mm)
 
 p <- ggpairs(data = d1, columns = 2:4,
-        aes(colour = species)) +
+        aes(colour = species),
+        upper = "blank") +
   scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
   scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
   theme(panel.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
@@ -39,8 +40,8 @@ p <- ggpairs(data = d1, columns = 2:4,
         axis.text = element_text(colour = "#6675bd"),
         axis.title = element_text(family = "Righteous", colour = "#6675bd"),
         axis.ticks = element_blank(),
-        strip.background = element_rect(fill = "darkblue"),
-        strip.text = element_text(colour = "white", size = 25))
+        strip.background = element_rect(fill = "#92dff3"),
+        strip.text = element_text(colour = "#6675bd", size = 25, family = "Righteous"))
 
 ggsave("2022/plots/work_in_progress/15_multivariate.png", p, dpi = 320, width = 12, height = 6)
 
