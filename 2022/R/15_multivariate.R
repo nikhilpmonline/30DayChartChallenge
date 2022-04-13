@@ -8,7 +8,7 @@
 
 # Load packages ----
 
-library(ggforce)
+library(GGally)
 library(palmerpenguins)
 library(tidyverse)
 library(showtext)
@@ -22,22 +22,117 @@ showtext_auto()
 
 penguins <- palmerpenguins::penguins
 
-penguins <- palmerpenguins::penguins %>% 
-  mutate(ratio = bill_length_mm / bill_depth_mm)
-
 # Data wrangling ----
 
 d1 <- penguins %>% 
-  select(species, bill_length_mm, bill_depth_mm, flipper_length_mm) %>% 
-  mutate(length_depth_ratio = bill_length_mm / bill_depth_mm)
+  select(species, "Bill length (mm)" = bill_length_mm,
+         "Bill depth (mm)" = bill_depth_mm, "Flipper length (mm)" = flipper_length_mm)
+
+p <- ggpairs(data = d1, columns = 2:4,
+        aes(colour = species)) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme(panel.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        plot.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        panel.grid.major = element_line(colour = "white"),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(colour = "#6675bd"),
+        axis.title = element_text(family = "Righteous", colour = "#6675bd"),
+        axis.ticks = element_blank(),
+        strip.background = element_rect(fill = "darkblue"),
+        strip.text = element_text(colour = "white", size = 25))
+
+ggsave("2022/plots/work_in_progress/15_multivariate.png", p, dpi = 320, width = 12, height = 6)
+
+
 
 # Create plot ----
 
-g <- ggplot(data = d1,
+p1 <- ggplot(data = d1,
        aes(x = species, y = bill_length_mm, colour = species)) +
-  labs(x = "Species", y = "Bill length (mm)") +
-  scale_colour_manual(values = c("darkorange", "purple", "cyan4"),
-                      guide = "none")
+  geom_violin(aes(fill = species),
+              size = 1, alpha = 0.5,
+              show.legend = FALSE) +
+  geom_boxplot(outlier.alpha = 0, coef = 0, width = 0.2,
+               show.legend = FALSE) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  coord_flip() +
+  ggtitle("Bill length (mm)") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        plot.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),,
+        axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(family = "Righteous"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank())
+  
+p2 <- ggplot(data = d1,
+             aes(x = species, y = bill_depth_mm, colour = species)) +
+  geom_violin(aes(fill = species),
+              size = 1, alpha = 0.5,
+              show.legend = FALSE) +
+  geom_boxplot(outlier.alpha = 0, coef = 0, width = 0.2,
+               show.legend = FALSE) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  coord_flip() +
+  ggtitle("Bill depth (mm)") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        plot.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(family = "Righteous"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank())
+
+p3 <- ggplot(data = d1,
+             aes(x = species, y = flipper_length_mm, colour = species)) +
+  geom_violin(aes(fill = species),
+              size = 1, alpha = 0.5,
+              show.legend = FALSE) +
+  geom_boxplot(outlier.alpha = 0, coef = 0, width = 0.2,
+               show.legend = FALSE) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  coord_flip() +
+  ggtitle("Flipper length (mm)") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        plot.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(family = "Righteous"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank())
+
+p4 <- ggplot(data = d1,
+             aes(x = species, y = length_depth_ratio, colour = species)) +
+  geom_violin(aes(fill = species),
+              size = 1, alpha = 0.5,
+              show.legend = FALSE) +
+  geom_boxplot(outlier.alpha = 0, coef = 0, width = 0.2,
+               show.legend = FALSE) +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  coord_flip() +
+  ggtitle("Bill length to bill depth ratio") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        plot.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
+        axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(family = "Righteous"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank())
+
+p <- p1 + p2 + p3 + p4
+
+# Save plot ----
+
+ggsave("2022/plots/work_in_progress/15_multivariate.png", p, dpi = 320, width = 12, height = 6)
 
 g + geom_boxplot()
 
