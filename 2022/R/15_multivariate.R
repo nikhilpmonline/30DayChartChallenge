@@ -2,32 +2,71 @@
 # 2022
 # Category : Relationships
 # Day 15 - multivariate
-# Last updated 2022-04-05
+# Last updated 2022-04-13
 
 # https://allisonhorst.github.io/palmerpenguins/
 
 # Load packages ----
 
-library(GGally)
+library(ggforce)
 library(palmerpenguins)
 library(tidyverse)
 library(showtext)
-#library(patchwork)
 
 # Load fonts ----
 
-# font_add_google("Tangerine", "Tangerine")
-# showtext_auto()
+font_add_google("Righteous", "Righteous")
+showtext_auto()
 
 # Import data ----
+
+penguins <- palmerpenguins::penguins
 
 penguins <- palmerpenguins::penguins %>% 
   mutate(ratio = bill_length_mm / bill_depth_mm)
 
+# Data wrangling ----
+
+d1 <- penguins %>% 
+  select(species, bill_length_mm, bill_depth_mm, flipper_length_mm) %>% 
+  mutate(length_depth_ratio = bill_length_mm / bill_depth_mm)
+
+# Create plot ----
+
+g <- ggplot(data = d1,
+       aes(x = species, y = bill_length_mm, colour = species)) +
+  labs(x = "Species", y = "Bill length (mm)") +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4"),
+                      guide = "none")
+
+g + geom_boxplot()
+
+g + geom_point(alpha = 0.1)
+
+g + geom_jitter(width = 0.3, alpha = 0.5)
+
+g + geom_violin(aes(fill = species), size = 1, alpha = 0.5) +
+  geom_boxplot(outlier.alpha = 0, coef = 0, colour = "gray40", width = 0.2)
++
+  geom_sina(alpha = 0.25) +
+  coord_flip()
+
+ggpairs(data = d1, columns = 2:5,
+        aes(colour = species),
+        upper = "blank") +
+  scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
+  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
+  theme(panel.background = element_rect(fill = "#161b33", colour = "#161b33"),
+        plot.background = element_rect(fill = "#161b33", colour = "#161b33"),
+        panel.grid.major = element_line(colour = "#6675bd"),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(colour = "#6675bd"),
+        axis.title = element_text(family = "Righteous", colour = "#6675bd"))
+
 p <- ggpairs(data = penguins, columns = c(3, 4, 5, 9),
         aes(colour = species)) +
-  scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
-  scale_colour_manual(values = c("darkorange", "purple", "cyan4"))
+   +
+
 
 ggsave("2022/plots/work_in_progress/15_multivariate.png", p, dpi = 320, width = 12, height = 6)
 
