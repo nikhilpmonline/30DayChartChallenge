@@ -2,23 +2,22 @@
 # 2022
 # Category : Distributions
 # Day 14 : 3-dimensional
-# Last updated 2022-03-18
+# Last updated 2022-04-14
 
-# https://www.flerlagetwins.com/2019/08/ternary.html
-# https://jserizay.com/blog/text_mining_and_sentiment_analysis_in_r/
-# https://www.rayshader.com/reference/plot_gg.html
+# http://www.sthda.com/english/wiki/impressive-package-for-3d-and-4d-graph-r-software-and-data-visualization#text3d-and-scatter3d
+# https://stackoverflow.com/questions/38905661/r-white-plot-elements-on-black-background
 
 # Load packages ----
 
-library(ggtern)
 library(palmerpenguins)
+library(plot3D)
 library(showtext)
 library(tidyverse)
 
 # Load fonts ----
 
-font_add_google("Righteous", "Righteous")
-showtext_auto()
+# font_add_google("Righteous", "Righteous")
+# showtext_auto()
 
 # Import data ----
 
@@ -26,14 +25,49 @@ penguins <- palmerpenguins::penguins
 
 # Data wrangling ----
 
-d1 <- penguins %>% 
-  mutate(bill_length_ratio = bill_length_mm / max(bill_length_mm, na.rm = TRUE),
-         bill_depth_ratio = bill_depth_mm / max(bill_depth_mm, na.rm = TRUE),
-         flipper_length_ratio = flipper_length_mm / max(flipper_length_mm, na.rm = TRUE)) %>% 
-  select(species, island, bill_length_ratio, bill_depth_ratio, flipper_length_ratio) %>% 
-  filter(!is.na(bill_depth_ratio))
+points <- penguins %>% 
+  select(species, bill_length_mm:flipper_length_mm)
+
+centroids <- penguins %>% 
+  group_by(species) %>% 
+  summarise(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            mean_bill_depth = mean(bill_depth_mm, na.rm = TRUE),
+            mean_flipper_length = mean(flipper_length_mm, na.rm = TRUE))
 
 # Create plot ----
+
+par(bg = "#161b33", fg = "white",
+    mfrow = c(1, 2))
+
+plot3D::scatter3D(x = points$bill_length_mm,
+                        y = points$bill_depth_mm,
+                        z = points$flipper_length_mm, colvar = as.integer(points$species),
+                        xlab = "Bill length",
+                        ylab = "Bill depth",
+                        zlab = "Flipper length",
+                  xlim = c(32, 60),
+                  ylim = c(13, 22),
+                  zlim = c(171, 232),
+                        type = "p",
+                        phi = 0, bty = "u",col = c("darkorange", "purple", "cyan4"),
+                  colkey = FALSE,
+                        pch = 19, cex = 1.5, col.axis = "#6675bd", col.panel = "#161b33", col.grid = "#6675bd")
+
+plot3D::scatter3D(x = centroids$mean_bill_length,
+                  y = centroids$mean_bill_depth,
+                  z = centroids$mean_flipper_length, colvar = as.integer(centroids$species),
+                  xlab = "Bill length",
+                  ylab = "Bill depth",
+                  zlab = "Flipper length",
+                  xlim = c(32, 60),
+                  ylim = c(13, 22),
+                  zlim = c(171, 232),
+                  type = "h",
+                  colkey = FALSE,
+                  phi = 0, bty = "u", col = c("darkorange", "purple", "cyan4"),
+                  pch = 19, cex = 2, col.axis = "#6675bd", col.panel = "#161b33", col.grid = "#6675bd")
+
+mtext("My 'Title' in a strange place", side = 3, line = -2, outer = TRUE)
 
 p <- ggtern(data = d1, aes(x = bill_length_ratio, y = bill_depth_ratio, z = flipper_length_ratio)) +
   geom_point(aes(colour = species),
@@ -61,3 +95,66 @@ p <- ggtern(data = d1, aes(x = bill_length_ratio, y = bill_depth_ratio, z = flip
 # Save plot ----
   
 ggsave("2022/plots/finished/14_3dimensional.png", p, dpi = 320, width = 12, height = 6)
+
+# Test ----
+
+# https://github.com/AckerDWM/gg3Ds
+
+points <- penguins %>% 
+  select(species, bill_length_mm:flipper_length_mm) %>% 
+  mutate(data_type = "point",
+         plot_type = "p")
+
+centroids <- penguins %>% 
+  group_by(species) %>% 
+  summarise(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            mean_bill_depth = mean(bill_depth_mm, na.rm = TRUE),
+            mean_flipper_length = mean(flipper_length_mm, na.rm = TRUE))
+
+d1 <- rbind(points, centroids) %>% 
+  filter(!is.na(bill_length_mm))
+
+par(bg = "#161b33", fg = "white")
+plot3D::scatter3D_fancy(x = d1$mean_bill_length,
+                  y = d1$mean_bill_depth,
+                  z = d1$mean_flipper_length, colvar = as.integer(d1$species),
+                  xlab = "Bill length",
+                  ylab = "Bill depth",
+                  zlab = "Flipper length",
+                  type = d1$plot_type,
+                  phi = 0, theta = 45, bty = "u", col = c("darkorange", "purple", "cyan4"),
+                  pch = 19, cex = 1.5, col.axis = "#6675bd", col.panel = "#161b33", col.grid = "#6675bd")
+
+library(gg3D)
+
+ggplot(iris, aes(x=Petal.Width, y=Sepal.Width, z=Petal.Length, color=Species)) + 
+  theme_void() +
+  axes_3D() +
+  stat_3D()
+
+ggplot(data = penguins,
+       aes(x = bill_length_mm, y = flipper_length_mm, z = bill_depth_mm,
+           color = species)) +
+  theme_void() +
+  axes_3D() +
+  stat_3D()
+
+par(bg = "#161b33", fg = "white")
+plot3D::scatter3D(x = penguins$bill_length_mm,
+                  y = penguins$flipper_length_mm,
+                  z = penguins$bill_depth_mm, colvar = as.integer(penguins$species),
+                  xlab = "Bill length",
+                  ylab = "Flipper length",
+                  zlab = "Bill depth",
+                  type = "p",
+                  phi = 0, bty = "u", col = c("darkorange", "purple", "cyan4"), fill = "#161b33",
+                  pch = 21, cex = 1.5, col.axis = "#6675bd", col.panel = "#161b33", col.grid = "#6675bd")
+
+
+ggsave("2022/plots/14_3dimensional_1.png", p, dpi = 320, width = 12, height = 6)
+
+
+
+library(patchwork)
+library(gg3D)
+p1 + plot_spacer()
