@@ -2,14 +2,15 @@
 # 2022
 # Category : Distributions
 # Day 18 : Data day - OECD
-# Last updated 2022-04-04
+# Last updated 2022-04-14
 
 # https://data.oecd.org/agroutput/crop-production.htm
+# https://www.cedricscherer.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/
 
 # Load packages ----
 
 library(tidyverse)
-library(showtext)
+#library(showtext)
 #library(patchwork)
 
 # Load fonts ----
@@ -19,9 +20,32 @@ library(showtext)
 
 # Import data ----
 
-crops <- read_csv("2022/data/DP_LIVE_04042022163230780.csv")
+oecd_prod <- read_csv("2022/data/oecd_production.csv")
 
 # Data wrangling ----
+
+d1 <- oecd_prod %>% 
+  filter(LOCATION == "OECD", MEASURE == "TONNE_HA", TIME <= 2021) %>% 
+  select(crop = SUBJECT, year = TIME, ton_ha = Value) %>% 
+  group_by(crop) %>% 
+  mutate(mean = mean(ton_ha),
+         crop = factor(crop, levels = c("SOYBEAN", "WHEAT", "RICE", "MAIZE")))
+
+levels(d1$crop)
+
+# Create plot ----
+
+p <- ggplot(data = d1, 
+       aes(x = ton_ha, y = crop)) +
+  geom_point(aes(colour = crop),
+             size = 3, alpha = 0.15, show.legend = FALSE) +
+  stat_summary(aes(colour = crop),
+               fun = mean, geom = "point", size = 5,
+               show.legend = FALSE)
+
+# Save plot ----
+
+ggsave("2022/plots/work_in_progress/18_oecd.png", p, dpi = 320, width = 12, height = 6)
 
 d1 <- crops %>% 
   filter(LOCATION == "OECD", MEASURE == "TONNE_HA", TIME <= 2021)
