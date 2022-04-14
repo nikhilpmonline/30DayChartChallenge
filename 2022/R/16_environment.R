@@ -4,8 +4,7 @@
 # Day 16 : Environment
 # Last updated 2022-04-01
 
-# https://ourworldindata.org/environmental-impacts-of-food
-# https://spiesmanecology.com/2017/04/30/network-vis1/
+# https://ourworldindata.org/fish-and-overfishing#wild-fish-catch
 
 # Load packages ----
 
@@ -15,7 +14,6 @@ library(showtext)
 # library(emojifont)
 library(patchwork)
 
-
 # Load fonts ----
 
 # font_add_google("Tangerine", "Tangerine")
@@ -23,26 +21,44 @@ library(patchwork)
 
 # Import data ----
 
-food <- read_csv("2022/data/food-footprints.csv")
+
+fish <- read_csv("2022/data/capture-fishery-production.csv")
 
 # Data wrangling ----
 
-# https://ourworldindata.org/life-by-environment
+d1 <- fish %>% 
+  filter(Year %in% c(min(Year), max(Year))) %>% 
+  select(country = Entity,
+         year = Year,
+         tons = `Capture fisheries production (metric tons)`)
 
-biomass <- tibble(
-  category = rep(c("All life", "Plants", "Fungi", "Protists", "Animals", "Bacteria", "Archaea"), each = 3),
-  location = rep(c("Terrestrial", "Marine", "Deep subsurface"), times = 7),
-  percent = c(86, 1, 13,
-              99.8, 0.2, 0,
-              98, 2, 0,
-              44, 56, 0,
-              22, 78, 0,
-              9, 2, 89,
-              6, 4, 90),
-  biomass = c(470, 6, 70, rep(0, 18))) %>% 
-  mutate(location = factor(location, levels = c("Terrestrial", "Marine", "Deep subsurface")))
+d1
+
+ggplot(data = d1,
+       aes(x = year, y = tons, group = country)) +
+  geom_line(alpha = 0.5, size = 2)
+
+d1 <- plastic %>% 
+  filter(Year == max(Year)) %>% 
+  mutate(origin = "waste") %>% 
+  select(year = Year,
+         origin,
+         percent = `Estimated historic plastic fate`,
+         dest = Entity)
+
+ggplot(data = d1,
+       aes(y = percent, axis1 = origin, axis2 = dest)) +
+  geom_alluvium(aes(fill = dest), width = 1/12)
+
+test <- as.tibble(UCBAdmissions)  
+
+ggplot(as.data.frame(UCBAdmissions),
+       aes(y = Freq, axis1 = Gender, axis2 = Dept)) +
+  geom_alluvium(aes(fill = Admit), width = 1/12)
 
 # Create plot ----
+
+biomass <- read_csv(file = "2022/data/")
 
 d1 <- biomass %>% 
   filter(category == "All life")

@@ -7,6 +7,43 @@
 # https://data.oecd.org/agroutput/crop-production.htm
 # https://www.cedricscherer.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/
 
+# Testing things ----
+
+library(nycflights13)
+library(ggforce)
+
+prep_planes <- planes %>%
+  filter(year > 1998, year < 2005) %>%
+  filter(engine != "Turbo-shaft") %>%
+  select(manufacturer, engine) %>%
+  head(500)
+
+prep_planes
+
+prep_planes %>%
+  gather_set_data(1:2)
+
+prep_planes %>%
+  gather_set_data(1:2) %>%
+  ggplot(aes(x, id = id, split = y, value = 1))  +
+  geom_parallel_sets(aes(fill = engine)) 
+
+prep_planes %>%
+  gather_set_data(1:2) %>%
+  ggplot(aes(x, id = id, split = y, value = 1))  +
+  geom_parallel_sets(aes(fill = engine)) +
+  geom_parallel_sets_axes(axis.width = 0.1) +
+  geom_parallel_sets_labels()
+
+prep_planes %>%
+  gather_set_data(1:2) %>%
+  ggplot(aes(x, id = id, split = y, value = 1))  +
+  geom_parallel_sets(aes(fill = engine), show.legend = FALSE, alpha = 0.3) +
+  geom_parallel_sets_axes(axis.width = 0.1, color = "lightgrey", fill = "white") +
+  geom_parallel_sets_labels(angle = 0) +
+  theme_no_axes()
+
+
 # Load packages ----
 
 library(tidyverse)
