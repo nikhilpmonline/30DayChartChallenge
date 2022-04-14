@@ -4,7 +4,7 @@
 # Day 16 : Environment
 # Last updated 2022-04-01
 
-# https://mlurgi.github.io/networks_for_r/
+# https://ourworldindata.org/environmental-impacts-of-food
 
 # Load packages ----
 
@@ -20,6 +20,8 @@ library(patchwork)
 # showtext_auto()
 
 # Import data ----
+
+food <- read_csv("2022/data/food-footprints.csv")
 
 nuclear_weapons <- read_csv("2022/data/nuclear-warhead-stockpiles.csv")
 
