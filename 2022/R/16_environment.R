@@ -47,7 +47,8 @@ p <- ggplot(d1, aes(x = tons_person_1990, y = tons_person_2018)) +
   geom_point(shape = 16, colour = "#88f4ff", size = 2.5, alpha = 0.5) +
   labs(x = "1990", y = "2018",
        title = "Carbon dioxyde emissions",
-       subtitle = "evolution of aviation- and shipping-related emissions between 1990 and 2018") +
+       subtitle = "evolution of aviation- and shipping-related emissions between 1990 and 2018",
+       caption = "Visualisation : Jonathan Kitt | Data source : Our World In Data | #30DayChartChallenge 2022 | Day 16 : environment") +
   annotate("text", x = 13.5, y = 31.5, family = "Gruppo", size = 15, colour = "#1f9ce4", hjust = 0,
            label = "Singapore") +
   annotate("text", x = 16.2, y = 7.77, family = "Gruppo", size = 15, colour = "#1f9ce4", hjust = 0,
@@ -68,7 +69,9 @@ p <- ggplot(d1, aes(x = tons_person_1990, y = tons_person_2018)) +
         plot.title = element_text(family = "Gruppo", colour = "#1f9ce4", size = 100,
                                   margin = margin(t = 10, b = 5)),
         plot.subtitle = element_text(family = "Gruppo", colour = "#1f9ce4", size = 50,
-                                     margin = margin(b = 10)))
+                                     margin = margin(b = 10)),
+        plot.caption = element_text(colour = "white", size = 25, hjust = 0.5,
+                                    margin = margin(t = 20, b = 10)))
 
 # Save plot ----
 
