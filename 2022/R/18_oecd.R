@@ -7,43 +7,6 @@
 # https://data.oecd.org/agroutput/crop-production.htm
 # https://www.cedricscherer.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/
 
-# Testing things ----
-
-library(nycflights13)
-library(ggforce)
-
-prep_planes <- planes %>%
-  filter(year > 1998, year < 2005) %>%
-  filter(engine != "Turbo-shaft") %>%
-  select(manufacturer, engine) %>%
-  head(500)
-
-prep_planes
-
-prep_planes %>%
-  gather_set_data(1:2)
-
-prep_planes %>%
-  gather_set_data(1:2) %>%
-  ggplot(aes(x, id = id, split = y, value = 1))  +
-  geom_parallel_sets(aes(fill = engine)) 
-
-prep_planes %>%
-  gather_set_data(1:2) %>%
-  ggplot(aes(x, id = id, split = y, value = 1))  +
-  geom_parallel_sets(aes(fill = engine)) +
-  geom_parallel_sets_axes(axis.width = 0.1) +
-  geom_parallel_sets_labels()
-
-prep_planes %>%
-  gather_set_data(1:2) %>%
-  ggplot(aes(x, id = id, split = y, value = 1))  +
-  geom_parallel_sets(aes(fill = engine), show.legend = FALSE, alpha = 0.3) +
-  geom_parallel_sets_axes(axis.width = 0.1, color = "lightgrey", fill = "white") +
-  geom_parallel_sets_labels(angle = 0) +
-  theme_no_axes()
-
-
 # Load packages ----
 
 library(tidyverse)
@@ -52,8 +15,9 @@ library(tidyverse)
 
 # Load fonts ----
 
-# font_add_google("Tangerine", "Tangerine")
-# showtext_auto()
+font_add_google("Grandstander", "Grandstander")
+font_add_google("Codystar", "Codystar")
+showtext_auto()
 
 # Import data ----
 
@@ -68,17 +32,121 @@ d1 <- oecd_prod %>%
   mutate(mean = mean(ton_ha),
          crop = factor(crop, levels = c("SOYBEAN", "WHEAT", "RICE", "MAIZE")))
 
-levels(d1$crop)
+p <- ggplot(data = d1,
+       aes(x = year, y = ton_ha, colour = crop)) +
+  geom_line(size = 2,
+            show.legend = FALSE) +
+  scale_y_continuous(breaks = seq(0, 10, 2), limits = c(0, 10)) +
+  annotate("text", x = 2013, y = 7.5, label = "MAIZE", family = "Codystar", size = 25,
+           colour = "#c77cff", hjust = 0) + 
+  annotate("text", x = 2013, y = 5.5, label = "RICE", family = "Codystar", size = 25,
+           colour = "#00bfc4", hjust = 0) + 
+  annotate("text", x = 2013, y = 4.4, label = "WHEAT", family = "Codystar", size = 25,
+           colour = "#7cae00", hjust = 0) + 
+  annotate("text", x = 2013, y = 2.5, label = "SOYBEAN", family = "Codystar", size = 25,
+           colour = "#f8766d", hjust = 0) + 
+  labs(title = "Crop production for OECD members",
+       subtitle = "In tons/hectare from 1990 to 2021") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#242632", colour = "#242632"),
+        plot.background = element_rect(fill = "#242632", colour = "#242632"),
+        plot.title = element_text(family = "Codystar", size = 100, colour = "white"),
+        plot.subtitle = element_text(family = "Codystar", size = 75, colour = "white"),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_line(size = 0.05),
+        axis.title = element_blank(),
+        axis.text = element_text(family = "Grandstander", colour = "white", size = 35))
+
+ggsave("2022/plots/work_in_progress/18_oecd.png", p, dpi = 320, width = 12, height = 6)
+
 
 # Create plot ----
 
-p <- ggplot(data = d1, 
+p1 <- ggplot() +
+  geom_line(data = maize,
+            aes(x = year, y = ton_ha),
+            colour = "#b524dc", size = 2) +
+  geom_point(data = maize_points,
+             aes(x = year, y = ton_ha),
+             shape = 21, colour = "#b524dc", fill = "#242632",
+             size = 5, stroke = 2) +
+  annotate("text", x = 1990, y = 8, label = "MAIZE", family = "Codystar", size = 100,
+           colour = "#e4a9ee", alpha = 0.5, hjust = 0) + 
+  annotate("text", x = 1993.5, y = 5.3, label = "5.3 (1993)", family = "Grandstander", size = 25,
+           colour = "#b524dc", hjust = 0) + 
+  annotate("text", x = 2012.5, y = 6.9, label = "6.9 (2012)", family = "Grandstander", size = 25,
+           colour = "#b524dc", hjust = 0) + 
+  annotate("text", x = 2018, y = 9.7, label = "9.5 (2018)", family = "Grandstander", size = 25,
+           colour = "#b524dc", hjust = 0) + 
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#242632", colour = "#242632"),
+        plot.background = element_rect(fill = "#242632", colour = "#242632"),
+        panel.grid = element_blank(),
+        axis.title = element_blank())
+
+p2 <- ggplot() +
+  geom_line(data = rice,
+            aes(x = year, y = ton_ha),
+            colour = "#b524dc", size = 2) +
+  geom_point(data = rice_points,
+             aes(x = year, y = ton_ha),
+             shape = 21, colour = "#b524dc", fill = "#242632",
+             size = 5, stroke = 2) +
+  annotate("text", x = 2010, y = 4.2, label = "RICE", family = "Codystar", size = 100,
+           colour = "#e4a9ee", alpha = 0.5, hjust = 0) +
+  annotate("text", x = 1993.5, y = 3.77, label = "3.8 (1993)", family = "Grandstander", size = 25,
+           colour = "#b524dc", hjust = 0) +
+  annotate("text", x = 2003.5, y = 4.39, label = "4.4 (2003)", family = "Grandstander", size = 25,
+           colour = "#b524dc", hjust = 0) +
+  annotate("text", x = 2016, y = 5.1, label = "5 (2016)", family = "Grandstander", size = 25,
+           colour = "#b524dc", hjust = 0) +
+  theme_void() +
+  theme(panel.background = element_rect(fill = "#242632", colour = "#242632"),
+        plot.background = element_rect(fill = "#242632", colour = "#242632"),
+        panel.grid = element_blank(),
+        axis.title = element_blank())
+
+p <- p1 + p2
+
+ggsave("2022/plots/work_in_progress/18_oecd.png", p, dpi = 320, width = 12, height = 6)
+
+ggplot(data = rice) +
+  geom_line(aes(x = year, y = ton_ha))
+
+ggplot(data = wheat) +
+  geom_line(aes(x = year, y = ton_ha))
+
+ggplot(data = soybean) +
+  geom_line(aes(x = year, y = ton_ha))
+
+
+ggplot(data = d1, 
        aes(x = ton_ha, y = crop)) +
-  geom_point(aes(colour = crop),
-             size = 3, alpha = 0.15, show.legend = FALSE) +
+  geom_point(aes(colour = crop), shape = 1,
+             size = 3, alpha = 0.5, show.legend = FALSE) +
   stat_summary(aes(colour = crop),
-               fun = mean, geom = "point", size = 5,
-               show.legend = FALSE)
+               fun = mean, geom = "point", size = 5, shape = 16,
+               show.legend = FALSE) +
+  annotate("text", x = 7, y = 4.5, label = "Full circles represent the mean",
+           family = "Gluten", size = 12, hjust = 1) +
+  geom_curve(aes(x = 7.1, xend = 7.55, y = 4.5, yend = 4.15),
+             curvature = -0.2,
+             arrow = arrow(length = unit(0.07, "inch")), size = 0.4) +
+  labs(title = "Global crop production in OECD members",
+       subtitle = "Production in tons per hectare from 1990 to 2018",
+       x = "Tons / hectare",
+       y = "",
+       caption = "Visualisation : Jonathan Kitt | Data source : OECD | #30DayChartChallenge 2022 | Day 18 : data day - OECD") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "#faebd7", colour = "#faebd7"),
+        plot.background = element_rect(fill = "#faebd7", colour = "#faebd7"),
+        plot.title = element_text(family = "Londrina", size = 100,
+                                  margin = margin(t = 20)),
+        plot.subtitle = element_text(family = "Kranky", size = 50,
+                                     margin = margin(b = 20)),
+        plot.caption = element_text(hjust = 0.5, size = 25),
+        axis.text = element_text(family = "Gluten", size = 30),
+        axis.title = element_text(family = "Gluten", size = 40))
 
 # Save plot ----
 
