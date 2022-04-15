@@ -40,7 +40,8 @@ p <- ggpairs(data = d1, columns = 2:4,
     <span style='color:darkorange;'>**Adelie**</span>, 
     <span style='color:purple;'>Chinstrap</span>, and
     <span style='color:cyan4;'>Gentoo</span>.
-    </span>") +
+    </span>",
+    caption = "Visualisation : Jonathan Kitt | Data source : Palmer penguins | #30DayChartChallenge 2022 | Day 15 : multivariate") +
   scale_colour_manual(values = c("darkorange", "purple", "cyan4")) +
   scale_fill_manual(values = c("darkorange", "purple", "cyan4")) +
   theme(panel.background = element_rect(fill = "#dbf3fa", colour = "#dbf3fa"),
@@ -49,14 +50,15 @@ p <- ggpairs(data = d1, columns = 2:4,
                                       margin = margin(t = 10, b = 5)),
         plot.subtitle = element_markdown(family = "Righteous", size = 50, colour = "#6675bd",
                                       margin = margin(t = 5, b = 20)),
+        plot.caption = element_text(colour = "#6675bd", size = 20, hjust = 0.5,
+                                    margin = margin(t = 15)),
         panel.grid.major = element_line(colour = "white"),
         panel.grid.minor = element_blank(),
         axis.text = element_text(family = "Righteous", colour = "#6675bd", size = 20),
         axis.ticks = element_blank(),
         strip.background = element_rect(fill = "#6675bd"),
-        # strip.background = element_rect(fill = "#92dff3"),
         strip.text = element_text(colour = "white", size = 25, family = "Righteous"))
 
 # Save plot ----
 
-ggsave("2022/plots/work_in_progress/15_multivariate.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/15_multivariate.png", p, dpi = 320, width = 12, height = 6)
