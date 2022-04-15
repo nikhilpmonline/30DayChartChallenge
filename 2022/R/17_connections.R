@@ -12,6 +12,19 @@ library(tidyverse)
 
 # London subway ----
 
+subway <- getbb("London") %>% 
+  opq() %>% 
+  add_osm_feature(key = "route",
+                  value = "subway") %>% 
+  osmdata_sf()
+
+ggplot() +
+  geom_sf(data = subway$osm_lines,
+          inherit.aes = FALSE,
+          size = 0.2,
+          colour = "white") 
+
+
 # Load fonts ----
 
 font_add_google("Eagle Lake", "Eagle Lake")
