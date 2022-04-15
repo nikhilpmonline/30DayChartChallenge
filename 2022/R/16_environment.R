@@ -4,10 +4,12 @@
 # Day 16 : Environment
 # Last updated 2022-04-01
 
-# https://ourworldindata.org/fish-and-overfishing#wild-fish-catch
+# https://github.com/vincentarelbundock/countrycode
+# https://ourworldindata.org/emissions-by-sector
 
 # Load packages ----
 
+library(countrycode)
 library(tidyverse)
 library(showtext)
 # library(ggwaffle)
@@ -21,49 +23,116 @@ library(patchwork)
 
 # Import data ----
 
-
-fish <- read_csv("2022/data/capture-fishery-production.csv")
+country_list <- countrycode::codelist
+co2 <- read_csv("2022/data/per-capita-co2-sector.csv")
 
 # Data wrangling ----
 
-d1 <- fish %>% 
-  filter(Year %in% c(min(Year), max(Year))) %>% 
-  select(country = Entity,
-         year = Year,
-         tons = `Capture fisheries production (metric tons)`)
+country_list <- country_list %>% 
+  select(iso3c, continent, country = country.name.en)
 
-d1
+d1 <- co2 %>% 
+  filter(Code %in% country_list$iso3c,
+         Year %in% c(1990, 2018))
 
-ggplot(data = d1,
-       aes(x = year, y = tons, group = country)) +
-  geom_line(alpha = 0.5, size = 2)
+electricity <- d1 %>% 
+  select(code = Code, country = Entity, year = Year,
+         tons_person = `Electricity and heat (per capita)`) %>% 
+  pivot_wider(names_from = year,
+              values_from = tons_person) %>% 
+  rename(tons_person_1990 = `1990`,
+         tons_person_2018 = `2018`)
 
-d1 <- plastic %>% 
-  filter(Year == max(Year)) %>% 
-  mutate(origin = "waste") %>% 
-  select(year = Year,
-         origin,
-         percent = `Estimated historic plastic fate`,
-         dest = Entity)
+buildings <- d1 %>% 
+  select(code = Code, country = Entity, year = Year,
+         tons_person = `Buildings (per capita)`) %>% 
+  pivot_wider(names_from = year,
+              values_from = tons_person) %>% 
+  rename(tons_person_1990 = `1990`,
+         tons_person_2018 = `2018`)
 
-ggplot(data = d1,
-       aes(y = percent, axis1 = origin, axis2 = dest)) +
-  geom_alluvium(aes(fill = dest), width = 1/12)
+transport <- d1 %>% 
+  select(code = Code, country = Entity, year = Year,
+         tons_person = `Transport (per capita)`) %>% 
+  pivot_wider(names_from = year,
+              values_from = tons_person) %>% 
+  rename(tons_person_1990 = `1990`,
+         tons_person_2018 = `2018`)
 
-test <- as.tibble(UCBAdmissions)  
-
-ggplot(as.data.frame(UCBAdmissions),
-       aes(y = Freq, axis1 = Gender, axis2 = Dept)) +
-  geom_alluvium(aes(fill = Admit), width = 1/12)
+aviation <- d1 %>% 
+  select(code = Code, country = Entity, year = Year,
+         tons_person = `Aviation and shipping (per capita)`) %>% 
+  pivot_wider(names_from = year,
+              values_from = tons_person) %>% 
+  rename(tons_person_1990 = `1990`,
+         tons_person_2018 = `2018`)
 
 # Create plot ----
 
-biomass <- read_csv(file = "2022/data/")
+p1 <- ggplot(electricity, aes(x = tons_person_1990, y = tons_person_2018)) +
+  geom_segment(aes(x = 0, xend = 20, y = 0, yend = 20),
+               colour = "#1f9ce4") +
+  geom_point(shape = 16, colour = "#88f4ff", size = 2.5, alpha = 0.5) +
+  labs(x = "1990", y = "2018",
+       title = "Electricity & heat",
+       subtitle = "Carbon dioxyde emissions in tons per person") +
+  theme(panel.background = element_rect(fill = "#242632", colour = "#242632"),
+        plot.background = element_rect(fill = "#242632", colour = "#242632"),
+        panel.grid = element_blank(),
+        axis.title = element_text(colour = "white"),
+        axis.text = element_text(colour = "white"),
+        plot.title = element_text(colour = "#1f9ce4"),
+        plot.subtitle = element_text(colour = "#1f9ce4"))
 
-d1 <- biomass %>% 
-  filter(category == "All life")
+p2 <- ggplot(buildings, aes(x = tons_person_1990, y = tons_person_2018)) +
+  geom_segment(aes(x = 0, xend = 4, y = 0, yend = 4),
+               colour = "#1f9ce4") +
+  geom_point(shape = 16, colour = "#88f4ff", size = 2.5, alpha = 0.5) +
+  labs(x = "1990", y = "2018",
+       title = "Buildings",
+       subtitle = "Carbon dioxyde emissions in tons per person") +
+  theme(panel.background = element_rect(fill = "#242632", colour = "#242632"),
+        plot.background = element_rect(fill = "#242632", colour = "#242632"),
+        panel.grid = element_blank(),
+        axis.title = element_text(colour = "white"),
+        axis.text = element_text(colour = "white"),
+        plot.title = element_text(colour = "#1f9ce4"),
+        plot.subtitle = element_text(colour = "#1f9ce4"))
 
-d1
+p3 <- ggplot(transport, aes(x = tons_person_1990, y = tons_person_2018)) +
+  geom_segment(aes(x = 0, xend = 10.5, y = 0, yend = 10.5),
+               colour = "#1f9ce4") +
+  geom_point(shape = 16, colour = "#88f4ff", size = 2.5, alpha = 0.5) +
+  labs(x = "1990", y = "2018",
+       title = "Transport",
+       subtitle = "Carbon dioxyde emissions in tons per person") +
+  theme(panel.background = element_rect(fill = "#242632", colour = "#242632"),
+        plot.background = element_rect(fill = "#242632", colour = "#242632"),
+        panel.grid = element_blank(),
+        axis.title = element_text(colour = "white"),
+        axis.text = element_text(colour = "white"),
+        plot.title = element_text(colour = "#1f9ce4"),
+        plot.subtitle = element_text(colour = "#1f9ce4"))
+
+p4 <- ggplot(aviation, aes(x = tons_person_1990, y = tons_person_2018)) +
+  geom_segment(aes(x = 0, xend = 32, y = 0, yend = 32),
+               colour = "#1f9ce4") +
+  geom_point(shape = 16, colour = "#88f4ff", size = 2.5, alpha = 0.5) +
+  labs(x = "1990", y = "2018",
+       title = "Aviation & shipping",
+       subtitle = "Carbon dioxyde emissions in tons per person") +
+  theme(panel.background = element_rect(fill = "#242632", colour = "#242632"),
+        plot.background = element_rect(fill = "#242632", colour = "#242632"),
+        panel.grid = element_blank(),
+        axis.title = element_text(colour = "white"),
+        axis.text = element_text(colour = "white"),
+        plot.title = element_text(colour = "#1f9ce4"),
+        plot.subtitle = element_text(colour = "#1f9ce4"))
+
+p <- p1 + p2 + p3
+
+ggsave("2022/plots/work_in_progress/16_environment.png", p, dpi = 320, width = 12, height = 6)
+
 
 ggplot(data = d1,
        aes(x = category, y = percent, fill = fct_rev(location))) +
