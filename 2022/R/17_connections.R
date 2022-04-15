@@ -10,6 +10,8 @@ library(osmdata)
 library(showtext)
 library(tidyverse)
 
+# London subway ----
+
 # Load fonts ----
 
 font_add_google("Eagle Lake", "Eagle Lake")
