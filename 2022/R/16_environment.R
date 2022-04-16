@@ -79,4 +79,4 @@ p <- ggplot(d1, aes(x = tons_person_1990, y = tons_person_2018)) +
 
 # Save plot ----
 
-ggsave("2022/plots/work_in_progress/16_environment.png", p, dpi = 320, width = 12, height = 6)
+ggsave("2022/plots/16_environment.png", p, dpi = 320, width = 12, height = 6)
