@@ -2,7 +2,7 @@
 # 2022
 # Category : Relationships
 # Day 16 : Environment
-# Last updated 2022-04-01
+# Last updated 2022-04-16
 
 # https://github.com/vincentarelbundock/countrycode
 # https://ourworldindata.org/emissions-by-sector
@@ -49,26 +49,30 @@ p <- ggplot(d1, aes(x = tons_person_1990, y = tons_person_2018)) +
        title = "Carbon dioxyde emissions",
        subtitle = "evolution of aviation- and shipping-related emissions between 1990 and 2018",
        caption = "Visualisation : Jonathan Kitt | Data source : Our World In Data | #30DayChartChallenge 2022 | Day 16 : environment") +
-  annotate("text", x = 13.5, y = 31.5, family = "Gruppo", size = 15, colour = "#1f9ce4", hjust = 0,
+  annotate("text", x = 13.5, y = 31.5, family = "Gruppo", size = 15, colour = "#88f4ff", hjust = 0,
            label = "Singapore") +
-  annotate("text", x = 16.2, y = 7.77, family = "Gruppo", size = 15, colour = "#1f9ce4", hjust = 0,
+  annotate("text", x = 16.2, y = 7.77, family = "Gruppo", size = 15, colour = "#88f4ff", hjust = 0,
            label = "United Arab Emirates") +
-  annotate("text", x = 1.156, y = 17.2, family = "Gruppo", size = 15, colour = "#1f9ce4", hjust = 0,
+  annotate("text", x = 1.156, y = 17.2, family = "Gruppo", size = 15, colour = "#88f4ff", hjust = 0,
            label = "Malta") +
-  annotate("text", x = 4.82, y = 8.42, family = "Gruppo", size = 15, colour = "#1f9ce4", hjust = 0,
+  annotate("text", x = 4.82, y = 8.52, family = "Gruppo", size = 15, colour = "#88f4ff", hjust = 0,
            label = "Seychelles") +
-  annotate("text", x = 5, y = 25, family = "Gruppo", size = 20, colour = "#88f4ff", hjust = 0,
-           label = "countries above the line have increased their emissions") +
-  annotate("text", x = 10, y = 2, family = "Gruppo", size = 20, colour = "#88f4ff", hjust = 0,
-           label = "countries below the line have decreased their emissions") +
+  annotate("text", x = 5, y = 25, family = "Gruppo", size = 20, colour = "#1f9ce4", hjust = 0,
+           label = "countries above the line have") +
+  annotate("text", x = 5, y = 23, family = "Gruppo", size = 20, colour = "#1f9ce4", hjust = 0,
+           label = "increased their emissions") +
+  annotate("text", x = 10, y = 3, family = "Gruppo", size = 20, colour = "#1f9ce4", hjust = 0,
+           label = "countries below the line have") +
+  annotate("text", x = 10, y = 1, family = "Gruppo", size = 20, colour = "#1f9ce4", hjust = 0,
+           label = "decreased their emissions") +
   theme(panel.background = element_rect(fill = "#242632", colour = "#242632"),
         plot.background = element_rect(fill = "#242632", colour = "#242632"),
         panel.grid = element_blank(),
         axis.title = element_text(family = "Gruppo", colour = "white", size = 40),
         axis.text = element_text(family = "Gruppo", colour = "white", size = 30),
-        plot.title = element_text(family = "Gruppo", colour = "#1f9ce4", size = 100,
+        plot.title = element_text(family = "Gruppo", colour = "white", size = 100,
                                   margin = margin(t = 10, b = 5)),
-        plot.subtitle = element_text(family = "Gruppo", colour = "#1f9ce4", size = 50,
+        plot.subtitle = element_text(family = "Gruppo", colour = "white", size = 50,
                                      margin = margin(b = 10)),
         plot.caption = element_text(colour = "white", size = 25, hjust = 0.5,
                                     margin = margin(t = 20, b = 10)))
